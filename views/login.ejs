@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sign Up Form by Colorlib</title>
+<!-- Font Icon -->
+<%-include('layout/back.ejs')%>
+
+<link rel="stylesheet" type="text/css" href="/css/style.css">
+<script>
+    document.addEventListener('keydown', function(event) {
+    if (event.keyCode === 13) {
+        event.preventDefault();
+    };
+    }, true);
+    var nickChk = false;
+    var emailChk = false;
+    var pwdChk = false;
+    $(function(){
+
+        $("#nickname").on('focusout',()=>{
+            var nickname = Util.get($('#nickname').val());
+            $(".nickErr").css('display','none');
+            if(nickname === ""){
+                $('#msg1').css('display','block');
+                nickChk = false;
+                return false;
+            }
+            $('#msg3').css('display','block');
+            nickChk = true;
+        });
+
+        $("#email").on('focusout',()=>{
+            var email = Util.get($("#email").val());
+                if(email === ""){ 
+                    $("#msg4").css('display','block');
+                    emailChk = false;
+                    return false;
+                };
+                if(!Util.isEmail(email)){
+                    emailChk = false;
+                    $("#msg5").css('display','block');
+                    return false;
+                };
+                emailCheck(email);              
+        });
+
+        $("#pass").on('focusout',()=>{
+            $(".pwdErr").css('display','none');
+            var pwd = Util.get($("#pass").val());
+            if(pwd === ""){
+                $("#msg12").css('display','block');
+                pwdChk = false;
+                return false;
+            }
+            if(pwd.length < 6 || pwd.length > 16){
+                $("#msg9").css('display','block');
+                pwdChk = false;
+                return false;
+            }
+            if(!Util.isPassword(pwd)){
+                $("#msg10").css('display','block');
+                pwdChk = false;
+                return false;
+            }
+                //Success
+                $("#msg11").css('display','block');
+                pwdChk = true;
+        });
+
+        $("#re_pass").on('focusout',()=>{
+            $(".rePwdErr").css('display','none');
+            var pwd = Util.get($("#pass").val()).toString();
+            var rePwd = Util.get($("#re_pass").val()).toString();
+            if(pwd === ""){
+                $("#msg12").css('display','block');
+                pwdChk = false;
+                return false;
+            }
+            if(rePwd === ""){
+                $("#msg15").css('display','block');
+                pwdChk = false;
+                return false;
+            }
+            if(pwd !== rePwd){
+                $("#msg13").css('display','block');
+                pwdChk = false;
+                return false;
+            }
+                //Success
+                $("#msg14").css('display','block');
+                pwdChk = true;
+        });
+
+        $("#signup").on('click',()=>{
+            if(!nickChk){
+                alert("이름을 확인해 주세요.");
+                $("#nickname").focus();
+                return false;
+            }
+            if(!emailChk){
+                alert("이메일을 확인해 주세요.");
+                $("#email").focus();
+                return false;
+            }
+            if(!pwdChk){
+                alert("비밀번호를 확인해 주세요.");
+                return false;
+            }
+            $("#register-form").submit();
+        });
+
+
+
+    })
+    function singUpDisplayOn(){
+        $(".sign-in").css("display",'none');
+        $(".signup").css("display",'block');
+    }
+    function singInDisplayOn(){
+        $(".sign-in").css("display",'block');
+        $(".signup").css("display",'none');
+    }
+    function emailCheck(email){
+        $(".emailErr").css("display","none");
+        $.ajax({
+                url: "/user/userEmailCheck",
+                type: "GET",
+                data: {'email':email},
+                dataType:"json",
+                async:false,
+                success: function (data) {
+                   if(data > 0){
+                       $("#msg6").css("display",'block');
+                       emailChk = false;
+                       return false;
+                   }
+
+                    $("#msg7").css("display",'block');
+                    emailChk = true;
+                },
+                error: function (a, b, c) {
+                    console.log("::::::: status(code) ::::::: " + a.status);
+                    console.log("::::::: statusText ::::::: " + a.statusText);
+                    console.log("::::::: textStatus ::::::: " + b);
+                    console.log("::::::: errorThrown ::::::: " + c);
+                }
+            });  
+    }
+</script>
+</head>
+<body>
+
+    <div class="main">
+
+        <!-- Sign up form -->
+        <section class="signup">
+            <div class="container">
+                <div class="signup-content">
+                    <div class="signup-form">
+                        <h2 class="form-title">Sign up</h2>
+                        <form method="POST" class="register-form" id="register-form" action="/auth/register_process">
+                            <div class="form-group">
+                                <label for="nickname"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                                <input type="text" name="nickname" id="nickname" placeholder="Your Name"/>
+                                <span class="errMsg nickErr" id="msg1">이름을 입력해 주세요.</span>
+                                <span class="sucMsg nickErr" id="msg3"><i class="zmdi zmdi-check-all"></i> Success!</span>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="email"><i class="zmdi zmdi-email"></i></label>
+                                <input type="email" name="email" id="email" placeholder="Your Email"/>
+                                    <span class="errMsg emailErr" id="msg4">이메일을 입력해 주세요.</span>
+                                    <span class="errMsg emailErr" id="msg5">이메일 형식에 부적합 합니다. 이메일을 확인 하세요.</span>
+                                    <span class="errMsg emailErr" id="msg6">이미 사용중인 이메일 입니다. 이메일을 확인 하세요.</span>
+                                    <span class="sucMsg emailErr" id="msg7"><i class="zmdi zmdi-check-all"></i> Success!</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="pass"><i class="zmdi zmdi-lock"></i></label>
+                                <input type="password" name="pwd" id="pass" placeholder="Password"/>
+                                    <span class="defaultMsg pwdErr" >6~16자의 영문/숫자/특수기호 조합</span>
+                                    <span class="errMsg pwdErr" id="msg9">비밀번호 길이 형식에 맞지 않습니다. 6~16자 사이로 입력해 주세요.</span>
+                                    <span class="errMsg pwdErr" id="msg10">비밀번호 형식에 맞지 않습니다. 6~16자의 영문/숫자/특수기호 조합이어야 합니다.</span>
+                                    <span class="sucMsg pwdErr" id="msg11"><i class="zmdi zmdi-check-all"></i> Success!</span>
+                                    <span class="errMsg pwdErr" id="msg12">비밀번호 를 입력해 주세요.</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="re-pass"><i class="zmdi zmdi-lock-outline"></i></label>
+                                <input type="password" name="re_pass" id="re_pass" placeholder="Repeat your password"/>
+                                <span class="errMsg rePwdErr" id="msg13">비밀번호와 비밀번호 확인이 맞지 않습니다. 비밀번호를 확인해 주세요.</span>
+                                <span class="sucMsg rePwdErr" id="msg14"><i class="zmdi zmdi-check-all"></i> Success!</span>
+                                <span class="errMsg rePwdErr" id="msg15">비밀번호 확인을 입력해 주세요.</span>
+                            </div>
+                            <div class="form-group">
+                                <input type="checkbox" name="agree-term" id="agree-term" class="agree-term" />
+                                <label for="agree-term" class="label-agree-term"><span><span></span></span>서비스 약관에<a href="#" class="term-service"> 동의합니다.</a></label>
+                            </div>
+                            <div class="form-group form-button">
+                                <input type="submit" name="signup" id="signup" class="form-submit" value="가입하기"/>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="signup-image">
+                        <figure><img src="/imges/signup-image.jpg" alt="sing up image"></figure>
+                        <a href="javascript:singInDisplayOn();" class="signup-image-link">저는 이미 회원 입니다!</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sing in  Form -->
+        <section class="sign-in">
+            <div class="container">
+                <div class="signin-content">
+                    <div class="signin-image">
+                        <figure><img src="/imges/signin-image.jpg" alt="sing up image"></figure>
+                        <a href="javascript:singUpDisplayOn();" class="signup-image-link">회원가입 하기!</a>
+                    </div>
+
+                    <div class="signin-form">
+                        <h2 class="form-title">Sign In</h2>
+                        <form method="POST" class="register-form" action="/auth/login_process" id="login-form">
+                            <div class="form-group">
+                                <label for="login-email"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                                <input type="email" name="email" id="login-email" placeholder="Your Email"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="login-pwd"><i class="zmdi zmdi-lock"></i></label>
+                                <input type="password" name="pwd" id="login-pwd" placeholder="Password"/>
+                            </div>
+                            <div class="form-group">
+                                <input type="checkbox" name="remember-me" id="remember-me" class="agree-term" />
+                                <label for="remember-me" class="label-agree-term"><span><span></span></span>Remember me</label>
+                            </div>
+                            <div class="form-group form-button">
+                                <input type="submit" name="signin" id="signin" class="form-submit" value="Log in"/>
+                            </div>
+                        </form>
+                        <div class="social-login">
+                            <span class="social-label">간편 로그인 :</span>
+                            <ul class="socials">
+                                <li><a href="#"><i class="display-flex-center zmdi zmdi-facebook"></i></a></li>
+                                <li><a href="#"><span class="iconify" style="width: 30px; height:30px; background-color:yellow; border: yellow; border-radius: 5px;" data-icon="vs-kakaotalk" data-inline="true"></span></a></li>
+                                <li><a href="#"><i class="display-flex-center zmdi zmdi-google"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+</body><!-- This templates was made by Colorlib (https://colorlib.com) -->
+</html>
