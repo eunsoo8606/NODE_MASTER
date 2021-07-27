@@ -15,11 +15,16 @@
         event.preventDefault();
     };
     }, true);
+
     var nickChk = false;
     var emailChk = false;
     var pwdChk = false;
     $(function(){
+        $("#remember-me").on('click',()=>{
+            
+        if($("input:checkbox[id='ID']").is(":checked") == true) $(this).val("yes");
 
+        });
         $("#nickname").on('focusout',()=>{
             var nickname = Util.get($('#nickname').val());
             $(".nickErr").css('display','none');
@@ -226,9 +231,13 @@
                                 <label for="login-email"><i class="zmdi zmdi-account material-icons-name"></i></label>
                                 <input type="email" name="email" id="login-email" placeholder="Your Email"/>
                             </div>
+                            
                             <div class="form-group">
                                 <label for="login-pwd"><i class="zmdi zmdi-lock"></i></label>
                                 <input type="password" name="pwd" id="login-pwd" placeholder="Password"/>
+                                <% if(error != "N"){%>
+                                <span class="errMsg"><%=error%></span>
+                                <%}%>
                             </div>
                             <div class="form-group">
                                 <input type="checkbox" name="remember-me" id="remember-me" class="agree-term" />
@@ -242,8 +251,8 @@
                             <span class="social-label">간편 로그인 :</span>
                             <ul class="socials">
                                 <li><a href="#"><i class="display-flex-center zmdi zmdi-facebook"></i></a></li>
-                                <li><a href="#"><span class="iconify" style="width: 30px; height:30px; background-color:yellow; border: yellow; border-radius: 5px;" data-icon="vs-kakaotalk" data-inline="true"></span></a></li>
-                                <li><a href="#"><i class="display-flex-center zmdi zmdi-google"></i></a></li>
+                                <li><a href="/auth/kakao"><span class="iconify" style="width: 30px; height:30px; background-color:yellow; border: yellow; border-radius: 5px;" data-icon="vs-kakaotalk" data-inline="true"></span></a></li>
+                                <li><a href="/auth/google"><i class="display-flex-center zmdi zmdi-google"></i></a></li>
                             </ul>
                         </div>
                     </div>

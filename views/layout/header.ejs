@@ -1,34 +1,32 @@
-<!-- MENU BAR -->
-<nav class="navbar navbar-expand-lg">
+<header id="header" class="header header-hide">
     <div class="container">
 
-        <a class="navbar-brand" href="#">
-           <img src="/imges/logo3.jpg" width="167" onclick="javascript:location.href='/'"/>
-        </a>
+      <div id="logo" class="pull-left">
+        <h1><a href="/main" class="scrollto"><img src="/imges/logos.png"/></a></h1>
+        <!-- Uncomment below if you prefer to use an image logo -->
+        <!-- <a href="#body"><img src="img/logo.png" alt="" title="" /></a>-->
+      </div>
 
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav mx-auto">
-                <li class="nav-item">
-                    <a href="#intro" class="nav-link smoothScroll">소개</a>
-                </li>
-
-                <li class="nav-item">
-                    <a href="#about" class="nav-link smoothScroll">경력</a>
-                </li>
-
-                <li class="nav-item">
-                    <a href="#testimonials" class="nav-link smoothScroll">기술</a>
-                </li>
-
-                <li class="nav-item">
-                    <a href="#contact" class="nav-link smoothScroll">문의하기</a>
-                </li>
+      <nav id="nav-menu-container">
+        <ul class="nav-menu">
+          <li class="menu-active"><a href="#hero">Home</a></li>
+          <li><a href="#get-started">development experience</a></li>
+          <li><a href="#about-us">API Documents</a></li>
+          <li><a href="#screenshots">Movie Crawling</a></li>
+          <li><a href="#team">Team</a></li>
+          <li><a href="#blog">Blog</a></li>
+          <% if(login == 'Y'){%>
+          <li class="menu-has-children"><a href="javascript:void(0)">마이페이지</a>
+            <ul>
+              <li><a href="#">내 정보수정</a></li>
+              <li><a href="/auth/logout_process">로그아웃</a></li>
+              <li><a href="#">내 애플리케이션</a></li>
             </ul>
-        </div>
-
+          </li>
+          <% }else{%>
+          <li><a href="javascript:login();">Login</a></li>
+          <%}%>
+        </ul>
+      </nav><!-- #nav-menu-container -->
     </div>
-</nav>
+  </header><!-- #header -->

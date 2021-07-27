@@ -1,326 +1,887 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
+  <meta charset="utf-8">
+  <title>myHistory</title>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta content="" name="keywords">
+  <meta content="" name="description">
+ <%- include('layout/back.ejs') %>
+ <!-- <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=7310d6d1ab2092c321eeac72042dfc50&libraries=services"></script> -->
+<script>
+  const toDayApiCnt = 0;
+  $(()=>{
+    //날씨 API 출력
+    Util.getLocation("quick_menu_container",Util.sysDate());
 
-     <title>Eunsoo-kim Portfolio</title>
+    //롯데시네마 데이터 크롤링
+    $.ajax({
+      url:"/movie/movieList",
+      type:"GET",
+      dataType:"json",
+      success:(data)=>{
+        var html = "";
+          for(var i = 0; i < data.length;i++){
+            html += `<div><img class="movieImg" src="` + data[i].img + `" alt="img"><div class="movieTile">`
+                 + data[i].title + `</div><div class="movieContent">`
+                 + data[i].rate
+                 + `<span class="iconify" data-icon="ci:line-m" data-inline="false"></span>
+                 <span class="iconify" data-icon="bx:bxs-star" style="color:orange; border-color:gray; margin-bottom:4px;" data-inline="false"></span>
+                 ` + data[i].star + `</div></div>`;
+          }
+          $("#movieList").html(html);
+            // Init Owl Carousel
+        $('.owl-carousel').owlCarousel({
+              items: 4,
+              autoplay: true,
+              loop: true,
+              margin: 30,
+              dots: true,
+              responsiveClass: true,
+              responsive: {
+                320: { items: 1},
+                480: { items: 2},
+                600: { items: 2},
+                767: { items: 3},
+                768: { items: 3},
+                992: { items: 4}
+              }
+        });
+      },
+      error:(err)=>{
+        console.log(err);
+      }
+    });
 
-     <meta charset="UTF-8">
-     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-     <meta name="description" content="">
-     <meta name="keywords" content="">
-     <meta name="author" content="Tooplate">
-     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-     <%- include('layout/back.ejs') %>
+  });
+function getLoadName(id,date,x,y){
+  //날씨데이터 넣어주기.
+  //좌표로 주소 가져오기.
+    $.ajax({
+      url : 'https://dapi.kakao.com/v2/local/geo/coord2address.json',
+      data:{"x":y,"y":x},
+      type : 'GET',
+      headers : {
+        'Authorization':'KakaoAK 7d0360bb7fd3d1e0e6552378428bb8a4'
+      },
+      success :function(data) {
+        //필요한 값만 추출
+        var juso1 = data.documents[0].address.region_1depth_name;
+        var juso2 = data.documents[0].address.region_2depth_name;
+        var juso3 = data.documents[0].address.region_3depth_name;
+        getWeather(date,juso2+juso3.substr(0, juso3.length -1));
+        //현재 내 위치 기반 주소 해당 영역에 추가 해주기.
+        $("#quick_menuHeader").text(juso1 + " " +  juso2 + " " + juso3);
+      },
+      error:function(e) {
+        console.log(e);
+      }
+    });
   
-        <script type="text/javascript">
-            $(function(){
+}
 
-             
-              movieData("해리포터");
-
-                $("#signIn").on("click",()=>{
-                    $.ajax({
-                            url: "/user/userSelectOne",
-                            type: "POST",
-                            data: $("#loginForm").serialize(),
-                            dataType:"json",
-                            async:true,
-                            success: function (data) {
-                                var result = data.data;
-                                if(result === "N"){
-                                    alert("아이디 혹은 비밀번호가 틀립니다.");
-                                    return false;
-                                }
-                                location.href="/main";
-                            },
-                            error: function (a, b, c) {
-                                console.log("::::::: status(code) ::::::: " + a.status);
-                                console.log("::::::: statusText ::::::: " + a.statusText);
-                                console.log("::::::: textStatus ::::::: " + b);
-                                console.log("::::::: errorThrown ::::::: " + c);
-                            }
-                        });
-                    $("#loginForm").submit();
-                });
-
-                $("#search").on('click',()=>{
-                  startSearchList();
-                });
-
-            });
-
-
-            function movieData(searchData){
-              $.ajax({
-                type: "GET",
-                data: $("#searchMovie").serialize(),
-                contentType:"application/json; charset=utf-8",
+function getWeather(date,address){
+       //현재 일시분초 셋팅
+       var hours = (new Date().getHours()-1).toString();
+     if(hours.length == 1) hours = "0" + hours;
+     console.log("hours : ", hours)
+     var date = parseInt(Util.sysDate());
+  //database 에서 격자 좌표 변환처리 정보 조회
+  $.ajax({
+      url : '/weather/locationGridXY',
+      data:{"address":address},
+      type : 'GET',
+      dataType:'json',
+      success :function(data) {
+          if(Util.get(data) === ""){
+            console.log("data.err")
+          }
+          var x = data.lat;
+          var y = data.lng;
+          //변환된 좌표로 날씨정보 조회
+          $.ajax({
+                url:"/weather/weatherApi",
+                data:{"date":date,"hour":hours,"x":x,"y":y},
+                type:"GET",
                 dataType:"json",
-                async:true,
-                url: "/movie/movieList",
-                success: function (data) {
-                 var movieList = data;
-                 var values = ``;
-                 for(var i = 0; i < movieList.length; i++){
-                    values += `<div id="movieList">
-                                  <ul>
-                                      <li>
-                                        <img src="` + movieList[i].image + `" height="300" width="230"/>
-                                      </li>
-                                      <li>
-                                         <h4>` + movieList[i].title + `</h4>
-                                      </li>
-                                      <li>
-                                         <h6>` + movieList[i].subtitle + `</h6>
-                                      </li>
-                                      <li>
-                                        개봉일 : ` + movieList[i].pubDate + `
-                                      </li>
-                                      <li>
-                                        감독 : ` + movieList[i].director + `
-                                      </li>
-                                      <li>
-                                        배우 : ` + movieList[i].actor + `
-                                      </li>
-                                      <li>
-                                        평점 : ` + movieList[i].userRating + `
-                                      </li>
-                                  </ul>
-                                </div>`;
-                    }
-                    if($(".slick-initialized").length > 0){
-                      $("#slider-div").slick('unslick');
-                    }  
-                    $("#slider-div").html(values);
-                  
-                    
-                    movieSlick();
-                   
+                success:(data)=>{
+                  //가져온데이터 가공 위해서 function 분리.
+                  writeWeather(data);
                 },
-                error: function (a, b, c) {
-                console.log("::::::: status(code) ::::::: " + a.status);
-                console.log("::::::: statusText ::::::: " + a.statusText);
-                console.log("::::::: textStatus ::::::: " + b);
-                console.log("::::::: errorThrown ::::::: " + c);
-                  }
-                });
+              error:(err)=>{
+                console.log(err);
+              }
+          });
+      },
+      error:function(e) {
+        console.log(e);
+      }
+    });
+}
+//날씨 setting function
+function writeWeather(data){
+  var html = "";
+      /*
+      * PTY	강수형태	: 없음(0), 비(1), 비/눈(2), 눈(3), 소나기(4), 빗방울(5), 빗방울/눈날림(6), 눈날림(7)
+      * RN1 1시간 강수량 : mm 
+      * REH	습도	 %
+      * S06	6시간 신적설	범주(1 cm)
+      * SKY	하늘상태	코드값 : 맑음(1), 구름많음(3), 흐림(4) 
+      * T1H	기온 ℃
+      * UUU	풍속(동서성분)	 m/s
+      * VVV	풍속(남북성분)	 m/s
+      * LGT 낙뢰 코드값
+      * VEC 풍향 0
+      * WSD 풍속 1
+      */
+    var whList = data;
+    var precipitation;
+    console.log(whList)
+    for(var i = 0; i < whList.length;i++){
+          if(whList[i].category === "SKY"){
+            if(whList[i].fcstValue === "1") {
+              backgroundWeather('sun');
+            }
+            if(whList[i].fcstValue === "3") {
+              $("#quick_menu_left_area").html(`<img src="/imges/many-cloud.png">`);
+              $("#quick_menu_right_sec").text(`구름많음`);
+            }
+            if(whList[i].fcstValue === "4"){
+               changeDisplay('rain');
+               backgroundWeather('rain');
+               $("#quick_menu_left_area").html(`<img src="/imges/cloud.png">`);
+               $("#quick_menu_right_sec").text('흐림');
+            }
+          }
+          if(whList[i].category === "T1H") {
+            $("#ondo").text(whList[i].fcstValue + `°C`); 
+          }
+              
+          if(whList[i].category === "RN1"){
+            var result = parseInt(whList[i].fcstValue.substr(0, whList[i].fcstValue.length -2));
+            if(result >= 1 && result <= 3){
+                precipitation = "(약함)"
+              }
+            if(result > 3 && result <= 15){
+                precipitation = "(보통)"
+            }
+            if(result > 15 && result <= 30){
+                precipitation = "(강함)"
+            }
+            if(result > 30){
+                precipitation = "(매우 강함)"
+            }
+            $("#precipitation").text(precipitation);
+          }
+          if(whList[i].category === "PTY"){
+            if(whList[i].fcstValue !== "0") {
+              changeDisplay('rain');
+              if(whList[i].fcstValue === "1") {
+                backgroundWeather('rain');
+              }
+              if(whList[i].fcstValue === "2") $("#quick_menu_right_sec").text(`비/눈`);
+              if(whList[i].fcstValue === "3") $("#quick_menu_right_sec").text(`눈`);
+              if(whList[i].fcstValue === "4") {
+                backgroundWeather('rain');
+              }
+              if(whList[i].fcstValue === "5") {
+                backgroundWeather('rain');
+              }
+              if(whList[i].fcstValue === "6") $("#quick_menu_right_sec").text(`빗방울/눈날림`);
+              if(whList[i].fcstValue === "7") $("#quick_menu_right_sec").text(`눈날림`);
+            }
+          }
+      }
+}
+</script>
+<script>
+	$(document).ready(function(){
+		$(window).on('load resize', function(){
+			if($(window).width() > 768){
+				$(window).on('scroll', function(){
+					
+					$('.quick_menu').css('top', $(window).scrollTop() + $(window).height() / 2);
+				});
+			}else {
+				$('.quick_menu').css('top', 0);
+			}
+		});
+	});
+  function backgroundWeather(weather){
+      if(weather === "rain"){
+        $("#quick_menu_left_area_etc").html(`<img src="/imges/rain.png">`);
+        $("#quick_menu").css("background-image","url(/imges/rain-back.jpg)");
+        $("#quick_menu").css("color","white");
+        $("#precipitationArea").text(`비`);
+      }
+      if(weather === "sun"){
+        $("#quick_menu_left_area").html(`<img src="/imges/sun.png">`);
+        $("#quick_menu").css("background-image","url(/imges/sky.jpg)");
+        $("#quick_menu").css("color","black");
+        $("#quick_menu_right_sec").text("맑음");
+      }
+
   }
+  function changeDisplay(weather){
+    if(weather === "rain"){
+      $("#quick_menu_right_sec").css('display','none');
+      $("#quick_menu_right_sec_etc").css('display','inline-block');
+      $("#quick_menu_left_area").css('display','none');
+      $("#quick_menu_left_area_etc").css('display','block');
+    }
+    if(weather === "sun"){
+      $("#quick_menu_right_sec").css('display','block');
+      $("#quick_menu_right_etc").css('display','none');
+      $("#quick_menu_left_area").css('display','block');
+      $("#quick_menu_left_area_etc").css('display','none');
+    }
 
-
-
-function movieSlick(){
-  $('#slider-div').slick({
-    slide: 'div',        //슬라이드 되어야 할 태그 ex) div, li 
-    infinite : true,     //무한 반복 옵션     
-    slidesToShow : 4,        // 한 화면에 보여질 컨텐츠 개수
-    slidesToScroll : 1,        //스크롤 한번에 움직일 컨텐츠 개수
-    speed : 100,     // 다음 버튼 누르고 다음 화면 뜨는데까지 걸리는 시간(ms)
-    arrows : true,         // 옆으로 이동하는 화살표 표시 여부
-    dots : true,         // 스크롤바 아래 점으로 페이지네이션 여부
-    autoplay : true,            // 자동 스크롤 사용 여부
-    autoplaySpeed : 10000,         // 자동 스크롤 시 다음으로 넘어가는데 걸리는 시간 (ms)
-    pauseOnHover : true,        // 슬라이드 이동    시 마우스 호버하면 슬라이더 멈추게 설정
-    vertical : false,        // 세로 방향 슬라이드 옵션
-    prevArrow : "<button type='button' class='slick-prev'>Previous</button>",        // 이전 화살표 모양 설정
-    nextArrow : "<button type='button' class='slick-next'>Next</button>",        // 다음 화살표 모양 설정
-    dotsClass : "slick-dots",     //아래 나오는 페이지네이션(점) css class 지정
-    draggable : true,     //드래그 가능 여부 
-    
-    responsive: [ // 반응형 웹 구현 옵션
-        {  
-            breakpoint: 960, //화면 사이즈 960px
-            settings: {
-                //위에 옵션이 디폴트 , 여기에 추가하면 그걸로 변경
-                slidesToShow:3 
-            } 
-        },
-        { 
-            breakpoint: 768, //화면 사이즈 768px
-            settings: {    
-                //위에 옵션이 디폴트 , 여기에 추가하면 그걸로 변경
-                slidesToShow:2 
-            } 
-        }
-    ]
-
-});
-}
-function startSearchList(){
-  var searchData = Util.get($("#search").val());
-  movieData(searchData);
-  return false;
-}
+  }
 </script>
 </head>
 
 <body data-spy="scroll" data-target="#navbarNav" data-offset="50">
 
     <%- include('layout/header.ejs') %>
-
-    <form id="searchMovie" onsubmit="return false;" >
-    <!-- HERO -->
-    <section class="hero d-flex flex-column justify-content-center align-items-center" id="intro">
-
-         <div class="container">
-            <div class="row">
-                  <div style="background-image: url(/imges/banner4.jpg); background-size: 100% 100%; display: flex;"> 
-                    <div style="width:1050px;height:500px; margin-left:50px;">
-                    <div style="margin-top: 356px; margin-right: 85px;">
-                      <div id="wrap">
-                        <input id="search" name="searchData" type="text" value="해리포터" placeholder="너의 기분은 어때?"><input id="search_submit" value="Rechercher" type="submit">
-                      </div>
-                    </div>
-                  </div>
-                  </div>
+    <div class="quick_menu" id="quick_menu" style="top: 1171.27px;">
+        <div class="quick_menuHeader" id="quick_menuHeader">
+          </div>
+            <div class="quick_menu_container" id="quick_menu_container">
+              <div class="quick_menu_left_area" id="quick_menu_left_area">
+              </div>
+              <div class="quick_menu_left_area_etc" id="quick_menu_left_area_etc">
+              </div>
+            <div class="quick_menu_right_area" id="quick_menu_right_area">
+              <div id="ondo"></div>
+              <div class="quick_menu_right_sec" id="quick_menu_right_sec">
+              </div>
+              <div class="quick_menu_right_sec_etc" id="quick_menu_right_sec_etc">
+                <p id="precipitationArea"></p><p id="precipitation"></p>
+              </div>
             </div>
-        </div>
-    </section>
-    <!-- TESTIMONIAL -->
-     <section class="testimonials section-padding" id="testimonials">
-       <div class="movieBanner " >
-      <div class="movieTitle d-flex justify-content-center">
-      <img src="/imges/section1.png"/>
+          </div>
     </div>
-    
-      <div class="movieSelector d-flex justify-content-center mt-4">
-          <select id="selectBox" name="genre">
-            <option selected value="24">블랙코미디</option>
-            <option value="1">드라마</option>
-            <option value="2">판타지</option>
-            <option value="3">서부</option>
-            <option value="4">공포</option>
-            <option value="5">로맨스</option>
-            <option value="6">모험</option>
-            <option value="7">스릴러</option>
-            <option value="8">느와르</option>
-            <option value="9">컬트</option>
-            <option value="10">다큐멘터리</option>
-            <option value="11">코디미</option>
-            <option value="12">가족</option>
-            <option value="13">미스터리</option>
-            <option value="14">전쟁</option>
-            <option value="15">애니메이션</option>
-            <option value="16">범죄</option>
-            <option value="17">뮤지컬</option>
-            <option value="18">SF</option>
-            <option value="19">액션</option>
-            <option value="20">무협</option>
-            <option value="21">에로</option>
-          </select>
-          <select id="selectBox" name="country">
-            <option selected value="">전체</option>
-            <option value="KR">한국</option>
-            <option value="US">미국</option>
-            <option value="GB">영국</option>
-            <option value="FR">프랑스</option>
-            <option value="HK">홍콩</option>
-          </select>
+ <!--==========================
+    Hero Section
+  ============================-->
+  <section id="hero" class="wow fadeIn">
+    <div class="hero-container">
+      <h1>Welcome to KIM-ES PORTFOLIO</h1>
+      <h2>If It's Not Fun, Why Do It?</h2>
+      <img src="/imges/hero-img.png" alt="Hero Imgs">
+      <a href="#get-started" class="btn-get-started scrollto">Get Started</a>
+      <!-- <div class="btns">
+        <a href="#"><i class="fa fa-apple fa-3x"></i> App Store</a>
+        <a href="#"><i class="fa fa-play fa-3x"></i> Google Play</a>
+        <a href="#"><i class="fa fa-windows fa-3x"></i> windows</a>
+      </div> -->
+    </div>
+  </section><!-- #hero -->
+  <!--==========================
+    Get Started Section
+  ============================-->
+  <section id="get-started" class="padd-section text-center wow fadeInUp">
+
+    <div class="container">
+      <div class="section-title text-center">
+
+        <h2>my development experience</h2>
+        <p class="separator">2020~2021</p>
+
       </div>
     </div>
-          <!-- stlye 은 slick 영역 확인용 -->
-          <div style="padding:60px 70px; background-color: #fff4e1;">
-            
-            <div id="slider-div"></div>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 col-lg-4">
+          <div class="feature-block">
+
+            <img src="/imges/KT.png" alt="img" class="img-fluid">
+            <h4>KT API-Link G/W 유지보수</h4>
+            <p>2020-05-01 ~ 2020-09-30</p>
+            <p>My Work<br/>
+              매월 NginX Source Deploy & Apache Source Deploy/ErrorLog 점검/Api Monitoring/SSL 인증서 교체작업</p>
+            <!-- <a href="#">read more</a> -->
           </div>
-     </section>
-    </form>
-     <!-- FAQ -->
-     <section class="faq section-padding">
-        
-        <div class="container">     
-            <div class="row">
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="feature-block">
+            <img src="/imges/logo.png" alt="img" class="img-fluid">
+            <h4>대한탁구협회/디비전리그</h4>
+            <p>2020-12-01 ~ 2021-04-18</p>
+            <p>My Work<br/>
+              회원가입/마이페이지/메인페이지/디비전리그/팀선수/경기장 개발
+            </p>
+            <a href="https://ttadivision.sports.or.kr/">Go-to-See!</a>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="feature-block">
+            <img src="/imges/logo.png" alt="img" class="img-fluid">
+            <h4>대한탁구협회/디비전리그</h4>
+            <p>2021-04-18 ~ toDay</p>
+            <p>My Work<br/>
+              대한탁구협회/디비전리그 유지보수</p>
+            <a href="https://ttadivision.sports.or.kr/">Go-to-See!</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-                <div class="col-lg-12 col-12">
+  <!--==========================
+    API Section
+  ============================-->
+  <section id="about-us" class="about-us padd-section wow fadeInUp">
+    <div class="container">
+      <div class="row justify-content-center">
 
-                    <h3 class="mb-5">Frequently Asked Questions</h3>
+        <div class="col-md-5 col-lg-3">
+          <img src="/imges/api.png" alt="About" class="rounded">
+        </div>
 
-                    <div class="accordion" id="accordionExample">
-                      <div class="card">
-                        <div class="card-header" id="headingOne">
-                          <h2 class="mb-0">
-                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                              Are those HTML templates absolutely free for any kind of usage?
-                            </button>
-                          </h2>
-                        </div>
+        <div class="col-md-7 col-lg-5">
+          <div class="about-content">
+            <h2><span>REST APIS</span><br/>ES PORTFOLIO</h2>
+            <p>
+              HTTP URI(Uniform Resource Identifier)를 통해 자원(Resource)을 명시하고, 
+              HTTP Method(POST, GET, PUT, DELETE)를 통해 해당 자원에 대한 CRUD Operation을 적용하는 것을 의미한다.
+              즉, REST는 자원 기반의 구조(ROA, Resource Oriented Architecture) 설계의 중심에 Resource가 있고 
+              HTTP Method를 통해 Resource를 처리하도록 설계된 아키텍쳐를 의미한다.
+              웹 사이트의 이미지, 텍스트, DB 내용 등의 모든 자원에 고유한 ID인 HTTP URI를 부여한다.
+            </p>
 
-                        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
-                          <div class="card-body">
-                            <p>Yes, they are 100% free and there is no hidden charge.</p>
+            <ul class="list-unstyled">
+              <li><i class="fa fa-angle-right"></i><a href="/v1/documents/apis">go documents</a></li>
+            </ul>
 
-                            <p>They can be used for your commercial websites.</p>
-                          </div>
-                        </div>
-                      </div>
+          </div>
+        </div>
 
-                      <div class="card">
-                        <div class="card-header" id="headingTwo">
-                          <h2 class="mb-0">
-                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                              Can I use them as a CMS theme or a part of website builder?
-                            </button>
-                          </h2>
-                        </div>
-                        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
-                          <div class="card-body">
-                            <p>Yes, you can use them.</p>
-                          </div>
-                        </div>
-                      </div>
+      </div>
+    </div>
+  </section>
+<br/><br/><br/><br/><br/><br/><br/>
+  <!--==========================
+    Features Section
+  ============================-->
 
-                      <div class="card">
-                        <div class="card-header" id="headingThree">
-                          <h2 class="mb-0">
-                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                              I cannot find a suitable HTML template. Can I request new template?
-                            </button>
-                          </h2>
-                        </div>
-                        <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
-                          <div class="card-body">
-                            <p>Yes, please tell us what you need. We will try our best to fulfill it.</p>
-                          </div>
-                        </div>
-                      </div>
+  <section id="features" class="padd-section text-center wow fadeInUp">
 
-                    <div class="card">
-                        <div class="card-header" id="headingFour">
-                          <h2 class="mb-0">
-                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                              Can I redistribute your templates?
-                            </button>
-                          </h2>
-                        </div>
-                        <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordionExample">
-                          <div class="card-body">
-                            <p>No, this is totally NOT allowed. Please do not redistribute our HTML templates.</p>
-                          </div>
-                        </div>
-                    </div>
+    <div class="container">
+      <div class="section-title text-center">
+        <h2>My Stack</h2>
+        <p class="separator">현재 공부하고 있는 것과 하고 있는것.</p>
+      </div>
+    </div>
 
-                    <div class="card">
-                        <div class="card-header" id="headingFive">
-                          <h2 class="mb-0">
-                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
-                              How do I support Tooplate?
-                            </button>
-                          </h2>
-                        </div>
-                        <div id="collapseFive" class="collapse" aria-labelledby="headingFive" data-parent="#accordionExample">
-                          <div class="card-body">
-                            <p>Please spread a word about Tooplate website to your colleagues and friends.</p>
-                          </div>
-                        </div>
-                    </div>
+    <div class="container">
+      <div class="row">
 
-                    <span class="faq-info-text">Please send us a message if you have anything to say. Send an email message to <strong>contact (at) tooplate (dot) com</strong></span>
+        <div class="col-md-6 col-lg-3">
+          <div class="feature-block">
+            <img src="/imges/919825.png" alt="img" class="img-fluid">
+            <h4>Node Js</h4>
+            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry</p>
+          </div>
+        </div>
 
+        <div class="col-md-6 col-lg-3">
+          <div class="feature-block">
+            <img src="/imges/java.jpg" alt="img" class="img-fluid rounded-circle" >
+            <h4>JAVA</h4>
+            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry</p>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+          <div class="feature-block">
+            <img src="/imges/javascript.png" alt="img" class="img-fluid">
+            <h4>Javascript</h4>
+            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry</p>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+          <div class="feature-block">
+            <img src="/imges/jquery.png" alt="img" class="img-fluid">
+            <h4>Jquery</h4>
+            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry</p>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+          <div class="feature-block">
+            <img src="/imges/oracle.jpg" alt="img" class="img-fluid">
+            <h4>Oracle</h4>
+            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry</p>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+          <div class="feature-block">
+            <img src="/imges/mysql.png" alt="img" class="img-fluid">
+            <h4>Mysql</h4>
+            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry</p>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+          <div class="feature-block">
+            <img src="/imges/linux.png" alt="img" class="img-fluid">
+            <h4>Linux</h4>
+            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry</p>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+          <div class="feature-block">
+            <img src="/imges/svg/code.svg" alt="img" class="img-fluid">
+            <h4>clean codes</h4>
+            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!--==========================
+    Screenshots Section
+  ============================-->
+  <section id="screenshots" class="padd-section text-center wow fadeInUp">
+
+    <div class="container">
+      <div class="section-title text-center">
+        <h2>Movie Crawling</h2>
+        <p class="separator">now in theaters from LOTTE CINEMA</p>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="owl-carousel" id="movieList">
+
+      </div>
+    </div>
+
+  </section>
+
+  <!--==========================
+    Video Section
+  ============================-->
+
+  <section id="video" class="text-center wow fadeInUp">
+    <div class="overlay">
+      <div class="container-fluid container-full">
+
+        <div class="row">
+          <a href="#" class="js-modal-btn play-btn" data-video-id="s22ViV7tBKE"></a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!--==========================
+    Team Section
+  ============================-->
+  <section id="team" class="padd-section text-center wow fadeInUp">
+
+    <div class="container">
+      <div class="section-title text-center">
+
+        <h2>Team Member</h2>
+        <p class="separator">Integer cursus bibendum augue ac cursus .</p>
+
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row">
+
+        <div class="col-md-6 col-md-4 col-lg-3">
+          <div class="team-block bottom">
+            <img src="/imges/team/1.jpg" class="img-responsive" alt="img">
+            <div class="team-content">
+              <ul class="list-unstyled">
+                <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+              </ul>
+              <span>manager</span>
+              <h4>Kimberly Tran</h4>
+            </div>
+          </div>
+        </div>
+
+       <div class="col-md-6 col-md-4 col-lg-3">
+          <div class="team-block bottom">
+            <img src="/imges/team/2.jpg" class="img-responsive" alt="img">
+            <div class="team-content">
+              <ul class="list-unstyled">
+                <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+              </ul>
+              <span>manager</span>
+              <h4>Kimberly Tran</h4>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-md-4 col-lg-3">
+          <div class="team-block bottom">
+            <img src="/imges/team/3.jpg" class="img-responsive" alt="img">
+            <div class="team-content">
+              <ul class="list-unstyled">
+                <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+              </ul>
+              <span>manager</span>
+              <h4>Kimberly Tran</h4>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-md-4 col-lg-3">
+          <div class="team-block bottom">
+            <img src="/imges/team/4.jpg" class="img-responsive" alt="img">
+            <div class="team-content">
+              <ul class="list-unstyled">
+                <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+              </ul>
+              <span>manager</span>
+              <h4>Kimberly Tran</h4>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!--==========================
+    Testimonials Section
+  ============================-->
+
+  <section id="testimonials" class="padd-section text-center wow fadeInUp">
+    <div class="container">
+      <div class="row justify-content-center">
+
+        <div class="col-md-8">
+
+          <div class="testimonials-content">
+            <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+
+              <div class="carousel-inner" role="listbox">
+
+                <div class="carousel-item  active">
+                  <div class="top-top">
+
+                    <h2>Our Users Speack volumes us</h2>
+                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type
+                      specimen book. It has survived not only five centuries.</p>
+                    <h4>Kimberly Tran<span>manager</span></h4>
+
+                  </div>
                 </div>
 
-           	 </div><!-- col -->
-        	</div><!-- row -->
-        </div><!-- container -->
-    </section>     
+                <div class="carousel-item ">
+                  <div class="top-top">
+
+                    <h2>Our Users Speack volumes us</h2>
+                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type
+                      specimen book. It has survived not only five centuries.</p>
+                    <h4>Henderson<span>manager</span></h4>
+
+                  </div>
+                </div>
+
+                <div class="carousel-item ">
+                  <div class="top-top">
+
+                    <h2>Our Users Speack volumes us</h2>
+                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type
+                      specimen book. It has survived not only five centuries.</p>
+                    <h4>David Spark<span>manager</span></h4>
+
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="btm-btm">
+
+                <ul class="list-unstyled carousel-indicators">
+                  <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+                  <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+                  <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+                </ul>
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!--==========================
+    Pricing Table Section
+  ============================-->
+  <section id="pricing" class="padd-section text-center wow fadeInUp">
+
+    <div class="container">
+      <div class="section-title text-center">
+
+        <h2>Meet With Price</h2>
+        <p class="separator">Integer cursus bibendum augue ac cursus .</p>
+
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row">
+
+        <div class="col-md-6 col-lg-3">
+          <div class="block-pricing">
+            <div class="table">
+              <h4>basic</h4>
+              <h2>$29</h2>
+              <ul class="list-unstyled">
+                <li><b>4 GB</b> Ram</li>
+                <li><b>7/24</b> Tech Support</li>
+                <li><b>40 GB</b> SSD Cloud Storage</li>
+                <li>Monthly Backups</li>
+                <li>Palo Protection</li>
+              </ul>
+              <div class="table_btn">
+                <a href="#" class="btn"><i class="fa fa-shopping-cart"></i> Buy Now</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+          <div class="block-pricing">
+            <div class="table">
+              <h4>PERSONAL</h4>
+              <h2>$29</h2>
+              <ul class="list-unstyled">
+                <li><b>4 GB</b> Ram</li>
+                <li><b>7/24</b> Tech Support</li>
+                <li><b>40 GB</b> SSD Cloud Storage</li>
+                <li>Monthly Backups</li>
+                <li>Palo Protection</li>
+              </ul>
+              <div class="table_btn">
+                <a href="#" class="btn"><i class="fa fa-shopping-cart"></i> Buy Now</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+          <div class="block-pricing">
+            <div class="table">
+              <h4>BUSINESS</h4>
+              <h2>$29</h2>
+              <ul class="list-unstyled">
+                <li><b>4 GB</b> Ram</li>
+                <li><b>7/24</b> Tech Support</li>
+                <li><b>40 GB</b> SSD Cloud Storage</li>
+                <li>Monthly Backups</li>
+                <li>Palo Protection</li>
+              </ul>
+              <div class="table_btn">
+                <a href="#" class="btn"><i class="fa fa-shopping-cart"></i> Buy Now</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+          <div class="block-pricing">
+            <div class="table">
+              <h4>profeesional</h4>
+              <h2>$29</h2>
+              <ul class="list-unstyled">
+                <li><b>4 GB</b> Ram</li>
+                <li><b>7/24</b> Tech Support</li>
+                <li><b>40 GB</b> SSD Cloud Storage</li>
+                <li>Monthly Backups</li>
+                <li>Palo Protection</li>
+              </ul>
+              <div class="table_btn">
+                <a href="#" class="btn"><i class="fa fa-shopping-cart"></i> Buy Now</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!--==========================
+    Blog Section
+  ============================-->
+  <section id="blog" class="padd-section wow fadeInUp">
+
+    <div class="container">
+      <div class="section-title text-center">
+
+        <h2>Latest posts</h2>
+        <p class="separator"><a href="/blog/moveBlog">작성하러 가기!</a></p>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 col-lg-4">
+          <div class="block-blog text-left">
+            <a href="#"><img src="/imges/blog/blog-image-1.jpg" alt="img"></a>
+            <div class="content-blog">
+              <h4><a href="#">whats isthe difference between good and bat typography</a></h4>
+              <span>05, juin 2017</span>
+              <a class="pull-right readmore" href="#">read more</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+          <div class="block-blog text-left">
+            <a href="#"><img src="/imges/blog/blog-image-2.jpg" class="img-responsive" alt="img"></a>
+            <div class="content-blog">
+              <h4><a href="#">whats isthe difference between good and bat typography</a></h4>
+              <span>05, juin 2017</span>
+              <a class="pull-right readmore" href="#">read more</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+          <div class="block-blog text-left">
+            <a href="#"><img src="/imges/blog/blog-image-3.jpg" class="img-responsive" alt="img"></a>
+            <div class="content-blog">
+              <h4><a href="#">whats isthe difference between good and bat typography</a></h4>
+              <span>05, juin 2017</span>
+              <a class="pull-right readmore" href="#">read more</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!--==========================
+    Newsletter Section
+  ============================-->
+  <section id="newsletter" class="newsletter text-center wow fadeInUp">
+    <div class="overlay padd-section">
+      <div class="container">
+
+        <div class="row justify-content-center">
+          <div class="col-md-9 col-lg-6">
+            <form class="form-inline" method="POST" action="#">
+
+              <input type="email" class="form-control " placeholder="Email Adress" name="email">
+              <button type="submit" class="btn btn-default"><i class="fa fa-location-arrow"></i>Subscribe</button>
+
+            </form>
+
+          </div>
+        </div>
+
+          <ul class="list-unstyled">
+            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+            <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+            <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+          </ul>
+
+
+      </div>
+    </div>
+  </section>
+
+  <!--==========================
+    Contact Section
+  ============================-->
+  <section id="contact" class="padd-section wow fadeInUp">
+
+    <div class="container">
+      <div class="section-title text-center">
+        <h2>Contact</h2>
+        <p class="separator">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque</p>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row justify-content-center">
+
+        <div class="col-lg-3 col-md-4">
+
+          <div class="info">
+            <div>
+              <i class="fa fa-map-marker"></i>
+              <p>A108 Adam Street<br>New York, NY 535022</p>
+            </div>
+
+            <div class="email">
+              <i class="fa fa-envelope"></i>
+              <p>info@example.com</p>
+            </div>
+
+            <div>
+              <i class="fa fa-phone"></i>
+              <p>+1 5589 55488 55s</p>
+            </div>
+          </div>
+
+          <div class="social-links">
+            <a href="#" class="twitter"><i class="fa fa-twitter"></i></a>
+            <a href="#" class="facebook"><i class="fa fa-facebook"></i></a>
+            <a href="#" class="instagram"><i class="fa fa-instagram"></i></a>
+            <a href="#" class="google-plus"><i class="fa fa-google-plus"></i></a>
+            <a href="#" class="linkedin"><i class="fa fa-linkedin"></i></a>
+          </div>
+
+        </div>
+
+        <div class="col-lg-5 col-md-8">
+          <div class="form">
+            <div id="sendmessage">Your message has been sent. Thank you!</div>
+            <div id="errormessage"></div>
+            <form action="" method="post" role="form" class="contactForm">
+              <div class="form-group">
+                <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
+                <div class="validation"></div>
+              </div>
+              <div class="form-group">
+                <input type="email" class="form-control" name="email" id="email" placeholder="Your Email" data-rule="email" data-msg="Please enter a valid email" />
+                <div class="validation"></div>
+              </div>
+              <div class="form-group">
+                <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject" data-rule="minlen:4" data-msg="Please enter at least 8 chars of subject" />
+                <div class="validation"></div>
+              </div>
+              <div class="form-group">
+                <textarea class="form-control" name="message" rows="5" data-rule="required" data-msg="Please write something for us" placeholder="Message"></textarea>
+                <div class="validation"></div>
+              </div>
+              <div class="text-center"><button type="submit">Send Message</button></div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section><!-- #contact -->  
     <%- include('layout/footer.ejs') %>
 </body>
 </html>
