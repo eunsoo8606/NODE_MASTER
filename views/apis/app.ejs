@@ -7,7 +7,10 @@
     <%- include('../layout/back.ejs') %>
     <title>ES developers</title>
     <script>
-$(function(){ 
+$(function(){
+
+  selectMyAppList();
+
 
   $("#addApp").click(function(){ 
     $(".modal").fadeIn(); 
@@ -46,7 +49,73 @@ $(function(){
       changeSaveBtn(true);
   });
 
+  $("#modal_save").on('click',function(){
+
+    var data = new FormData($("#app_form")[0]);
+    $.ajax({
+      url:"/v1/console/app",
+      type:"POST",
+      enctype: 'multipart/form-data',
+      data:data,
+      processData: false,
+      contentType: false,
+      cache:false,
+      timeout:600000,
+      success:(data)=>{ 
+          if(data == "Created"){
+            location.reload();
+          }
+      },
+      error:(err)=>{
+        console.log(err);
+      }
+    });
+   });
 });
+
+function selectMyAppList(){
+  $.ajax({
+      url:"/v1/user/me",
+      type:"GET",
+      dataType:'json',
+      success:(data)=>{
+
+      },
+      error:(err)=>{
+        console.log(err);
+      }
+    });
+
+
+  $.ajax({
+      url:"/v1/console/app/list",
+      type:"GET",
+      dataType:'json',
+      success:(data)=>{ 
+        if(data.length == 0) return false;
+        var values = '';
+        for(var i = 0; i < data.length;i++){
+          var filePath = data[i].FILE_PATH;
+          
+          if(filePath == null) filePath = '/imges/blog/blog-image-1.jpg';
+          values += ` <div class="col-md-6 col-lg-4 mt-5">
+                        <div class="block-blog text-left">
+                          <a href="#"><img src="${filePath}"width='360' height='220' alt="/imges/blog/blog-image-1.jpg"></a>
+                          <div class="content-blog">
+                            <h4><a href="#">${data[i].APP_NAME}</a></h4>
+                            <span>${data[i].REG_DTTM}</span>
+                            <a class="pull-right readmore" href="/v1/console/app/${data[i].APP_SEQ}">View Details</a>
+                          </div>
+                        </div>
+                      </div>`;
+        }
+        $("#app_area").html(values);
+      },
+      error:(err)=>{
+        console.log(err);
+      }
+    });
+}
 
 function file_open(){
   $("input[name='app_img']").click();
@@ -94,51 +163,18 @@ function changeSaveBtn(result){
     </div>
 
     <div class="container">
-      <div class="row">
-
-        <div class="col-md-6 col-lg-4">
-          <div class="block-blog text-left">
-            <a href="#"><img src="/imges/blog/blog-image-1.jpg" alt="img"></a>
-            <div class="content-blog">
-              <h4><a href="#">whats isthe difference between good and bat typography</a></h4>
-              <span>05, juin 2017</span>
-              <a class="pull-right readmore" href="#">read more</a>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-6 col-lg-4">
-          <div class="block-blog text-left">
-            <a href="#"><img src="/imges/blog/blog-image-2.jpg" class="img-responsive" alt="img"></a>
-            <div class="content-blog">
-              <h4><a href="#">whats isthe difference between good and bat typography</a></h4>
-              <span>05, juin 2017</span>
-              <a class="pull-right readmore" href="#">read more</a>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-6 col-lg-4">
-          <div class="block-blog text-left">
-            <a href="#"><img src="/imges/blog/blog-image-3.jpg" class="img-responsive" alt="img"></a>
-            <div class="content-blog">
-              <h4><a href="#">whats isthe difference between good and bat typography</a></h4>
-              <span>05, juin 2017</span>
-              <a class="pull-right readmore" href="#">read more</a>
-            </div>
-          </div>
-        </div>
+      <div class="row" id="app_area">
 
       </div>
     </div>
   </section>
   <div class="modal">
-    <div class="modal_content" title="클릭하면 창이 닫힙니다."> 
+    <div class="modal_content"> 
       <header>
         <strong class="tit_layer">애플리케이션 추가하기</strong>
       </header>
       <hr/>
-     <form action="/v1/console/app/addApp" name="app_form" onsubmit="return false;" id="app_form" enctype="multipart/form-data">
+     <form  name="app_form" onsubmit="return false;" id="app_form" enctype="multipart/form-data">
         <table class="app_table">
           <tbody>
             <tr>
@@ -166,7 +202,7 @@ function changeSaveBtn(result){
               <th>App Name</th>
               <td>
                <div class="modal_input_area">
-                <input name="name" type="text" id="app_name" class="modal_input" placeholder="내 애플리케이션 이름" value="">
+                <input name="app_name" type="text" id="app_name" class="modal_input" placeholder="내 애플리케이션 이름" value="">
                </div>
               </td>
             </tr>
@@ -174,7 +210,7 @@ function changeSaveBtn(result){
               <th>Enterprise Name</th>
               <td>
                <div class="modal_input_area">
-                <input name="name" type="text" id="enterprise_name" class="modal_input" placeholder="사업자 명" value="">
+                <input name="enterprise_name" type="text" id="enterprise_name" class="modal_input" placeholder="사업자 명" value="">
                </div>
               </td>
             </tr>

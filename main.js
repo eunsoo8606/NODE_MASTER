@@ -1,9 +1,7 @@
-const dotenv = require('dotenv');
 const express = require('express');
 var bodyParser = require('body-parser');
 var compression = require('compression');
 var indexRouter = require("./routes/index");
-var userRouter = require("./routes/controllers/apis/v1/userController");
 var movieRouter = require("./routes/controllers/apis/v1/movieController");
 var weatherRouter = require("./routes/controllers/apis/v1/weatherController");
 var blogRouter = require("./routes/controllers/apis/v1/blogController");
@@ -13,6 +11,7 @@ var loginRouter = require('./routes/login');
 var tokenTimeVaildator = require('./lib/tokenVaildator').checkTokenTime;
 const app = express();
 const session = require('express-session');
+require('dotenv').config();
 app.use(session({
   resave:false,
   saveUninitialized:false,
@@ -23,8 +22,8 @@ app.use(session({
     httpOnly:true
   }
 }));
+
 var flash = require("connect-flash");
-dotenv.config();
 var port = process.env.PORT;
 
 
@@ -43,7 +42,6 @@ var authRouter = require("./routes/auth.js")(passport);
 app.use('/auth',authRouter);
 app.use('/',indexRouter);
 app.use('/movie',tokenTimeVaildator,movieRouter);
-app.use('/user',userRouter);
 app.use('/weather',weatherRouter);
 app.use('/blog',blogRouter);
 app.use('/v1/documents/apis',apiRouter);
