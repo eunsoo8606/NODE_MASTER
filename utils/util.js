@@ -27,5 +27,16 @@ module.exports = {
             }
         }
        return readLine;
+    },
+    responseSend:(result,msg,param,value,code)=>{
+        var result = {};
+        result.result = result;
+        result.detail = {
+            msg:msg,
+            param:param,
+            value:value,
+            code:code
+        }
+        return result;
     }
 }
