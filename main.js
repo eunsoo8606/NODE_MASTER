@@ -1,17 +1,19 @@
-const express = require('express');
-var bodyParser = require('body-parser');
-var compression = require('compression');
-var indexRouter = require("./routes/index");
-var movieRouter = require("./routes/controllers/apis/v1/movieController");
-var weatherRouter = require("./routes/controllers/apis/v1/weatherController");
-var blogRouter = require("./routes/controllers/apis/v1/blogController");
-var apiRouter = require("./routes/controllers/apis/v1/apisController");
-var mainRouter = require("./routes/controllers/apis/v1/main");
-var loginRouter = require('./routes/login');
-var tokenTimeVaildator = require('./lib/tokenVaildator').checkTokenTime;
-const app = express();
-const session = require('express-session');
+const express            = require('express');
+const bodyParser         = require('body-parser');
+const compression        = require('compression');
+const indexRouter        = require("./routes/index");
+const movieRouter        = require("./routes/controllers/apis/v1/movieController");
+const weatherRouter      = require("./routes/controllers/apis/v1/weatherController");
+const blogRouter         = require("./routes/controllers/apis/v1/blogController");
+const apiRouter          = require("./routes/controllers/apis/v1/apisController");
+const mainRouter         = require("./routes/controllers/apis/v1/main");
+const loginRouter        = require('./routes/login');
+const tokenTimeVaildator = require('./lib/tokenVaildator').checkTokenTime;
+const schedule           = require('./nodejs/scheduler');
+const app                = express();
+const session            = require('express-session');
 require('dotenv').config();
+
 app.use(session({
   resave:false,
   saveUninitialized:false,
@@ -39,6 +41,7 @@ app.engine('ejs', require('ejs').renderFile);
 
 var passport = require("./lib/passport")(app);
 var authRouter = require("./routes/auth.js")(passport);
+
 app.use('/auth',authRouter);
 app.use('/',indexRouter);
 app.use('/movie',tokenTimeVaildator,movieRouter);
@@ -57,7 +60,7 @@ app.use(function(err, req, res, next) {
   res.status(500).send('Something broke!');
 });
 
-app.listen(process.env.port, () => {
+app.listen(process.env.PORT, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
 
