@@ -9,7 +9,6 @@ const apiRouter          = require("./routes/controllers/apis/v1/apisController"
 const mainRouter         = require("./routes/controllers/apis/v1/main");
 const loginRouter        = require('./routes/login');
 const tokenTimeVaildator = require('./lib/tokenVaildator').checkTokenTime;
-const schedule           = require('./nodejs/scheduler');
 const app                = express();
 const session            = require('express-session');
 require('dotenv').config();
