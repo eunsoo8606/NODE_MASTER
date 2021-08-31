@@ -15,7 +15,6 @@ router.get('/', (req, res) => {
 
 router.get('/local/callback', (req, res) => {
   var authorizationCode = req.query.code;
-  console.log("callback init...",authorizationCode)
   request({
           url: 'http://localhost:8888/oauth/token',
           method: 'POST',
@@ -32,10 +31,8 @@ router.get('/local/callback', (req, res) => {
              res.send(error);
              return false;
           }
-          console.log("timeTemp(body.expires_in) : ", timeTemp(body.expires_in))
           var expiTime = hash.encrypt(timeTemp(body.expires_in));
-          console.log("expiTime : ", expiTime);
-
+          var member_id = hash.encrypt(String(body._json.id));
           res.writeHead(302,{
             location:`/`,
             httpOnly:true,
@@ -43,6 +40,7 @@ router.get('/local/callback', (req, res) => {
                             `acToken=${body.accessToken}; Path=/`
                            ,`reToken=${body.refreshToken}; Path=/`
                            ,`expires_in=${expiTime}; Path=/`
+                           ,`lo_id=${member_id} Path=/`
                         ]
           });
           res.end();
