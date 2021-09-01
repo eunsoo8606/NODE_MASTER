@@ -17,6 +17,7 @@ require('greenlock-express').init({
   configDir: './greenlock.d',
   maintainerEmail: 'eunsoo8606@naver.com',
 }).serve(app);
+
 app.use(session({
   resave:false,
   saveUninitialized:false,
@@ -61,9 +62,5 @@ app.use(function(req, res, next) {
 app.use(function(err, req, res, next) {
   console.error(err.stack);
   res.status(500).send('Something broke!');
-});
-
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
 });
 
