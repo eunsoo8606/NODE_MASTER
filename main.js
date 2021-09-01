@@ -12,7 +12,11 @@ const tokenTimeVaildator = require('./lib/tokenVaildator').checkTokenTime;
 const app                = express();
 const session            = require('express-session');
 require('dotenv').config();
-
+require('greenlock-express').init({
+  packageRoot: __dirname,
+  configDir: './greenlock.d',
+  maintainerEmail: 'eunsoo8606@naver.com',
+}).serve(app);
 app.use(session({
   resave:false,
   saveUninitialized:false,
@@ -59,7 +63,7 @@ app.use(function(err, req, res, next) {
   res.status(500).send('Something broke!');
 });
 
-app.listen(process.env.PORT, () => {
+app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
 
