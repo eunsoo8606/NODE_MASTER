@@ -16,7 +16,7 @@ router.get('/', (req, res) => {
 router.get('/local/callback', (req, res) => {
   var authorizationCode = req.query.code;
   request({
-          url: 'http://localhost:8888/oauth/token',
+          url: 'http://ihd8606.cafe24.com:8888/oauth/token',
           method: 'POST',
           body:{authorizationCode:authorizationCode,client_id:process.env.localClientId},
           json:true

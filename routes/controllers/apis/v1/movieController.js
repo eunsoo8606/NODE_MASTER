@@ -21,7 +21,7 @@ chromeOptions.addArguments('--no-sandbox');
 const url = 'https://www.lottecinema.co.kr/NLCHS/Movie/List?flag=1';
 
 
-router.get('/movieList',async (req,res)=>{
+router.get('/movieList',(req,res)=>{
     (async function example() { 
         //크롬 브라우저 기본 셋팅
         let driver = await new Builder().forBrowser('chrome').withCapabilities(chromeOptions).build();
