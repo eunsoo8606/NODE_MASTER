@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
   console.log("login_init....")
   var query = 'client_id=' + process.env.localClientId
             + '&redirect_uri='+process.env.redirect_uri;
-    res.redirect('http://localhost:8888/oauth/authorize?'+query);
+    res.redirect('http://ihd8606.cafe24.com:8888/oauth/authorize?'+query);
   });
 
 
