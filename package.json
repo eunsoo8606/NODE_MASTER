@@ -17,6 +17,7 @@
   "homepage": "https://github.com/web-n/Nodejs#readme",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.3",
+    "@types/dotenv": "^8.2.0",
     "app-root-path": "^3.0.0",
     "async": "^3.2.0",
     "axios": "^0.21.1",

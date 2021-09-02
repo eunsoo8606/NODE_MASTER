@@ -1,0 +1,26 @@
+{
+  "sites": [
+    {
+      "subject": "ihd8606.cafe24.com",
+      "altnames": [
+        "ihd8606.cafe24.com"
+      ],
+      "renewAt": 1
+    }
+  ],
+  "defaults": {
+    "store": {
+      "module": "greenlock-store-fs"
+    },
+    "challenges": {
+      "http-01": {
+        "module": "acme-http-01-standalone"
+      }
+    },
+    "renewOffset": "-45d",
+    "renewStagger": "3d",
+    "accountKeyType": "EC-P256",
+    "serverKeyType": "RSA-2048",
+    "subscriberEmail": "eunsoo8606@naver.com"
+  }
+}
