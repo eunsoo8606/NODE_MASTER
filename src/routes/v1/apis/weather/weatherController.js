@@ -1,9 +1,10 @@
 var express = require('express');
 var request=require('request');
 var router = express.Router();
-var weatherService = require('./weartherService/weartherService');
+var weatherService = require('./weartherService/weatherService');
 
 router.get("/", function(req,res){
+    console.log("weather init...")
     var curDate = req.query.date;
     var hour = req.query.hour;
     var x = Math.round(req.query.x);

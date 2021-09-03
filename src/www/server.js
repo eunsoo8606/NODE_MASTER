@@ -1,4 +1,3 @@
-const app  = require('../main');
 const port = process.env.PORT;
 
 module.exports = (app) =>{

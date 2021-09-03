@@ -1434,6 +1434,30 @@ body.mobile-nav-active #mobile-nav-toggle i {
   width: 68px;
   color:white;
 }
+
+.write_menu{
+            transition: top 0.8s; 
+            transform: translateY(-300%); 
+            position: absolute; top: 50%; left: 2%; 
+            width: 300px; 
+            padding: 10px; 
+            background: white;  
+            border: 1px solid #e8e8e8; 
+            border-radius: 10px;
+}
+#blog-save{
+  width:48%;
+}
+#blog-list{
+  width:48%;
+  color:white;
+  background-color:#333;
+}
+#blog-list:hover{
+  color: white;
+}
+
+
 #precipitationArea{
   width:30%;
   margin:0px;
@@ -1589,3 +1613,4 @@ body.mobile-nav-active #mobile-nav-toggle i {
 .frame-login{display: none;}
 .modal-footer{display: inline-block;margin-top: 30px;}
 
+.blog-text-title{border:0; outline: 0; height:100px; font-size: 30px;}

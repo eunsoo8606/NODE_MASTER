@@ -4,9 +4,7 @@ const session            = require('express-session');
 const compression        = require('compression');
 const flash              = require("connect-flash");
 const routes             = require('./routes/index');
-const path               = require('path');
-console.log("port : ", process.env.NODE_ENV);
-
+require('dotenv').config();
 /** SSL 적용을 위해 greenlock-express module 사용 */
 
 // require('greenlock-express').init({

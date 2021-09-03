@@ -208,7 +208,7 @@ function Util() {
      * @param selector :: pagination Div id, cpage :: currentPage, data :: Json 반환값 1. totalPage 수 2. totalCount :: 조회해온 전체 목록 수, pn :: function 이름, 이미지 경로
      * @return 포맷된 값
      */
-  this.setPaging = function(selector, cpage, data, pn,preSrc,nextSrc) {
+  this.setPaging = function(selector, cpage, data, pn) {
      
       if(data.totalCount ==0||data==null||data==''){
 
@@ -222,10 +222,10 @@ function Util() {
           var html = "";
         
           if (start - 1 > 0) {
-              html += '<a href="javascript:'+pn+'(\''+(start - 1)+'\');"><img src="' + preSrc + '" alt=""></a>';
+              html += '<a href="javascript:'+pn+'(\''+(start - 1)+'\');"><img src="/imges/ico_lt_1.png" alt=""></a>';
           }
           if (cpage > 1) {
-              html += '<a href="javascript:'+pn+'(\''+(cpage - 1)+'\');"><img src="' + preSrc + '" alt=""></a>';
+              html += '<a href="javascript:'+pn+'(\''+(cpage - 1)+'\');"><img src="/imges/ico_lt.png" alt=""></a>';
           }
 
           for (var i = start; i <= end; i++) {
@@ -237,10 +237,10 @@ function Util() {
               }
           }
           if (cpage < data.totalpage) {
-              html += '<a href="javascript:'+pn+'(\''+(cpage + 1)+'\');"><img src="' + nextSrc + '" alt=""></a>';
+              html += '<a href="javascript:'+pn+'(\''+(cpage + 1)+'\');"><img src="/imges/ico_gt_1.png" alt=""></a>';
           }
           if (end < data.totalpage) {
-              html += '<a href="javascript:'+pn+'(\''+(end + 1)+'\');"><img src="' + nextSrc + '" alt=""></a>';
+              html += '<a href="javascript:'+pn+'(\''+(end + 1)+'\');"><img src="/imges/ico_gt.png" alt=""></a>';
           }
           
           $(selector).html(html);

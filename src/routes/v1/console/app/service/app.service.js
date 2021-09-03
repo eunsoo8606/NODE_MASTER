@@ -20,8 +20,9 @@ module.exports={
                 if(error !== undefined && error !== null){ 
                     resolve(util.responseSend(false,'app list get faild..','app',app,600));
                 }
-
-                   resolve(util.responseSend(true,'request success!','app',body.data,200));
+                console.log("body.data : ", body);
+                if(body === undefined) resolve(util.responseSend(false,'app list get faild..','app',app,600));
+                else resolve(util.responseSend(true,'request success!','app',body.data,200));
               });
         });
     },

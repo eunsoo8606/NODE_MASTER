@@ -16,7 +16,7 @@
 
     //롯데시네마 데이터 크롤링
     $.ajax({
-      url:"/movie/movieList",
+      url:"/v1/apis/movie/",
       type:"GET",
       dataType:"json",
       success:(data)=>{
@@ -88,7 +88,7 @@ function getWeather(date,address){
      var date = parseInt(Util.sysDate());
   //database 에서 격자 좌표 변환처리 정보 조회
   $.ajax({
-      url : '/weather/locationGridXY',
+      url : '/v1/apis/weather/locationGridXY',
       data:{"address":address},
       type : 'GET',
       dataType:'json',
@@ -100,7 +100,7 @@ function getWeather(date,address){
           var y = data.lng;
           //변환된 좌표로 날씨정보 조회
           $.ajax({
-                url:"/weather/weatherApi",
+                url:"/v1/apis/weather",
                 data:{"date":date,"hour":hours,"x":x,"y":y},
                 type:"GET",
                 dataType:"json",

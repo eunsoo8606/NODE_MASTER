@@ -10,19 +10,41 @@
  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=7310d6d1ab2092c321eeac72042dfc50&libraries=services"></script>
 <script>
 $(function(){
-  $.ajax({
-      url:"/v1/user/me",
-      type:"GET",
-      dataType:'json',
-      success:(data)=>{
+    blogList(1);
+});
 
+function blogList(cpage){
+  $("#cpage").val(cpage);
+  $.ajax({
+      url:"/v1/blog/list",
+      type:"GET",
+      data:$("#blog-list").serialize(),
+      dataType:'json',
+      success:(data)=>{ 
+        if(data.length == 0) return false;
+        var values = '';
+        for(var i = 0; i < data.length;i++){
+          var mainImg = data[i].MAIN_IMG;
+          if(mainImg == null) mainImg = '/imges/blog/blog-image-1.jpg';
+          values += ` <div class="col-md-6 col-lg-4 mt-5">
+                        <div class="block-blog text-left">
+                          <a href="#"><img src="${mainImg}"width='360' height='220' alt="/imges/blog/blog-image-1.jpg"></a>
+                          <div class="content-blog">
+                            <h4><a href="#">${data[i].TITLE}</a></h4>
+                            <span>${data[i].REG_DTTM}</span>
+                            <a class="pull-right readmore" href="/v1/console/app/${data[i].BLOG_SEQ}">View Details</a>
+                          </div>
+                        </div>
+                      </div>`;
+        }
+        $("#blog_area").html(values);
+        Util.setPaging("#paginationSub",$("#cpage").val(),data,"blogList");
       },
       error:(err)=>{
         console.log(err);
       }
     });
-
-});
+}
 </script>
 </head>
 
@@ -38,57 +60,19 @@ $(function(){
     <div class="container">
       <div class="section-title text-center">
         <h2>My Blog List</h2>
-        <p><a href="/blog/moveWriteBlog">블로그 작성하기 <i class="fas fa-pencil-alt" style="margin-bottom: 3px;"></i></a></p>
+        <p><a href="/v1/blog/write">블로그 작성하기 <i class="fas fa-pencil-alt" style="margin-bottom: 3px;"></i></a></p>
       </div>
     </div>
 
     <div class="container">
-      <div class="row">
-
-        <div class="col-md-6 col-lg-4 mt-3">
-          <div class="block-blog text-left">
-            <a href="#"><img src="/imges/blog/blog-image-1.jpg" alt="img"></a>
-            <div class="content-blog">
-              <h4><a href="#">whats isthe difference between good and bat typography</a></h4>
-              <span>05, juin 2017</span>
-              <a class="pull-right readmore" href="#">read more</a>
-            </div>
+      <div class="row blog_area">
+        <form name="blog-list" id="blog-list">
+          <input type="hidden" id="cpage" name="cpage" />
+          <input type="hidden" id="limit" name="limit" value="10"/>
+        </form>
+          <div class="pagination">
+            <div class="paginationSub" id="paginationSub"></div>
           </div>
-        </div>
-
-        <div class="col-md-6 col-lg-4 mt-3">
-          <div class="block-blog text-left">
-            <a href="#"><img src="/imges/blog/blog-image-2.jpg" class="img-responsive" alt="img"></a>
-            <div class="content-blog">
-              <h4><a href="#">whats isthe difference between good and bat typography</a></h4>
-              <span>05, juin 2017</span>
-              <a class="pull-right readmore" href="#">read more</a>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-6 col-lg-4 mt-3">
-          <div class="block-blog text-left">
-            <a href="#"><img src="/imges/blog/blog-image-3.jpg" class="img-responsive" alt="img"></a>
-            <div class="content-blog">
-              <h4><a href="#">whats isthe difference between good and bat typography</a></h4>
-              <span>05, juin 2017</span>
-              <a class="pull-right readmore" href="#">read more</a>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-6 col-lg-4 mt-3">
-            <div class="block-blog text-left">
-              <a href="#"><img src="/imges/blog/blog-image-3.jpg" class="img-responsive" alt="img"></a>
-              <div class="content-blog">
-                <h4><a href="#">whats isthe difference between good and bat typography</a></h4>
-                <span>05, juin 2017</span>
-                <a class="pull-right readmore" href="#">read more</a>
-              </div>
-            </div>
-          </div>
-
       </div>
     </div>
   </section>
