@@ -209,7 +209,7 @@ function Util() {
      * @return 포맷된 값
      */
   this.setPaging = function(selector, cpage, data, pn) {
-     
+     console.log("paging init...",selector,", cpge : ",cpage,", data : ", data,", pn : ", pn)
       if(data.totalCount ==0||data==null||data==''){
 
           $(selector).html('');
@@ -242,7 +242,7 @@ function Util() {
           if (end < data.totalpage) {
               html += '<a href="javascript:'+pn+'(\''+(end + 1)+'\');"><img src="/imges/ico_gt.png" alt=""></a>';
           }
-          
+          console.log("html : ", html)
           $(selector).html(html);
       }
   }

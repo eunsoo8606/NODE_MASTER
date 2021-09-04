@@ -13,12 +13,12 @@ router.get('/', (req, res) => {
 });
 
 router.get('/list', (req, res) => {
-    var cookies = common.util.getCookie(req);
-    var cpage = req.query.cpage;
-    var selectSize = req.query.selectSize;
-    var searchKeyWord = req.query.searchKeyWord;
-    var limit = req.query.limit;
-    console.log("cpage :", cpage,", selectSize : ", selectSize, ", limit : ", limit, "search : ", searchKeyWord);
+    var cookies     = common.util.getCookie(req);
+    var cpage       = req.query.cpage;
+    var selectSize  = req.query.selectSize;
+    var title       = req.query.title;
+    var content     = req.query.content;
+    var limit       = req.query.limit;
     request({
         url:`${process.env.apiServerUrl}/v1/blog/list`,
         method:'GET',
@@ -29,7 +29,8 @@ router.get('/list', (req, res) => {
           limit:limit,
           cpage:cpage,
           selectSize:selectSize,
-          searchKeyWord:searchKeyWord,
+          title:title,
+          content:content,
           order:'desc'
         },json:true
       },
@@ -38,11 +39,13 @@ router.get('/list', (req, res) => {
             res.send("401");
             return false;
         }
-        console.log("body.data : ", body);
+            
         if(body === undefined){ 
             res.send("401");
             return false;
-        }else res.send(util.responseSend(true,'request success!','app',body.data,200));
+        }
+
+        res.send({data:body.data,etc:body.etc});
       });
 });
 

@@ -615,3 +615,24 @@ label.valid {
 #msg1,#msg2,#msg3,#msg4,#msg5,#msg6,#msg7,#msg8,#msg9,#msg10,#msg11,#msg12,#msg13,#msg14,#msg15{
   display: none;
 }
+.pagination .paginationSub a.active {
+  background-color: #1e88e5;
+  color: #fff;
+  border: 1px solid #1e88e5;
+  font-weight: 700;
+}
+.pagination .paginationSub a {
+  display: inline-block;
+  color: #1c87e5;
+  width: 40px;
+  line-height: 36px;
+  transition: background-color .3s;
+  border: 1px solid #dee2e6;
+  font-size: 15px;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}

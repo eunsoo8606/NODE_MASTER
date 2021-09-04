@@ -14,31 +14,36 @@ $(function(){
 });
 
 function blogList(cpage){
+  console.log("cpage1 : ", cpage)
   $("#cpage").val(cpage);
+  console.log("cpage2 : ", $("#cpage").val())
   $.ajax({
       url:"/v1/blog/list",
       type:"GET",
       data:$("#blog-list").serialize(),
-      dataType:'json',
       success:(data)=>{ 
-        if(data.length == 0) return false;
+        var datas = data.data;
+        if(datas.length == 0) return false;
         var values = '';
-        for(var i = 0; i < data.length;i++){
-          var mainImg = data[i].MAIN_IMG;
+        for(var i = 0; i < datas.length;i++){
+          var mainImg = datas[i].MAIN_IMG;
           if(mainImg == null) mainImg = '/imges/blog/blog-image-1.jpg';
+
           values += ` <div class="col-md-6 col-lg-4 mt-5">
                         <div class="block-blog text-left">
-                          <a href="#"><img src="${mainImg}"width='360' height='220' alt="/imges/blog/blog-image-1.jpg"></a>
+                          <a href="#"><img src="${(mainImg === ""?"/imges/blog/blog-image-1.jpg":mainImg)}"width='360' height='220' alt="/imges/blog/blog-image-1.jpg"></a>
                           <div class="content-blog">
-                            <h4><a href="#">${data[i].TITLE}</a></h4>
-                            <span>${data[i].REG_DTTM}</span>
-                            <a class="pull-right readmore" href="/v1/console/app/${data[i].BLOG_SEQ}">View Details</a>
+                            <h4><a href="#">${datas[i].TITLE}</a></h4>
+                            <span>${datas[i].REG_DTTM}</span>
+                            <a class="pull-right readmore" href="/v1/console/app/${datas[i].BLOG_SEQ}">View Details</a>
                           </div>
                         </div>
                       </div>`;
         }
+
         $("#blog_area").html(values);
-        Util.setPaging("#paginationSub",$("#cpage").val(),data,"blogList");
+        console.log("cpage : ", $("#cpage").val())
+        Util.setPaging("#paginationSub",$("#cpage").val(),data.etc,"blogList");
       },
       error:(err)=>{
         console.log(err);
@@ -63,17 +68,21 @@ function blogList(cpage){
         <p><a href="/v1/blog/write">블로그 작성하기 <i class="fas fa-pencil-alt" style="margin-bottom: 3px;"></i></a></p>
       </div>
     </div>
-
+    <form name="blog-list" id="blog-list">
+      <input type="hidden" id="cpage" name="cpage" value="1"/>
+      <input type="hidden" id="limit" name="limit" value="10"/>
+    </form>
     <div class="container">
-      <div class="row blog_area">
-        <form name="blog-list" id="blog-list">
-          <input type="hidden" id="cpage" name="cpage" />
-          <input type="hidden" id="limit" name="limit" value="10"/>
-        </form>
-          <div class="pagination">
-            <div class="paginationSub" id="paginationSub"></div>
-          </div>
+      <div class="row" id="blog_area">
+        
       </div>
+    </div>
+    <div class="container">
+      <div class="section-title text-center">
+      <div class="pagination">
+        <div class="paginationSub " id="paginationSub"></div>
+      </div>
+    </div>
     </div>
   </section>
   

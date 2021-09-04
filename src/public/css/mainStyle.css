@@ -1614,3 +1614,32 @@ body.mobile-nav-active #mobile-nav-toggle i {
 .modal-footer{display: inline-block;margin-top: 30px;}
 
 .blog-text-title{border:0; outline: 0; height:100px; font-size: 30px;}
+
+.pagination {
+  text-align: center;
+  margin: 25px auto 0;
+}
+.paginationSub{width: 50px;
+  margin: 0 auto;}
+
+.pagination .paginationSub a.active {
+  background-color: #1e88e5;
+  color: #fff;
+  border: 1px solid #1e88e5;
+  font-weight: 700;
+}
+.pagination .paginationSub a {
+  display: inline-block;
+  color: #1c87e5;
+  width: 40px;
+  line-height: 36px;
+  transition: background-color .3s;
+  border: 1px solid #dee2e6;
+  font-size: 15px;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
