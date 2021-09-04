@@ -19,7 +19,7 @@ router.get('/', (req, res) => {
 router.get('/local/callback', (req, res) => {
   var authorizationCode = req.query.code;
   request({
-          url: 'http://localhost:8888/oauth/token?local='+process.env.masterKey,
+          url: `${process.env.apiServerUrl}/oauth/token?local=`+process.env.masterKey,
           method: 'POST',
           body:{authorizationCode:authorizationCode,client_id:process.env.localClientId},
           json:true
