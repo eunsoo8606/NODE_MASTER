@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
   console.log("login_init....", process.env.masterKey)
   var query = 'client_id=' + process.env.localClientId
             + '&redirect_uri='+process.env.redirect_uri;
-    res.redirect('http://localhost:8888/oauth/authorize?'+query + "&local=" + process.env.masterKey);
+    res.redirect(`${process.env.apiServerUrl}/oauth/authorize?`+query + "&local=" + process.env.masterKey);
   });
 
 

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <title>myHistory</title>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta content="" name="keywords">
+  <meta content="" name="description">
+ <%- include('../layout/blog/back.ejs') %>
+ <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=7310d6d1ab2092c321eeac72042dfc50&libraries=services"></script>
+
+ <script>
+  $(function(){
+    var blogSeq = '<%=blogSeq%>';
+    $.ajax({
+      url:`/v1/blog/detail/${blogSeq}/selectOne`,
+      type:"GET",
+      success:(data)=>{ 
+        var datas  = data[0];
+        console.log("data : ",datas);
+        $("#title-area").html(datas.TITLE);
+        $("#blog-area").html(datas.CONTENT);
+      },
+      error:(err)=>{
+        console.log(err);
+      }
+    });
+
+    $("#blog-list").on("click",function(){
+        history.back();
+      });
+    $("#blog-delete").on("click",function(){
+        if(confirm("해당 게시물을 정말 삭제 하시겠습니까?")){
+            $.ajax({
+                url:`/v1/blog/detail/${blogSeq}`,
+                type:"DELETE",
+                success:(data)=>{ 
+                    var datas  = data;
+                  if(data.data > 0){
+                      alert("정상적으로 삭제 되었습니다.");
+                      location.href="/v1/blog";
+                  }else{
+                      alert("삭제 실패! 관리자에게 문의 하세요.");
+                      return false;
+                  }
+                },
+                error:(err)=>{
+                    console.log(err);
+                }
+            });
+        }
+    });
+    
+  });
+  </script>
+
+</head>
+
+<body data-spy="scroll" >
+    <%- include('../layout/blog/header.ejs') %>
+    <div class="write_menu" id="write_menu">
+      <div class="quick_menuHeader" id="quick_menuHeader">
+        <button class="btn btn-primary" id="blog-update">수정</button>
+        <button class="btn btn-dark" id="blog-list">목록</button>
+        <button class="btn btn-danger" id="blog-delete">삭제</button>
+      </div>
+    </div>
+  <section id="blogWrite" class="padd-section wow fadeInUp" style="background-color: #f9f9f9;">
+    <div class="container">
+      <div class="section-title text-center"></div>
+        <div class="row" style="background-color: #fff; border-left: 1px solid #e8e8e8; border-right: 1px solid #e8e8e8; padding: 5%;">
+          <form style="width:100%;" name="blog-form" id="blog-form" onsubmit="return false;">
+            <div id="title-area" style="font-size: 25px;">
+                
+            </div>
+            <hr>
+            <div id="blog-area"> 
+                
+            </div>
+          </form>
+        </div>
+      </div>
+  </section>
+  
+    <%- include('../layout/blog/footer.ejs') %>
+</body>
+</html>

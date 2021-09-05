@@ -13,6 +13,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/list', (req, res) => {
+    console.log("blog controller init...")
     var cookies     = common.util.getCookie(req);
     var cpage       = req.query.cpage;
     var selectSize  = req.query.selectSize;
@@ -39,7 +40,6 @@ router.get('/list', (req, res) => {
             res.send("401");
             return false;
         }
-            
         if(body === undefined){ 
             res.send("401");
             return false;
@@ -47,6 +47,11 @@ router.get('/list', (req, res) => {
 
         res.send({data:body.data,etc:body.etc});
       });
+});
+
+router.get('/detail/:id',(req,res)=>{
+    var blogSeq = req.params.id;
+    res.render("blog/detail.ejs",{blogSeq:blogSeq});
 });
 
 
@@ -89,6 +94,60 @@ router.post('/upload', common.multer.single('file'),(req, res) => {
     var imgUri = req.headers.origin + common.util.customFileUri(u) + '/' + file.filename;
     res.send(imgUri);
 });
+
+router.get("/detail/:id/selectOne",(req,res)=>{
+    var blogSeq = req.params.id;
+    var cookies = common.util.getCookie(req);
+    
+    request({
+        url:`${process.env.apiServerUrl}/v1/blog/detail`,
+        method:'GET',
+        headers:{
+                 'Cotent-Type':'application/json; charset=UTF-8',
+                 'Authorization':'Bearer ' + cookies.acToken},
+        qs:{
+          'blogSeq':blogSeq
+        },json:true
+      },
+      function (error, response, body) {
+        if(error !== undefined && error !== null){ 
+            res.send("401");
+            return false;
+        }
+        if(body === undefined){ 
+            res.send("401");
+            return false;
+        }
+        res.send(body.data);
+      });
+});
+
+router.delete("/detail/:id/",(req,res)=>{
+    var blogSeq = req.params.id;
+    var cookies = common.util.getCookie(req);
+    request({
+        url:`${process.env.apiServerUrl}/v1/blog/detail`,
+        method:'DELETE',
+        headers:{
+                 'Cotent-Type':'application/json; charset=UTF-8',
+                 'Authorization':'Bearer ' + cookies.acToken},
+        qs:{
+          'blogSeq':blogSeq
+        },json:true
+      },
+      function (error, response, body) {
+        if(error !== undefined && error !== null){ 
+            res.send("401");
+            return false;
+        }
+        if(body === undefined){ 
+            res.send("401");
+            return false;
+        }
+        res.status(201).send({data:body.data});
+      });
+});
+
 
 router.delete('/upload',(req, res) => {
     var delFile = req.body.delFile;

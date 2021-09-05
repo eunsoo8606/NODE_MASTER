@@ -1065,6 +1065,7 @@ body.mobile-nav-active #mobile-nav-toggle i {
 
 #blog .block-blog img {
   width: 100%;
+  cursor: auto;
 }
 
 #blog .block-blog .content-blog {
@@ -1437,25 +1438,28 @@ body.mobile-nav-active #mobile-nav-toggle i {
 
 .write_menu{
             transition: top 0.8s; 
-            transform: translateY(-300%); 
-            position: absolute; top: 50%; left: 2%; 
-            width: 300px; 
+            transform: translateY(-150%); 
+            position: absolute; top: 50%; left: 85%; 
+            width: 200px; 
             padding: 10px; 
             background: white;  
             border: 1px solid #e8e8e8; 
             border-radius: 10px;
 }
 #blog-save{
-  width:48%;
+  width:100%;
 }
 #blog-list{
-  width:48%;
+  width:100%;
+  margin-top: 1%;
   color:white;
   background-color:#333;
 }
 #blog-list:hover{
   color: white;
 }
+#blog-update{width:100%}
+#blog-delete{width:100%; margin-top: 1%;}
 
 
 #precipitationArea{
@@ -1613,13 +1617,13 @@ body.mobile-nav-active #mobile-nav-toggle i {
 .frame-login{display: none;}
 .modal-footer{display: inline-block;margin-top: 30px;}
 
-.blog-text-title{border:0; outline: 0; height:100px; font-size: 30px;}
+.blog-text-title{border:0; outline: 0; height:100px; width: 100%; font-size: 30px;}
 
 .pagination {
   text-align: center;
   margin: 25px auto 0;
 }
-.paginationSub{width: 50px;
+.paginationSub{width: 200px;
   margin: 0 auto;}
 
 .pagination .paginationSub a.active {
@@ -1642,4 +1646,27 @@ a {
   text-decoration: none;
   color: inherit;
   cursor: pointer;
+}
+.search-area{
+  display: inline-block;
+  padding: 5px;
+  background-color: #fff;
+  width: 100%;
+}
+.search-area form{width:100%;background-color: #fff;display: inline-block;}
+#search-left{float: left; background-color: #fff;}
+#search-right{float: right; background-color: #fff;}
+.search-area form select{
+  border: 1px solid #ccd0d4;
+  height: 48px;
+  font-family: 'NotoSans';
+  border-radius: 3px;
+  padding: 0 19px 0 9px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: url(/imges/ico_sel.png) no-repeat 95% 50%;
+  min-width: 120px;
+  vertical-align: middle;
+  font-size: 16px;
 }

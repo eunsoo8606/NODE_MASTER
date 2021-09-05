@@ -11,38 +11,50 @@
 <script>
 $(function(){
     blogList(1);
+
+    $("#search-btn").on('click',function(){
+      var category = $('#category').val().trim();
+      if(category == "title") $("#title").val($("#searchKeyword").val());
+      if(category == "content") $("#contents").val($("#searchKeyword").val());
+       
+      blogList(1);
+    });
+
+    $("#selectSize").on('change',function(){
+      blogList(1);
+    });
 });
 
 function blogList(cpage){
-  console.log("cpage1 : ", cpage)
   $("#cpage").val(cpage);
-  console.log("cpage2 : ", $("#cpage").val())
+
   $.ajax({
       url:"/v1/blog/list",
       type:"GET",
-      data:$("#blog-list").serialize(),
+      data:$("#search-form").serialize(),
       success:(data)=>{ 
-        var datas = data.data;
-        if(datas.length == 0) return false;
+        var datas  = data.data;
         var values = '';
+
+        if(datas == null || datas.length == 0) return false;
+
         for(var i = 0; i < datas.length;i++){
           var mainImg = datas[i].MAIN_IMG;
           if(mainImg == null) mainImg = '/imges/blog/blog-image-1.jpg';
 
           values += ` <div class="col-md-6 col-lg-4 mt-5">
                         <div class="block-blog text-left">
-                          <a href="#"><img src="${(mainImg === ""?"/imges/blog/blog-image-1.jpg":mainImg)}"width='360' height='220' alt="/imges/blog/blog-image-1.jpg"></a>
+                          <a href="javascript:void(0)"><img src="${(mainImg === ""?"/imges/blog/blog-image-1.jpg":mainImg)}"width='360' height='220' alt="/imges/blog/blog-image-1.jpg"></a>
                           <div class="content-blog">
                             <h4><a href="#">${datas[i].TITLE}</a></h4>
                             <span>${datas[i].REG_DTTM}</span>
-                            <a class="pull-right readmore" href="/v1/console/app/${datas[i].BLOG_SEQ}">View Details</a>
+                            <a class="pull-right readmore" href="/v1/blog/detail/${datas[i].BLOG_SEQ}">View Details</a>
                           </div>
                         </div>
                       </div>`;
         }
 
         $("#blog_area").html(values);
-        console.log("cpage : ", $("#cpage").val())
         Util.setPaging("#paginationSub",$("#cpage").val(),data.etc,"blogList");
       },
       error:(err)=>{
@@ -50,6 +62,17 @@ function blogList(cpage){
       }
     });
 }
+function enterkey() { 
+  if (window.event.keyCode == 13) { 
+    // 엔터키가 눌렸을 때 
+     var category = $('#category').val().trim();
+      if(category == "title") $("#title").val($("#searchKeyword").val());
+      if(category == "content") $("#contents").val($("#searchKeyword").val());
+       
+      blogList(1);
+  } 
+}
+
 </script>
 </head>
 
@@ -68,10 +91,38 @@ function blogList(cpage){
         <p><a href="/v1/blog/write">블로그 작성하기 <i class="fas fa-pencil-alt" style="margin-bottom: 3px;"></i></a></p>
       </div>
     </div>
-    <form name="blog-list" id="blog-list">
-      <input type="hidden" id="cpage" name="cpage" value="1"/>
-      <input type="hidden" id="limit" name="limit" value="10"/>
-    </form>
+    <div class="container">
+      <div class="search-area">
+        <form name="search-form" onsubmit="return false;" id="search-form">
+          <input type="hidden" id="cpage" name="cpage" value="1"/>
+          <input type="hidden" id="limit" name="limit" value="10"/>
+          <input type="hidden" id="title" name="title"/>
+          <input type="hidden" id="contents" name="content"/>
+          <div id="search-left">
+            <select id="category">
+              <option value="title">제목</option>
+              <option value="content">내용</option>
+            </select>
+        </div>
+          <div id="search-left">
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" id="searchKeyword" onkeyup="enterkey()" placeholder="검색어를 입력해 주세요." aria-label="Recipient's username" aria-describedby="basic-addon2">
+              <div class="input-group-append">
+                <button class="btn btn-dark" id="search-btn" type="button">검색</button>
+              </div>
+            </div>
+          </div>
+          <div id="search-right">
+            <select id="selectSize" name="selectSize">
+              <option value="10">10건씩 보기</option>
+              <option value="20">20건씩 보기</option>
+              <option value="30">30건씩 보기</option>
+              <option value="50">50건씩 보기</option>
+            </select>
+        </div>
+        </form>
+      </div>
+    </div>
     <div class="container">
       <div class="row" id="blog_area">
         
