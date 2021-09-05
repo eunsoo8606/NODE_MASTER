@@ -7,11 +7,11 @@ const routes             = require('./routes/index');
 require('dotenv').config();
 /** SSL 적용을 위해 greenlock-express module 사용 */
 
-// require('greenlock-express').init({
-//   packageRoot: __dirname,
-//   configDir: './greenlock.d',
-//   maintainerEmail: 'eunsoo8606@naver.com',
-// }).serve(app);
+require('greenlock-express').init({
+  packageRoot: __dirname,
+  configDir: './greenlock.d',
+  maintainerEmail: 'eunsoo8606@naver.com',
+}).serve(app);
 
 /** Session 생성 */
 app.use(session({
