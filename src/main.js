@@ -6,7 +6,6 @@ const flash              = require("connect-flash");
 const routes             = require('./routes/index');
 require('dotenv').config();
 /** SSL 적용을 위해 greenlock-express module 사용 */
-
 require('greenlock-express').init({
   packageRoot: __dirname,
   configDir: './greenlock.d',
@@ -40,5 +39,5 @@ app.engine('ejs', require('ejs').renderFile);
 app.use('/',routes);
 
 
-require('./www/server')(app);
+//require('./www/server')(app);
 
