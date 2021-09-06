@@ -1,5 +1,6 @@
 const express           = require('express');
 const router            = express.Router();
+const mailRouter        = require("./mail/mail");
 const userRouter        = require('./user/userController');
 const blogRouter        = require("./blog/blogController");
 const apisRouter        = require("./apis/apis.controller");
@@ -14,5 +15,5 @@ router.use('/login',loginRouter);
 router.use("/console",consoleRouter);
 router.use('/documents',documentsRouter);
 router.use('/apis',apisRouter);
-
+router.use('/mail',mailRouter);
 module.exports = router;

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <title>myHistory</title>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta content="" name="keywords">
+  <meta content="" name="description">
+ <%- include('../layout/blog/back.ejs') %>
+ <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=7310d6d1ab2092c321eeac72042dfc50&libraries=services"></script>
+
+
+ <script>
+  $(document).ready(function(){
+    var blogSeq = '<%=blogSeq%>';
+    new WOW().init();
+
+
+      $("#blog-list").on("click",function(){
+        if(confirm("변경사항이 저장되지 않을수 있습니다.\n 나가시겠습니까?")){
+        location.href="/v1/blog";
+        }else return false;
+      });
+     
+      $("#blog-update").on("click",function(){
+        if(confirm("수정 하시겠습니까? ")){
+          $("#mainImg").val($("#blog-form").find("img").eq(0).attr("src"));
+          $.ajax({
+                  url:`/v1/blog/${blogSeq}`,
+                  type:"PUT",
+                  data:$("#blog-form").serialize(),
+                  success:(data)=>{ 
+                      if(data == "200"){
+                        alert("성공적으로 수정 되었습니다.");
+                        location.href=`/v1/blog/${blogSeq}?category=${btoa('detail')}`;
+                      }
+                  },
+                  error:(err)=>{
+                    console.log(err);
+                  }
+              });
+          }else return false;
+      });
+
+    $.ajax({
+      url:`/v1/blog/detail/${blogSeq}/selectOne`,
+      type:"GET",
+      success:(data)=>{ 
+        var datas  = data[0];
+        console.log("data : ",datas);
+        $("#title").val(datas.TITLE);
+        $('#summernote').val(datas.CONTENT);
+          //여기 아래 부분
+          $('#summernote').summernote({
+              height: 600,                 // 에디터 높이
+              minHeight: null,             // 최소 높이
+              maxHeight: null,             // 최대 높이
+              focus: true,                  // 에디터 로딩후 포커스를 맞출지 여부
+              lang: "ko-KR",					// 한글 설정
+              placeholder: '최대 2048자까지 쓸 수 있습니다',	//placeholder 설정
+              callbacks : { 
+                  onImageUpload : function(files, editor, welEditable) {
+                    // 파일 업로드(다중업로드를 위해 반복문 사용)
+                    for (var i = files.length - 1; i >= 0; i--) {
+                        uploadSummernoteImageFile(files[i],this);
+                      }
+                },onMediaDelete : function(target) {
+                    var deleteImgUri = target[0].src.substring(target[0].src.indexOf("/uploads"),target[0].src.length);        
+                    deleteFile(deleteImgUri);
+                }
+              }
+                  
+          });
+      },
+      error:(err)=>{
+        console.log(err);
+      }
+    });
+  
+  });
+  $(document).ready(function(){
+		$(window).on('load resize', function(){
+			if($(window).width() > 768){
+				$(window).on('scroll', function(){
+					$('.write_menu').css('top', $(window).scrollTop() + $(window).height() / 2);
+				});
+			}else {
+				$('.write_menu').css('top', 0);
+			}
+		});
+	});
+function uploadSummernoteImageFile(file,el){
+      var data = new FormData();
+			data.append("file", file);
+      $.ajax({
+                url:"/v1/blog/upload",
+                type:"POST",
+                enctype: 'multipart/form-data',
+                data:data,
+                processData: false,
+                contentType: false,
+                cache:false,
+                timeout:600000,
+                success:(data)=>{
+                  $(el).summernote('editor.insertImage', data);
+                },
+                error:(err)=>{
+                  console.log(err);
+                }
+      });
+}
+function deleteFile(deleteUri){
+      $.ajax({
+          url:"/v1/blog/upload",
+          type:"DELETE",
+          dataType:'json',
+          data:{"delFile":deleteUri},
+          success:(data)=>{
+            console.log("data : ",data);
+          },
+          error:(err)=>{
+            console.log(err);
+          }
+      });
+}
+  </script>
+
+</head>
+
+<body data-spy="scroll" >
+    <%- include('../layout/blog/header.ejs') %>
+    <div class="write_menu" id="write_menu">
+      <div class="quick_menuHeader" id="quick_menuHeader">
+        <button class="btn btn-primary" id="blog-update">수정</button>
+        <button class="btn btn-dark" id="blog-list">목록</button>
+      </div>
+    </div>
+  <section id="blogWrite" class="padd-section wow fadeInUp" style="background-color: #f9f9f9;">
+    <div class="container">
+      <div class="section-title text-center"></div>
+        <div class="row" style="background-color: #fff; border-left: 1px solid #e8e8e8; border-right: 1px solid #e8e8e8; padding: 5%;">
+          <form style="width:100%;" name="blog-form" id="blog-form" onsubmit="return false;">
+            <input type="hidden" id="mainImg" name="mainImg"/>
+            <div>
+                <input type="text" class="blog-text-title" id="title" name="title" placeholder="TITLE" />
+            </div>
+            <hr>
+            <div>
+              <textarea id="summernote" name="content"></textarea>
+            </div>
+          </form>
+        </div>
+      </div>
+  </section>
+  
+    <%- include('../layout/blog/footer.ejs') %>
+</body>
+</html>

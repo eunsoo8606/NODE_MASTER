@@ -50,12 +50,16 @@ router.get('/list', (req, res) => {
 });
 
 router.get('/detail/:id',(req,res)=>{
-    var blogSeq = req.params.id;
-    res.render("blog/detail.ejs",{blogSeq:blogSeq});
+    var blogSeq  = req.params.id;
+    
+    var category = Buffer.from(req.query.category, "base64").toString('utf8');
+    switch(category){
+        case 'detail':res.render("blog/detail.ejs",{blogSeq:blogSeq}); break;
+        case 'update':res.render("blog/update.ejs",{blogSeq:blogSeq}); break;
+    }
 });
 
-
-router.get('/write', (req, res) => {
+router.get("/write",(req,res)=>{
     res.render("blog/write.ejs");
 });
 
@@ -122,7 +126,7 @@ router.get("/detail/:id/selectOne",(req,res)=>{
       });
 });
 
-router.delete("/detail/:id/",(req,res)=>{
+router.delete("/detail/:id",(req,res)=>{
     var blogSeq = req.params.id;
     var cookies = common.util.getCookie(req);
     request({
@@ -147,6 +151,61 @@ router.delete("/detail/:id/",(req,res)=>{
         res.status(201).send({data:body.data});
       });
 });
+
+router.put("/detail/:id",(req,res)=>{
+    var blogSeq         = req.params.id;
+    var cookies         = common.util.getCookie(req);
+    var title           = req.body.title;
+    var content         = req.body.content;
+    var mainImg         = req.body.mainImg;
+    request({
+            url:`${process.env.apiServerUrl}/v1/blog/detail`,
+            method:'PUT',
+            headers:{
+                    'Cotent-Type':'application/json; charset=UTF-8',
+                    'Authorization':'Bearer ' + cookies.acToken},
+            body:{
+            title:title,
+            content:content,
+            mainImg:mainImg,
+            blogSeq:blogSeq
+            },json:true
+        },
+        function (error, response, body) {
+            if(error !== undefined && error !== null){ 
+                console.log("error : ", error);
+            res.status(401).send(error);
+            res.end();
+            return false;
+            }
+            res.send("200");
+        });
+    });
+
+    router.get("/top3",(req,res)=>{
+    var cookies     = common.util.getCookie(req);
+    console.log("top3 init...")
+    request({
+        url:`${process.env.apiServerUrl}/v1/blog/top3`,
+        method:'GET',
+        headers:{
+                 'Cotent-Type':'application/json; charset=UTF-8',
+                 'Authorization':'Bearer ' + cookies.acToken},
+        json:true
+      },
+      function (error, response, body) {
+        if(error !== undefined && error !== null){ 
+            res.send("401");
+            return false;
+        }
+        if(body === undefined){ 
+            res.send("401");
+            return false;
+        }
+        res.send({data:body.data});
+      });
+    });
+
 
 
 router.delete('/upload',(req, res) => {

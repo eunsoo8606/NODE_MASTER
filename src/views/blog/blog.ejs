@@ -35,7 +35,7 @@ function blogList(cpage){
       success:(data)=>{ 
         var datas  = data.data;
         var values = '';
-
+        var webDomain = window.location.protocol+ "//" + window.location.host;
         if(datas == null || datas.length == 0) return false;
 
         for(var i = 0; i < datas.length;i++){
@@ -44,11 +44,11 @@ function blogList(cpage){
 
           values += ` <div class="col-md-6 col-lg-4 mt-5">
                         <div class="block-blog text-left">
-                          <a href="javascript:void(0)"><img src="${(mainImg === ""?"/imges/blog/blog-image-1.jpg":mainImg)}"width='360' height='220' alt="/imges/blog/blog-image-1.jpg"></a>
+                          <a href="javascript:void(0)"><img src="${(mainImg === ""?"/imges/blog/blog-image-1.jpg":mainImg)}"width='360' height='220' onerror="this.src='${webDomain}/imges/blog/blog-image-1.jpg'"></a>
                           <div class="content-blog">
                             <h4><a href="#">${datas[i].TITLE}</a></h4>
                             <span>${datas[i].REG_DTTM}</span>
-                            <a class="pull-right readmore" href="/v1/blog/detail/${datas[i].BLOG_SEQ}">View Details</a>
+                            <a class="pull-right readmore" href="/v1/blog/detail/${datas[i].BLOG_SEQ}?category=${btoa('detail')}">View Details</a>
                           </div>
                         </div>
                       </div>`;

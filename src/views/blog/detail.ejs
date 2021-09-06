@@ -27,7 +27,7 @@
     });
 
     $("#blog-list").on("click",function(){
-        history.back();
+        location.href="/v1/blog";
       });
     $("#blog-delete").on("click",function(){
         if(confirm("해당 게시물을 정말 삭제 하시겠습니까?")){
@@ -50,7 +50,9 @@
             });
         }
     });
-    
+    $("#blog-update").on("click",function(){
+      location.href=`/v1/blog/detail/${blogSeq}?category=${btoa('update')}`
+     });
   });
   </script>
 

@@ -358,7 +358,8 @@ span {
 /* Nav Meu Container */
 #nav-menu-container {
   float: right;
-  margin: 19px 0 0 0;
+  margin: 19px 0px 0px 430px;
+  position: absolute;
 }
 
 @media (max-width: 1024px) {
