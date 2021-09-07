@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('../../layout/back.ejs') %>
+    <title>API Document</title>
+    <link href="/css/apimenu.css" rel="stylesheet">
+    <!-- 왼쪽 사이드 메뉴 스크립트 -->
+<script>
+    $(function () {
+        // 왼쪽메뉴 드롭다운
+        $(".sub_menu ul.small_menu").hide();
+        $(".sub_menu ul.big_menu").click(function () {
+            $("ul", this).slideToggle(300);
+        });
+    });
+</script>
+</head>
+<body>
+    <%- include('../../layout/apis/header.ejs') %>
+    <div id="wrapper">
+        <div class="topbar" style="position: absolute; top:0;">
+            <!-- 왼쪽 서브 메뉴 -->
+            <div class="left_sub_menu">
+                <div class="sub_menu">
+                    <h2>REST API</h2>
+                    <ul class="big_menu">
+                        <li>개발 가이드<i class="fas fa-book" style="margin-right:12px; float:right; margin-top: 7px;"></i></li>
+                        <ul class="small_menu">
+                            <li><a href="/v1/documents">OAuth 인증</a></li>
+                            <li><a href="/v1/documents/login">로그인</a></li>
+                        </ul>
+                    </ul>
+                    <ul class="big_menu">
+                        <li>MEMBER API<i class="fas fa-users" style="margin-right:12px; float:right; margin-top: 7px;"></i></li>
+                        <ul class="small_menu">
+                            <li><a href="/v1/documents/member">사용자 정보</a></li>
+                        </ul>
+                    </ul>
+                    <!-- <ul class="big_menu">
+                        <li>BOARD API<i class="fas fa-table" style="margin-right:12px; float:right; margin-top: 7px;"></i></li>
+                        <ul class="small_menu">
+                            <li><a href="#">소메뉴2-1</a></li>
+                            <li><a href="#"></a>소메뉴2-2</a></li>
+                        </ul>
+                    </ul> -->
+                </div>
+            </div>
+            <div class="overlay"></div>
+        </div>
+    <!--==========================
+    API Section
+  ============================-->
+  <section class="padd-section text-center wow fadeInUp">
+    <div class="container"><br/><br/>
+      <div class="section-title text-center">
+        <h2 style="font-weight: 700;">Login</h2>
+        <div class="title-area"><span class="get">GET </span>&nbsp;&nbsp; http://ihd8606.cafe24.com:8888/oauth/authorize</div><br/>
+        <p class="separator">
+            Client_id 및 아래 Parameter 값들과 함께 요청이 정상인 경우 LOCAL LOGIN PAGE 로 REDIRECT 됩니다.
+        </p><br/><br/>
+        <span class="api-title">REQUEST</span><br/><br/>
+        <table class="table">
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Required</th>
+            </tr>
+            <tr>
+                <td>client_id</td>
+                <td>String</td>
+                <td>앱 REST API 키 [내 애플리케이션] > [앱 키]에서 확인 가능</td>
+                <td>O</td>
+            </tr>
+            <tr>
+                <td>redirect_uri</td>
+                <td>String</td>
+                <td>인가 코드가 리다이렉트될 URI</td>
+                <td>O</td>
+            </tr>
+        </table>
+        <span class="api-title">RESPONSE</span><br/><br/>
+        <table class="table">
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Required</th>
+            </tr>
+            <tr>
+                <td>code</td>
+                <td>String</td>
+                <td>토큰 받기 요청에 필요한 인가 코드</td>
+                <td>O</td>
+            </tr>
+            <tr>
+                <td>error</td>
+                <td>String</td>
+                <td>인증 실패 시 반환되는 에러 코드</td>
+                <td>X</td>
+            </tr>
+            <tr>
+                <td>error_description</td>
+                <td>String</td>
+                <td>인증 실패 시 반환되는 에러 메시지</td>
+                <td>X</td>
+            </tr>
+        </table>
+        <span class="api-title">Error Message</span><br/><br/>
+        <table class="table">
+            <tr>
+                <th>error</th>
+                <th>error_description</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>access_denied</td>
+                <td>String</td>
+                <td>client_id 가 정확하지 않은 경우</td>
+            </tr>
+            <tr>
+                <td>redirect_uri</td>
+                <td>String</td>
+                <td>인가 코드가 리다이렉트될 URI</td>
+            </tr>
+        </table>
+      </div>
+    </div>
+  </section>
+    <%- include('../../layout/footer.ejs') %>
+</body>
+</html>

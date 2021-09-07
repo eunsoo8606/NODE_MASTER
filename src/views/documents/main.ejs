@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('../layout/back.ejs') %>
+    <title>API Document</title>
+    <link href="/css/apimenu.css" rel="stylesheet">
+    <!-- 왼쪽 사이드 메뉴 스크립트 -->
+<script>
+    $(function () {
+        // 왼쪽메뉴 드롭다운
+        $(".sub_menu ul.small_menu").hide();
+        $(".sub_menu ul.big_menu").click(function () {
+            $("ul", this).slideToggle(300);
+        });
+    });
+</script>
+</head>
+<body>
+    <%- include('../layout/apis/header.ejs') %>
+    <div id="wrapper">
+        <div class="topbar" style="position: absolute; top:0;">
+            <!-- 왼쪽 서브 메뉴 -->
+            <div class="left_sub_menu">
+                <div class="sub_menu">
+                    <h2>REST API</h2>
+                    <ul class="big_menu">
+                        <li>개발 가이드<i class="fas fa-book" style="margin-right:12px; float:right; margin-top: 7px;"></i></li>
+                        <ul class="small_menu">
+                            <li><a href="/v1/documents">OAuth 인증</a></li>
+                            <li><a href="/v1/documents/login">로그인</a></li>
+                        </ul>
+                    </ul>
+                    <ul class="big_menu">
+                        <li>MEMBER API<i class="fas fa-users" style="margin-right:12px; float:right; margin-top: 7px;"></i></li>
+                        <ul class="small_menu">
+                            <li><a href="/v1/documents/member">사용자 정보</a></li>
+                        </ul>
+                    </ul>
+                    <!-- <ul class="big_menu">
+                        <li>BOARD API<i class="fas fa-table" style="margin-right:12px; float:right; margin-top: 7px;"></i></li>
+                        <ul class="small_menu">
+                            <li><a href="#">소메뉴2-1</a></li>
+                            <li><a href="#"></a>소메뉴2-2</a></li>
+                        </ul>
+                    </ul> -->
+                </div>
+            </div>
+            <div class="overlay"></div>
+        </div>
+    <!--==========================
+    API Section
+  ============================-->
+  <section id="about-us" class="about-us padd-section wow fadeInUp">
+    <div class="container">
+        <div class="row mt-4">
+    <h4>Home</h4> &nbsp;<i class="fa fa-angle-right mt-1"></i> &nbsp;<h4>개발 가이드</h4>&nbsp; <i class="fa fa-angle-right mt-1"></i> <h4>인증 프로세스 안내</h4>
+    </div>
+    </div>
+  </section>  
+  <section id="about-us" class="about-us padd-section wow fadeInUp">
+    <div class="container">
+      <div class="row mt-4">
+        <div class="col-md-6 col-lg-4">
+          <img src="/imges/api2.png" alt="About" class="rounded">
+        </div>
+        <div class="col-md-7 col-lg-5">
+          <div class="about-content">
+            <h2><span>인증</span><br/>프로세스 안내.</h2>
+            <h3>
+                목차
+            </h3><br/>
+            <ul class="list-unstyled">
+                <li><i class="fa fa-angle-right"></i><a href="#oauth1"> OAuth 정의</a></li>
+                <li><i class="fa fa-angle-right"></i><a href="#oauth2"> OAuth 역할</a></li>
+                <li><i class="fa fa-angle-right"></i><a href="#oauth3"> 인증 프로세스</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <br/><br/><br/><br/><div id="oauth1"></div><br/><br/>
+  <section id="oauth" class="padd-section text-center wow fadeInUp">
+    <div class="container">
+      <div class="section-title text-center">
+        <h2>OAuth Define</h2>
+        <p class="separator">
+            <span class="oauth-title">Open Authorization</span><br/><br/>
+            제 3의 앱이 자원의 소유자인 서비스 이용자를 대신하여 서비스를 요청할 수 있도록 자원 접근 권한을 위임하는 방법으로, 인증을 위한 오픈 스탠더드 프로토콜.
+        </p>
+      </div>
+    </div>
+  </section>
+  <br/><div id="oauth2"></div><br/><br/><br/>
+  <section class="padd-section text-center wow fadeInUp">
+    <div class="container">
+      <div class="section-title text-center">
+        <h2>OAuth Role</h2>
+        <p class="separator">
+            OAuth는 네 가지 역할을 정의합니다.<br/><br/><br/>
+            <ul>
+                <li><span class="oauth-title">1. Resource Owner</span><br/>
+                          보호된 리소스에 대한 액세스 권한을 부여할 수 있는 엔터티입니다.
+                            리소스 소유자가 사람인 경우 이를 리소스 소유자라고 합니다.<br/>
+                            최종 사용자.
+                </li>
+                <li><span class="oauth-title">2. Resource Server</span><br/>
+                         보호된 리소스를 호스팅하는 서버는 다음을 수락할 수 있습니다.
+                          및 액세스 토큰을 사용하여 보호된 리소스 요청에 응답합니다.
+                </li>
+                <li><span class="oauth-title">3. Client</span><br/>
+                         를 대신하여 보호된 리소스를 요청하는 애플리케이션<br/>
+                          리소스 소유자 및 권한 부여. "클라이언트"라는 용어는<br/>
+                          특정 구현 특성을 암시하지 않습니다.<br/>
+                          (예 : 애플리케이션이 서버, 데스크탑 또는 기타에서 실행되는지 여부 장치).
+                </li>
+                <li><span class="oauth-title">4. Authorization Server</span><br/>
+                     성공적으로 클라이언트에 액세스 토큰을 발급하는 서버
+                      리소스 소유자를 인증하고 권한을 얻습니다.
+                </li>
+            </ul>
+        </p>
+      </div>
+    </div>
+  </section>
+  <br/><div id="oauth3"></div><br/><br/><br/>
+  <section class="padd-section text-center wow fadeInUp">
+    <div class="container">
+        <div class="section-title text-center">
+            <h2>Service Sequence</h2>
+            <div class="separator">
+                <img src="/imges/OAuth.PNG" alt="이미지가 없습니다." style="border: 1px solid #dee2e6; border-radius: 5px;">
+                <div class="justify-content-center"style="margin-left:380px;"> 
+                <ul style="text-align: left;margin-top: 20px; ">
+                    <li>1. 사용자가 웹에서 로그인 버튼을 클릭한다.</li>
+                    <li>2. 발급받은 Client-id 로 AthenticationCode를 요청한다.</li>
+                    <li>3. 반환된 AthenticationCode 로 AccessToken을 요청한다.</li>
+                    <li>4. 반한된 AccessToken 으로 API-data를 요청한다. </li>
+                </ul>
+            </div>
+            </div>
+          </div>
+    </div>
+  </section>
+    <%- include('../layout/footer.ejs') %>
+</body>
+</html>

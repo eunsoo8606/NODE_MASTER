@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/list', (req, res) => {
-    console.log("blog controller init...")
+    console.log("blog controller init...",`${process.env.apiServerUrl}/v1/blog/list`)
     var cookies     = common.util.getCookie(req);
     var cpage       = req.query.cpage;
     var selectSize  = req.query.selectSize;
@@ -184,7 +184,7 @@ router.put("/detail/:id",(req,res)=>{
 
     router.get("/top3",(req,res)=>{
     var cookies     = common.util.getCookie(req);
-    console.log("top3 init...")
+ 
     request({
         url:`${process.env.apiServerUrl}/v1/blog/top3`,
         method:'GET',
@@ -202,6 +202,7 @@ router.put("/detail/:id",(req,res)=>{
             res.send("401");
             return false;
         }
+     
         res.send({data:body.data});
       });
     });
