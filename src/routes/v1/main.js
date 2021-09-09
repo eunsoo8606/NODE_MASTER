@@ -7,9 +7,10 @@ const apisRouter        = require("./apis/apis.controller");
 const loginRouter       = require("./login/login.controller");
 const consoleRouter     = require('./console/console.controller');
 const documentsRouter   = require("./documents/documents.controller");
+const checkTokenTime    = require('../../lib/tokenVaildator');
 
 
-router.use('/blog',blogRouter);
+router.use('/blog',checkTokenTime.checkTokenTime,blogRouter);
 router.use("/user",userRouter);
 router.use('/login',loginRouter);
 router.use("/console",consoleRouter);

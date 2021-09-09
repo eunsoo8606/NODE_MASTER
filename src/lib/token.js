@@ -13,7 +13,6 @@ module.exports = {
                  },
             json:true
            }, function (error, response, body) {
-               console.log("result token : ", body);
                if(error){
                 return resolve(error);
                }

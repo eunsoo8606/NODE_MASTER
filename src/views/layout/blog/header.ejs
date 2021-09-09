@@ -1,8 +1,9 @@
 <header id="header" class="header header-hide">
 <script>
-  $(function(){
-
-})
+    $(function(){
+      $("#nav-menu-container").css("position","relative");
+      $("#mobile-nav").css({"position":"absolute !important","z-index":"0"});
+    });
 </script>
     <div class="container">
       <div id="logo" class="pull-left">
@@ -16,9 +17,9 @@
           <li class="menu-has-children"><a href="javascript:void(0)">마이페이지</a>
             <ul>
               <li><a href="#">내 정보수정</a></li>
-              <li><a href="/auth/logout_process">로그아웃</a></li>
               <li><a href="/v1/console/app">내 애플리케이션</a></li>
               <li><a href="/v1/blog">내 블로그</a></li>
+              <li><a href="/auth/logout_process">로그아웃</a></li>
             </ul>
           </li>
         </ul>

@@ -4,7 +4,6 @@ const connection = require('../../../../../lib/connection');
 module.exports = {
     getLocationGridXY: (address)=>{
         return new Promise((resolve, reject)=>{
-            console.log("address : ",address);
            var query = `SELECT *
                            FROM HANG_DONG_TMP
                           WHERE CONCAT(HANGDONG_GUNGU,HANGDONG_DONG) LIKE` + `"%` + address +`%"`;

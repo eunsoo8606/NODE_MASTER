@@ -31,6 +31,6 @@ function dateFormat(date){
         if(month.length === 1) month="0"+month;
         if(day.length === 1) day="0"+day;
         if(hour.length === 1) hour="0"+hour;
-        if(min.length === 1) month="0"+min;
+        if(min.length === 1) min="0"+min;
         return  year + month +  day + hour + min;
 }

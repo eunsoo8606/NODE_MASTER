@@ -36,7 +36,7 @@ router.get('/local/callback', (req, res) => {
              res.send(error);
              return false;
           }
-          
+          console.log("body : ", body);
           var expiTime  = common.hashFnc.encrypt(common.TimesTemp.timeTemp(body.expires_in));
           var member_id = common.hashFnc.encrypt(String(body._json.id));
 

@@ -2,7 +2,6 @@ const express           = require('express');
 const router            = express.Router();
 const cookie            = require('cookie');
 const mainRouter        = require('./v1/main');
-const checkTokenTime    = require('../lib/tokenVaildator');
 
 
 router.get('/', (request, response) => {
@@ -17,19 +16,7 @@ router.get('/', (request, response) => {
       response.render("index.ejs",{login:'Y'}); 
   });
 
-  router.use('/v1',checkTokenTime.checkTokenTime,mainRouter);
-
-  // router.get('/main', (request, response) => {
-  //   var user;
-  //   if(request.session.passport.user !== undefined) {
-  //     user = request.session.passport.user;
-  //   }else user = "";
-  //   if(user !== ""){ 
-  //     response.render("index.ejs",{name:user.nickname,token:user.jwt});
-  //   }
-  //   else response.render("index.ejs",{name:null});
-    
-  // });
+  router.use('/v1',mainRouter);
 
 
   module.exports = router;

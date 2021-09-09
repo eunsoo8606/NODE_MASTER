@@ -4,7 +4,6 @@ var router = express.Router();
 var weatherService = require('./weartherService/weatherService');
 
 router.get("/", function(req,res){
-    console.log("weather init...")
     var curDate = req.query.date;
     var hour = req.query.hour;
     var x = Math.round(req.query.x);
@@ -29,7 +28,6 @@ router.get("/", function(req,res){
         var value = JSON.parse(body).response.body;
         hour  = (parseInt(hour)+1).toString();
         if(hour.length == 1) hour  = "0"+hour;
-        console.log("hour : ",hour);
         var arr = new Array();
         for(var i = 0; i < value.totalCount;i++){
             if(value.items.item[i].fcstTime == hour+"00"){

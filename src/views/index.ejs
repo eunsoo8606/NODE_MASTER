@@ -61,7 +61,8 @@
         var values = '';
         var webDomain = window.location.protocol+ "//" + window.location.host;
         if(datas == null || datas.length == 0) {
-          values="<div>작성된 블로그 내용이 없습니다.</div>"
+          values="<div class='blog-none'>작성된 블로그 내용이 없습니다.</div>";
+          $("#blog_area").html(values);
           return false;
         }
 
@@ -398,7 +399,7 @@ function writeWeather(data){
 
         <div class="col-md-6 col-lg-4">
           <div class="feature-block">
-            <img src="/imges/sports.png" alt="img" class="img-fluid">
+            <img src="/imges/korea.png" alt="img" class="img-fluid">
             <h4>대한체육회/공공스포츠클럽</h4>
             <p>2021-07-01 ~ toDay</p>
             <p>My Work<br/>
