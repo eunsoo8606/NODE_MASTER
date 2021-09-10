@@ -14,6 +14,9 @@
     //날씨 API 출력
     Util.getLocation("quick_menu_container",Util.sysDate());
 
+    var login = '<%=login%>';
+    console.log("login : ", login)
+
     //롯데시네마 데이터 크롤링
     $.ajax({
       url:"/v1/apis/movie",
@@ -52,7 +55,7 @@
         console.log(err);
       }
     });
-
+if(login == "Y"){
     $.ajax({
       url:"/v1/blog/top3",
       type:"GET",
@@ -88,6 +91,10 @@
         console.log(err);
       }
     });
+  }else {
+    var values ="<div class='blog-none'>로그인 후 이용 가능한 서비스 입니다.</div>";
+    $("#blog_area").html(values);
+  }
 
 
   });
@@ -251,6 +258,13 @@ function writeWeather(data){
             }
           }
       }
+}
+function goBlog(){
+  if(login == "N"){
+    alert("로그인 후 이용해 주세요.");
+    return false;
+  }
+  location.href="/v1/blog";
 }
 </script>
 <script>
@@ -547,7 +561,7 @@ function writeWeather(data){
         <h2>Movie Crawling</h2>
         <p class="separator">
           now in theaters from LOTTE CINEMA<br/>
-          해당영역은 조금 뜬금없긴 하지만 api-server에서 Scheduler 를 통해<br/> 
+          api-server에서 Scheduler 를 통해<br/> 
           매일 아침 07시 30분에 기존 데이터를 삭제하고 크롤링을 통하여 새로운 LOTTE CINEMA DATA 를 받아와<br/>
           출력시킨 결과물 입니다.
         </p>
@@ -776,7 +790,7 @@ function writeWeather(data){
       <div class="section-title text-center">
 
         <h2>Latest posts</h2>
-        <p class="separator"><a href="/v1/blog">작성하러 가기!</a></p>
+        <p class="separator"><a href="javascript:goBlog()">작성하러 가기!</a></p>
       </div>
     </div>
     <div class="container">
@@ -816,7 +830,6 @@ function writeWeather(data){
       </div>
     </div>
   </section> -->
-
   <!--==========================
     Contact Section
   ============================-->
@@ -850,15 +863,18 @@ function writeWeather(data){
               <p>+82 010-9726-****</p>
             </div>
           </div>
-
-          <div class="social-links">
-            <a href="#" class="twitter"><i class="fa fa-twitter"></i></a>
-            <a href="#" class="facebook"><i class="fa fa-facebook"></i></a>
-            <a href="#" class="instagram"><i class="fa fa-instagram"></i></a>
-            <a href="#" class="google-plus"><i class="fa fa-google-plus"></i></a>
-            <a href="#" class="linkedin"><i class="fa fa-linkedin"></i></a>
+          <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"/>
+          <div class="">
+            <a href="https://blog.naver.com/eunsoo8606" class="blog" target='_blank'>
+              <img src="/imges/blog.png" alt="아이콘:네이버블로그"/>
+            </a>
+            <a href="https://www.instagram.com/eunsu1993/" class="instagram" target='_blank'>
+              <img src="/imges/instagram.png" alt="아이콘:네이버블로그"/>
+            </a>
+            <a href="https://www.facebook.com/profile.php?id=100014587301903" class="google-plus" target='_blank'>
+              <i class="fa fa-facebook-square fa-2x" style="color:#1877f2; margin-left: 7px;position: absolute; font-size: 2.1em !important;" aria-hidden="true"></i>
+            </a>
           </div>
-
         </div>
 
         <div class="col-lg-5 col-md-8">
@@ -873,12 +889,10 @@ function writeWeather(data){
                 <input type="email" class="form-control" name="email" id="email" placeholder="이메일"/>
               </div>
               <div class="form-group">
-                <input type="text" class="form-control" name="subject" id="subject" placeholder="제목" data-rule="required" data-msg="required subject" />
-                <div class="validation"></div>
+                <input type="text" class="form-control" name="subject" id="subject" placeholder="제목" data-rule="required" />
               </div>
               <div class="form-group">
-                <textarea class="form-control" name="message" rows="5" data-rule="required" data-msg="Please write something for us" placeholder="메세지를 입력해 주세요."></textarea>
-                <div class="validation"></div>
+                <textarea class="form-control" name="message" rows="5" data-rule="required" placeholder="메세지를 입력해 주세요."></textarea>
               </div>
               <div class="text-center"><button type="submit">Send Message</button></div>
             </form>

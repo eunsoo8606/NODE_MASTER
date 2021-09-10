@@ -447,7 +447,7 @@ span {
 
 /* Mobile Nav Styling */
 #mobile-nav {
-  position: fixed;
+  position: fixed !important;
   top: 0;
   padding-top: 18px;
   bottom: 0;
@@ -1310,7 +1310,7 @@ body.mobile-nav-active #mobile-nav-toggle i {
 --------------------------------------------------------------*/
 .footer {
   background: #2a2c30;
-  padding-top: 50px;
+  padding: 30px;
 }
 
 .footer .footer-logo .navbar-brand {
