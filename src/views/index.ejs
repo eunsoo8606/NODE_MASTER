@@ -15,7 +15,6 @@
     Util.getLocation("quick_menu_container",Util.sysDate());
 
     var login = '<%=login%>';
-    console.log("login : ", login)
 
     //롯데시네마 데이터 크롤링
     $.ajax({
@@ -260,6 +259,7 @@ function writeWeather(data){
       }
 }
 function goBlog(){
+  var login = '<%=login%>';
   if(login == "N"){
     alert("로그인 후 이용해 주세요.");
     return false;
@@ -795,7 +795,6 @@ function goBlog(){
     </div>
     <div class="container">
       <div class="row" id="blog_area">
-
       </div>
     </div>
   </section>
@@ -834,7 +833,6 @@ function goBlog(){
     Contact Section
   ============================-->
   <section id="contact" class="padd-section wow fadeInUp">
-
     <div class="container">
       <div class="section-title text-center">
         <h2>Contact</h2>
@@ -863,7 +861,7 @@ function goBlog(){
               <p>+82 010-9726-****</p>
             </div>
           </div>
-          <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"/>
+          <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"/>
           <div class="">
             <a href="https://blog.naver.com/eunsoo8606" class="blog" target='_blank'>
               <img src="/imges/blog.png" alt="아이콘:네이버블로그"/>
