@@ -1,9 +1,30 @@
 <header id="header" class="header header-hide">
+    <!-- 왼쪽 사이드 메뉴 스크립트 -->
   <script>
     $(function(){
       $("#nav-menu-container").css("position","inherit");
+      
+        // 왼쪽메뉴 드롭다운
+        $(".sub_menu ul.small_menu").hide();
+        $(".sub_menu ul.big_menu").click(function () {
+            $("ul", this).slideToggle(300);
+        });
     });
   </script>
+<style>
+@media (max-width: 1550px) {
+  .footer{
+    background: #2a2c30;
+    padding: 30px;
+    margin-left: 300px !important;
+  }
+  .padd-section {
+    padding-bottom: 80px;
+    padding-top: 80px;
+    margin-left: 400px !important;
+  }
+}
+</style>
     <div class="container">
 
       <div id="logo" class="pull-left">
@@ -24,4 +45,35 @@
         </ul>
       </nav><!-- #nav-menu-container -->
     </div>
+    <div id="wrapper">
+      <div class="topbar" style="position: absolute; top:0;">
+          <!-- 왼쪽 서브 메뉴 -->
+          <div class="left_sub_menu">
+              <div class="sub_menu">
+                  <h2>REST API</h2>
+                  <ul class="big_menu">
+                      <li>개발 가이드<i class="fas fa-book" style="margin-right:12px; float:right; margin-top: 7px;"></i></li>
+                      <ul class="small_menu">
+                          <li><a href="/v1/documents">OAuth 인증</a></li>
+                          <li><a href="/v1/documents/login">로그인</a></li>
+                      </ul>
+                  </ul>
+                  <ul class="big_menu">
+                      <li>MEMBER API<i class="fas fa-users" style="margin-right:12px; float:right; margin-top: 7px;"></i></li>
+                      <ul class="small_menu">
+                          <li><a href="/v1/documents/member">사용자 정보</a></li>
+                      </ul>
+                  </ul>
+                  <!-- <ul class="big_menu">
+                      <li>BOARD API<i class="fas fa-table" style="margin-right:12px; float:right; margin-top: 7px;"></i></li>
+                      <ul class="small_menu">
+                          <li><a href="#">소메뉴2-1</a></li>
+                          <li><a href="#"></a>소메뉴2-2</a></li>
+                      </ul>
+                  </ul> -->
+              </div>
+          </div>
+          <div class="overlay"></div>
+      </div>
+      </div>
   </header><!-- #header -->
