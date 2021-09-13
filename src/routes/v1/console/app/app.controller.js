@@ -47,8 +47,6 @@ router.get('/:id/:category', (req, res) => {
   }
 });
 
-
-
 router.delete('/:id',(req,res)=>{
   var param = req.params.id;
   var cookies = common.util.getCookie(req);

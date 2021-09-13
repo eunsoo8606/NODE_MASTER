@@ -92,10 +92,10 @@ router.post('/write',(req, res) => {
     });
 
 router.post('/upload', common.multer.single('file'),(req, res) => {
-    var file = req.file;
-    var filePath        = file.destination;
-    var u = filePath.split(path.join('/'));
-    var imgUri = req.headers.origin + common.util.customFileUri(u) + '/' + file.filename;
+    var file     = req.file;
+    var filePath = file.destination;
+    var u        = filePath.split(path.join('/'));
+    var imgUri   = req.headers.origin + common.util.customFileUri(u) + '/' + file.filename;
     res.send(imgUri);
 });
 

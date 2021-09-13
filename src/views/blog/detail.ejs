@@ -7,10 +7,10 @@
   <meta content="" name="keywords">
   <meta content="" name="description">
  <%- include('../layout/blog/back.ejs') %>
- <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=7310d6d1ab2092c321eeac72042dfc50&libraries=services"></script>
 
  <script>
   $(function(){
+
     var blogSeq = '<%=blogSeq%>';
     $.ajax({
       url:`/v1/blog/detail/${blogSeq}/selectOne`,
@@ -53,6 +53,16 @@
     $("#blog-update").on("click",function(){
       location.href=`/v1/blog/detail/${blogSeq}?category=${btoa('update')}`
      });
+
+     $(window).on('load resize', function(){
+			if($(window).width() > 768){
+				$(window).on('scroll', function(){
+					$('.write_menu').css('top', $(window).scrollTop() + $(window).height() / 2);
+				});
+			}else {
+				$('.write_menu').css('top', 0);
+			}
+		});
   });
   </script>
 

@@ -7,9 +7,6 @@
   <meta content="" name="keywords">
   <meta content="" name="description">
  <%- include('../layout/blog/back.ejs') %>
- <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=7310d6d1ab2092c321eeac72042dfc50&libraries=services"></script>
-
-
  <script>
   $(document).ready(function(){
     var blogSeq = '<%=blogSeq%>';
@@ -26,7 +23,7 @@
         if(confirm("수정 하시겠습니까? ")){
           $("#mainImg").val($("#blog-form").find("img").eq(0).attr("src"));
           $.ajax({
-                  url:`/v1/blog/${blogSeq}`,
+                  url:`/v1/blog/detail/${blogSeq}`,
                   type:"PUT",
                   data:$("#blog-form").serialize(),
                   success:(data)=>{ 
@@ -47,7 +44,7 @@
       type:"GET",
       success:(data)=>{ 
         var datas  = data[0];
-        console.log("data : ",datas);
+
         $("#title").val(datas.TITLE);
         $('#summernote').val(datas.CONTENT);
           //여기 아래 부분
