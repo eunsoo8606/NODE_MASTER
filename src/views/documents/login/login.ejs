@@ -7,49 +7,10 @@
     <%- include('../../layout/back.ejs') %>
     <title>API Document</title>
     <link href="/css/apimenu.css" rel="stylesheet">
-    <!-- 왼쪽 사이드 메뉴 스크립트 -->
-<script>
-    $(function () {
-        // 왼쪽메뉴 드롭다운
-        $(".sub_menu ul.small_menu").hide();
-        $(".sub_menu ul.big_menu").click(function () {
-            $("ul", this).slideToggle(300);
-        });
-    });
-</script>
+
 </head>
 <body>
     <%- include('../../layout/apis/header.ejs') %>
-    <div id="wrapper">
-        <div class="topbar" style="position: absolute; top:0;">
-            <!-- 왼쪽 서브 메뉴 -->
-            <div class="left_sub_menu">
-                <div class="sub_menu">
-                    <h2>REST API</h2>
-                    <ul class="big_menu">
-                        <li>개발 가이드<i class="fas fa-book" style="margin-right:12px; float:right; margin-top: 7px;"></i></li>
-                        <ul class="small_menu">
-                            <li><a href="/v1/documents">OAuth 인증</a></li>
-                            <li><a href="/v1/documents/login">로그인</a></li>
-                        </ul>
-                    </ul>
-                    <ul class="big_menu">
-                        <li>MEMBER API<i class="fas fa-users" style="margin-right:12px; float:right; margin-top: 7px;"></i></li>
-                        <ul class="small_menu">
-                            <li><a href="/v1/documents/member">사용자 정보</a></li>
-                        </ul>
-                    </ul>
-                    <!-- <ul class="big_menu">
-                        <li>BOARD API<i class="fas fa-table" style="margin-right:12px; float:right; margin-top: 7px;"></i></li>
-                        <ul class="small_menu">
-                            <li><a href="#">소메뉴2-1</a></li>
-                            <li><a href="#"></a>소메뉴2-2</a></li>
-                        </ul>
-                    </ul> -->
-                </div>
-            </div>
-            <div class="overlay"></div>
-        </div>
     <!--==========================
     API Section
   ============================-->
@@ -122,9 +83,19 @@
                 <td>client_id 가 정확하지 않은 경우</td>
             </tr>
             <tr>
-                <td>redirect_uri</td>
+                <td>database_error</td>
                 <td>String</td>
-                <td>인가 코드가 리다이렉트될 URI</td>
+                <td>데이터베이스 에러</td>
+            </tr>
+            <tr>
+                <td>access_denied</td>
+                <td>String</td>
+                <td>요청정보가 없을 때</td>
+            </tr>
+            <tr>
+                <td>access_denied</td>
+                <td>String</td>
+                <td>비밀번호가 일치하지 않을 때</td>
             </tr>
         </table>
       </div>
