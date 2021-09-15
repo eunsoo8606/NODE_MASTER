@@ -1,7 +1,7 @@
-var express = require('express');
-var request=require('request');
-var router = express.Router();
-var weatherService = require('./weartherService/weatherService');
+const express = require('express');
+const request =require('request');
+const router  = express.Router();
+const common  = require('../../../../utils/commonIMT');
 
 router.get("/", function(req,res){
     var curDate = req.query.date;
@@ -39,10 +39,27 @@ router.get("/", function(req,res){
 });
 
 
-router.get('/locationGridXY', async (request, response) => {
-    var address = request.query.address;
-    weatherService.getLocationGridXY(address).then((data)=>{
-        response.status(200).json({'lat':data.HANGDONG_LAT,'lng':data.HANGDONG_LNG});
+router.get('/locationGridXY', (req, res) => {
+    var address = req.query.address;
+    var cookies = common.util.getCookie(req);
+    request({
+        url:`${process.env.apiServerUrl}/v1/apis/weather/locationGrid`,
+        method:'GET',
+        headers:{
+                'Cotent-Type':'application/json; charset=UTF-8',
+                'Authorization':'Bearer ' + cookies.acToken},
+        qs:{
+            address:address
+        },json:true
+    },
+    function (error, response, body) {
+        if(error !== undefined && error !== null){ 
+            console.log("error : ", error);
+            res.status(401).send(error);
+            res.end();
+            return false;
+        }
+        res.status(200).json({'lat':body.lat,'lng':body.lng});
     });
 });
 

@@ -21,7 +21,7 @@ router.get('/local/callback', (req, res) => {
   request({
           url: `${process.env.apiServerUrl}/oauth/token?local=`+process.env.masterKey,
           method: 'POST',
-          body:{authorizationCode:authorizationCode,client_id:process.env.localClientId},
+          body:{code:authorizationCode,client_id:process.env.localClientId},
           json:true
          }, function (error, response, body) {
            console.log("body : ", body);

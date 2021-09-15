@@ -1,11 +1,16 @@
 <header id="header" class="header header-hide">
     <!-- 왼쪽 사이드 메뉴 스크립트 -->
   <script>
+    var depth = "<%=depth%>";
+    var sub   = "<%=sub%>";
+    console.log("depth : ", depth, ", sub : ", sub);
     $(function(){
       $("#nav-menu-container").css("position","inherit");
-      
         // 왼쪽메뉴 드롭다운
         $(".sub_menu ul.small_menu").hide();
+        $(".sub_menu ul.small_menu").eq(depth).show();
+        $(".sub_menu ul.small_menu").eq(depth).find("li").eq(sub).css({"background-color":"#e1e1e1"});
+        $(".sub_menu ul.small_menu").eq(depth).find("li").eq(sub).find("a").css({"color":"#ff5858"});
         $(".sub_menu ul.big_menu").click(function () {
             $("ul", this).slideToggle(300);
         });
@@ -54,23 +59,33 @@
                   <ul class="big_menu">
                       <li>개발 가이드<i class="fas fa-book" style="margin-right:12px; float:right; margin-top: 7px;"></i></li>
                       <ul class="small_menu">
-                          <li><a href="/v1/documents">OAuth 인증</a></li>
-                          <li><a href="/v1/documents/login">로그인</a></li>
+                          <li onclick="javascript:location.href='/v1/documents?depth=0&sub=0'"><a href="javascript:void(0);">OAuth 인증</a></li>
+                          <li  onclick="javascript:location.href='/v1/documents/login?depth=0&sub=1'"><a href="javascript:void(0);">로그인</a></li>
+                          <li  onclick="javascript:location.href='/v1/documents/token/token?depth=0&sub=2'"><a href="javascript:void(0);">토큰 발급</a></li>
+                          <li  onclick="javascript:location.href='/v1/documents/token/reToken?depth=0&sub=3'"><a href="javascript:void(0);">토큰 갱신</a></li>
                       </ul>
                   </ul>
                   <ul class="big_menu">
-                      <li>MEMBER API<i class="fas fa-users" style="margin-right:12px; float:right; margin-top: 7px;"></i></li>
+                      <li>사용자 API<i class="fas fa-users" style="margin-right:12px; float:right; margin-top: 7px;"></i></li>
                       <ul class="small_menu">
-                          <li><a href="/v1/documents/member">사용자 정보</a></li>
+                          <li onclick="javascript:location.href='/v1/documents/user?depth=1&sub=0'"><a href="#">사용자 정보</a></li>
                       </ul>
                   </ul>
-                  <!-- <ul class="big_menu">
-                      <li>BOARD API<i class="fas fa-table" style="margin-right:12px; float:right; margin-top: 7px;"></i></li>
+                  <ul class="big_menu">
+                      <li>블로그 API<i class="fas fa-table" style="margin-right:12px; float:right; margin-top: 7px;"></i></li>
                       <ul class="small_menu">
-                          <li><a href="#">소메뉴2-1</a></li>
-                          <li><a href="#"></a>소메뉴2-2</a></li>
+                          <li onclick="javascript:location.href='/v1/documents/blog?depth=2&sub=0'"><a href="#">블로그 목록</a></li>
+                          <li onclick="javascript:location.href='/v1/documents/blog?depth=2&sub=1'"><a href="#"></a>블로그 상세</a></li>
+                          <li onclick="javascript:location.href='/v1/documents/blog?depth=2&sub=2'"><a href="#"></a>블로그 수정</a></li>
+                          <li onclick="javascript:location.href='/v1/documents/blog?depth=2&sub=3'"><a href="#"></a>블로그 삭제</a></li>
                       </ul>
-                  </ul> -->
+                  </ul>
+                  <ul class="big_menu">
+                    <li>날씨 API<i class="fas fa-cloud-sun-rain" style="margin-right:12px; float:right; margin-top: 7px;"></i></li>
+                    <ul class="small_menu">
+                        <li onclick="javascript:location.href='/v1/documents/weather?depth=3&sub=0'"><a href="#">공공데이터 격자좌표 위치</a></li>
+                    </ul>
+                </ul>
               </div>
           </div>
           <div class="overlay"></div>

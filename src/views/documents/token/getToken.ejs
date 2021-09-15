@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('../../layout/back.ejs') %>
+    <title>API Document</title>
+    <link href="/css/apimenu.css" rel="stylesheet">
+
+</head>
+<body>
+    <%- include('../../layout/apis/header.ejs') %>
+    <!--==========================
+    API Section
+  ============================-->
+  <section class="padd-section text-center wow fadeInUp">
+    <div class="container"><br/><br/>
+      <div class="section-title text-center">
+        <h2 style="font-weight: 700;">토큰 발급</h2>
+        <div class="title-area"><span class="post">POST </span>&nbsp;&nbsp; http://ihd8606.cafe24.com:8888/oauth/token</div><br/>
+        <p class="separator">
+            인가 코드를 받은 뒤, 인가 코드로 액세스 토큰과 리프레시 토큰을 발급받는 API입니다. <br/>
+            <a href="/v1/documents/login" style="color:blue; text-decoration:solid;">인가 코드 받기</a>만으로는 로그인이 완료되지 않으며, 토큰 받기까지 마쳐야 로그인을 정상적으로 완료할 수 있습니다.
+        </p><br/><br/>
+        <span class="api-title">REQUEST</span><br/><br/>
+        <table class="table">
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Required</th>
+            </tr>
+            <tr>
+                <td>code</td>
+                <td>String</td>
+                <td>인가 코드 받기 요청으로 얻은 인가 코드</td>
+                <td>O</td>
+            </tr>
+            <tr>
+                <td>client_id</td>
+                <td>String</td>
+                <td>앱 REST API 키
+                    [내 애플리케이션] > [앱 키]에서 확인 가능</td>
+                <td>O</td>
+            </tr>
+        </table>
+        <span class="api-title">RESPONSE</span><br/><br/>
+        <table class="table">
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Required</th>
+            </tr>
+            <tr>
+                <td>providor</td>
+                <td>String</td>
+                <td>발행자 이름</td>
+                <td>O</td>
+            </tr>
+            <tr>
+                <td>nickname</td>
+                <td>String</td>
+                <td>사용자 별명</td>
+                <td>O</td>
+            </tr>
+            <tr>
+                <td>_json</td>
+                <td>String</td>
+                <td>토큰 데이터</td>
+                <td>O</td>
+            </tr>
+            <tr>
+                <td>accessToken</td>
+                <td>String</td>
+                <td>사용자 액세스 토큰 값</td>
+                <td>O</td>
+            </tr>
+            <tr>
+                <td>expires_in</td>
+                <td>String</td>
+                <td>액세스 토큰 만료 시간(초)</td>
+                <td>O</td>
+            </tr>
+            <tr>
+                <td>refreshToken</td>
+                <td>String</td>
+                <td>사용자 리프레시 토큰 값</td>
+                <td>O</td>
+            </tr>
+            <tr>
+                <td>refresh_token_expires_in</td>
+                <td>String</td>
+                <td>리프레시 토큰 만료 시간(초)</td>
+                <td>O</td>
+            </tr>
+        </table>
+        <span class="api-title">Error Message</span><br/><br/>
+        <table class="table">
+            <tr>
+                <th>error</th>
+                <th>error_description</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>BAD REQUEST</td>
+                <td>CODE NOT FOUND..</td>
+                <td>발견된 코드가 없는경우</td>
+            </tr>
+            <tr>
+                <td>database_error</td>
+                <td>String</td>
+                <td>데이터베이스 에러</td>
+            </tr>
+        </table>
+      </div>
+    </div>
+  </section>
+    <%- include('../../layout/footer.ejs') %>
+</body>
+</html>

@@ -17,13 +17,25 @@
   <section class="padd-section text-center wow fadeInUp">
     <div class="container"><br/><br/>
       <div class="section-title text-center">
-        <h2 style="font-weight: 700;">토큰 갱신</h2>
-        <div class="title-area"><span class="post">POST </span>&nbsp;&nbsp; http://ihd8606.cafe24.com:8888/oauth/token</div><br/>
+        <h2 style="font-weight: 700;">블로그 게시글 수정</h2>
+        <div class="title-area"><span class="put">PUT </span>&nbsp;&nbsp; http://ihd8606.cafe24.com:8888/v1/blog/detail</div><br/>
         <p class="separator">
-            액세스 토큰과 리프레시 토큰을 갱신하는 API입니다. <br/>
-            리프레시 토큰 값과 필수 파라미터를 담아 <span class="post">POST</span>로 요청합니다.
-            응답은 토큰을 발급받을 때처럼 JSON 객체로 받습니다. 
+            블로그 목록 전체 조회 페이징 처리 유무 를 넣어야겠다.
         </p><br/><br/>
+        <span class="api-title">Header</span><br/><br/>
+        <table class="table">
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Required</th>
+            </tr>
+            <tr>
+                <td>Authorization</td>
+                <td>사용자 인증 수단, 액세스 토큰 값
+                    Authorization: Bearer {ACCESS_TOKEN}</td>
+                <td>O</td>
+            </tr>
+        </table>
         <span class="api-title">REQUEST</span><br/><br/>
         <table class="table">
             <tr>
@@ -33,23 +45,27 @@
                 <th>Required</th>
             </tr>
             <tr>
-                <td>refresh_token</td>
+                <td>blogSeq</td>
                 <td>String</td>
-                <td>토큰 발급 시 응답으로 받은 refresh_token
-                    Access Token을 갱신하기 위해 사용</td>
+                <td>블로그 번호</td>
                 <td>O</td>
             </tr>
             <tr>
-                <td>client_id</td>
+                <td>title</td>
                 <td>String</td>
-                <td>앱 REST API 키
-                    [내 애플리케이션] > [앱 키]에서 확인 가능</td>
+                <td>블로그 제목</td>
                 <td>O</td>
             </tr>
             <tr>
-                <td>grant_type</td>
+                <td>content</td>
                 <td>String</td>
-                <td>refresh_token으로 고정</td>
+                <td>블로그 내용</td>
+                <td>O</td>
+            </tr>
+            <tr>
+                <td>mainImg</td>
+                <td>String</td>
+                <td>블로그 이미지</td>
                 <td>O</td>
             </tr>
         </table>
@@ -62,45 +78,27 @@
                 <th>Required</th>
             </tr>
             <tr>
+                <td>success</td>
+                <td>String</td>
+                <td>업데이트 결과</td>
+                <td>O</td>
+            </tr>
+            <tr>
                 <td>providor</td>
                 <td>String</td>
-                <td>발행자 이름</td>
+                <td>데이터 제공자</td>
                 <td>O</td>
             </tr>
             <tr>
-                <td>nickname</td>
+                <td>message</td>
                 <td>String</td>
-                <td>사용자 별명</td>
+                <td>결과 메세지</td>
                 <td>O</td>
             </tr>
             <tr>
-                <td>_json</td>
+                <td>data</td>
                 <td>String</td>
-                <td>토큰 데이터</td>
-                <td>O</td>
-            </tr>
-            <tr>
-                <td>accessToken</td>
-                <td>String</td>
-                <td>사용자 액세스 토큰 값</td>
-                <td>O</td>
-            </tr>
-            <tr>
-                <td>expires_in</td>
-                <td>String</td>
-                <td>액세스 토큰 만료 시간(초)</td>
-                <td>O</td>
-            </tr>
-            <tr>
-                <td>refreshToken</td>
-                <td>String</td>
-                <td>사용자 리프레시 토큰 값</td>
-                <td>O</td>
-            </tr>
-            <tr>
-                <td>refresh_token_expires_in</td>
-                <td>String</td>
-                <td>리프레시 토큰 만료 시간(초)</td>
+                <td>결과 값</td>
                 <td>O</td>
             </tr>
         </table>
@@ -112,14 +110,19 @@
                 <th>Description</th>
             </tr>
             <tr>
-                <td>UNKNOWN TOKEN</td>
-                <td>TOKEN_INVALID</td>
-                <td>발견된 토큰이 없는경우</td>
+                <td>database_error</td>
+                <td>String</td>
+                <td>데이터베이스 에러</td>
             </tr>
             <tr>
-                <td>EXPIRED_TOKEN</td>
-                <td>EXPIRED_TOKEN</td>
-                <td>만료된 토큰인 경우</td>
+                <td>access_denied</td>
+                <td>String</td>
+                <td>요청정보가 없을 때</td>
+            </tr>
+            <tr>
+                <td>access_denied</td>
+                <td>String</td>
+                <td>토큰이 없을 때</td>
             </tr>
         </table>
       </div>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('../../layout/back.ejs') %>
+    <title>API Document</title>
+    <link href="/css/apimenu.css" rel="stylesheet">
+
+</head>
+<body>
+    <%- include('../../layout/apis/header.ejs') %>
+ <!--==========================
+    API Section
+  ============================-->
+  <section class="padd-section text-center wow fadeInUp">
+    <div class="container"><br/><br/>
+      <div class="section-title text-center">
+        <h2 style="font-weight: 700;">공공데이터 격자좌표 위치조회</h2>
+        <div class="title-area"><span class="get">GET</span>&nbsp;&nbsp; http://ihd8606.cafe24.com:8888/v1/apis/weather/locationGrid</div><br/>
+        <p class="separator">
+           공공 데이터 포털의 경우 기존 격자좌표와 다른 자사 격자좌표를 사용 합니다. 해당 데이터들은 엑셀로 다운 받을 수 있도록 처리되어 있는데 
+           해당 엑셀 데이터를 디비로 옮겨 주소(시,구,동) 와 함께 호출 시 해당 지역구에 맞는 격좌자표를 response 합니다.
+        </p><br/><br/>
+        <span class="api-title">Header</span><br/><br/>
+        <table class="table">
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Required</th>
+            </tr>
+            <tr>
+                <td>Authorization</td>
+                <td>사용자 인증 수단, 액세스 토큰 값
+                    Authorization: Bearer {ACCESS_TOKEN}</td>
+                <td>O</td>
+            </tr>
+        </table>
+        <span class="api-title">REQUEST</span><br/><br/>
+        <table class="table">
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Required</th>
+            </tr>
+            <tr>
+                <td>address</td>
+                <td>String</td>
+                <td>지역구 주소(구,동)</td>
+                <td>O</td>
+            </tr>
+        </table>
+        <span class="api-title">RESPONSE</span><br/><br/>
+        <table class="table">
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Required</th>
+            </tr>
+            <tr>
+                <td>lat</td>
+                <td>String</td>
+                <td>격자X</td>
+                <td>O</td>
+            </tr>
+            <tr>
+                <td>lng</td>
+                <td>String</td>
+                <td>격자Y</td>
+                <td>O</td>
+            </tr>
+        </table>
+        <span class="api-title">Error Message</span><br/><br/>
+        <table class="table">
+            <tr>
+                <th>error</th>
+                <th>error_description</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>UNKNOWN TOKEN</td>
+                <td>TOKEN_INVALID</td>
+                <td>발견된 토큰이 없는경우</td>
+            </tr>
+            <tr>
+                <td>EXPIRED_TOKEN</td>
+                <td>EXPIRED_TOKEN</td>
+                <td>만료된 토큰인 경우</td>
+            </tr>
+        </table>
+      </div>
+    </div>
+  </section>
+    <%- include('../../layout/footer.ejs') %>
+</body>
+</html>

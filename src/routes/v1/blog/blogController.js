@@ -20,6 +20,7 @@ router.get('/list', (req, res) => {
     var title       = req.query.title;
     var content     = req.query.content;
     var limit       = req.query.limit;
+    var scope       = 'paging,member';
     request({
         url:`${process.env.apiServerUrl}/v1/blog/list`,
         method:'GET',
@@ -32,7 +33,8 @@ router.get('/list', (req, res) => {
           selectSize:selectSize,
           title:title,
           content:content,
-          order:'desc'
+          order:'desc',
+          scope:scope
         },json:true
       },
       function (error, response, body) {
@@ -44,7 +46,6 @@ router.get('/list', (req, res) => {
             res.send("401");
             return false;
         }
-
         res.send({data:body.data,etc:body.etc});
       });
 });
@@ -174,9 +175,9 @@ router.put("/detail/:id",(req,res)=>{
         function (error, response, body) {
             if(error !== undefined && error !== null){ 
                 console.log("error : ", error);
-            res.status(401).send(error);
-            res.end();
-            return false;
+                res.status(401).send(error);
+                res.end();
+                return false;
             }
             res.send("200");
         });

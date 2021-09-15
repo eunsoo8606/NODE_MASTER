@@ -17,14 +17,26 @@
   <section class="padd-section text-center wow fadeInUp">
     <div class="container"><br/><br/>
       <div class="section-title text-center">
-        <h2 style="font-weight: 700;">Login</h2>
-        <div class="title-area"><span class="get">GET </span>&nbsp;&nbsp; http://ihd8606.cafe24.com:8888/oauth/authorize</div><br/>
+        <h2 style="font-weight: 700;">블로그 게시글 삭제</h2>
+        <div class="title-area"><span class="delete">DELETE </span>&nbsp;&nbsp; http://ihd8606.cafe24.com:8888/v1/blog/detail</div><br/>
         <p class="separator">
-            Client_id 및 아래 Parameter 값들과 함께 요청이 정상인 경우 LOCAL LOGIN PAGE 로 REDIRECT 됩니다.<br/>
-            로그인 인증이 성공하면 request parameter 에 실린 redirect_uri 로 Authentication Code 가 발급 됩니다.<br/>
-            발급된 코드는 API-DATA 요청을 위한 ACCESS_TOKEN 및 REFLESH_TOKEN 발급용도로 사용되며 발급 된 REFLESH_TOKEN<br/>
-            의경우 최초 1회만 발급 됩니다.
+            블로그 게시글 삭제가 가능합니다.
         </p><br/><br/>
+        <span class="api-title">Header</span>
+        <br/><br/>
+        <table class="table">
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Required</th>
+            </tr>
+            <tr>
+                <td>Authorization</td>
+                <td>사용자 인증 수단, 액세스 토큰 값
+                    Authorization: Bearer {ACCESS_TOKEN}</td>
+                <td>O</td>
+            </tr>
+        </table>
         <span class="api-title">REQUEST</span><br/><br/>
         <table class="table">
             <tr>
@@ -34,15 +46,9 @@
                 <th>Required</th>
             </tr>
             <tr>
-                <td>client_id</td>
+                <td>blogSeq</td>
                 <td>String</td>
-                <td>앱 REST API 키 [내 애플리케이션] > [앱 키]에서 확인 가능</td>
-                <td>O</td>
-            </tr>
-            <tr>
-                <td>redirect_uri</td>
-                <td>String</td>
-                <td>인가 코드가 리다이렉트될 URI</td>
+                <td>블로그 게시글 번호</td>
                 <td>O</td>
             </tr>
         </table>
@@ -55,22 +61,28 @@
                 <th>Required</th>
             </tr>
             <tr>
-                <td>code</td>
+                <td>success</td>
                 <td>String</td>
-                <td>토큰 받기 요청에 필요한 인가 코드</td>
+                <td>업데이트 결과</td>
                 <td>O</td>
             </tr>
             <tr>
-                <td>error</td>
+                <td>providor</td>
                 <td>String</td>
-                <td>인증 실패 시 반환되는 에러 코드</td>
-                <td>X</td>
+                <td>데이터 제공자</td>
+                <td>O</td>
             </tr>
             <tr>
-                <td>error_description</td>
+                <td>message</td>
                 <td>String</td>
-                <td>인증 실패 시 반환되는 에러 메시지</td>
-                <td>X</td>
+                <td>결과 메세지</td>
+                <td>O</td>
+            </tr>
+            <tr>
+                <td>data</td>
+                <td>String</td>
+                <td>결과 값</td>
+                <td>O</td>
             </tr>
         </table>
         <span class="api-title">Error Message</span><br/><br/>
@@ -81,11 +93,6 @@
                 <th>Description</th>
             </tr>
             <tr>
-                <td>access_denied</td>
-                <td>String</td>
-                <td>client_id 가 정확하지 않은 경우</td>
-            </tr>
-            <tr>
                 <td>database_error</td>
                 <td>String</td>
                 <td>데이터베이스 에러</td>
@@ -93,12 +100,12 @@
             <tr>
                 <td>access_denied</td>
                 <td>String</td>
-                <td>요청정보가 없을 때</td>
+                <td>요청정보가 없는 경우</td>
             </tr>
             <tr>
                 <td>access_denied</td>
                 <td>String</td>
-                <td>비밀번호가 일치하지 않을 때</td>
+                <td>토큰이 없는 경우</td>
             </tr>
         </table>
       </div>
