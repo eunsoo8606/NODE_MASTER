@@ -54,7 +54,6 @@
         console.log(err);
       }
     });
-if(login == "Y"){
     $.ajax({
       url:"/v1/blog/top3",
       type:"GET",
@@ -78,7 +77,7 @@ if(login == "Y"){
                           <div class="content-blog">
                             <h4><a href="#">${datas[i].TITLE}</a></h4>
                             <span>${datas[i].REG_DTTM}</span>
-                            <a class="pull-right readmore" href="/v1/blog/${datas[i].BLOG_SEQ}?category=${btoa('detail')}">View Details</a>
+                            <a class="pull-right readmore" href="/v1/blog/detail/${datas[i].BLOG_SEQ}?category=${btoa('detail')}">View Details</a>
                           </div>
                         </div>
                       </div>`;
@@ -90,11 +89,6 @@ if(login == "Y"){
         console.log(err);
       }
     });
-  }else {
-    var values ="<div class='blog-none'>로그인 후 이용 가능한 서비스 입니다.</div>";
-    $("#blog_area").html(values);
-  }
-
 
   });
 function checkMail(){
@@ -259,12 +253,7 @@ function writeWeather(data){
       }
 }
 function goBlog(){
-  var login = '<%=login%>';
-  if(login == "N"){
-    alert("로그인 후 이용해 주세요.");
-    return false;
-  }
-  location.href="/v1/blog";
+  location.href="/v1/blog?scope=paging";
 }
 </script>
 <script>
@@ -562,7 +551,7 @@ function goBlog(){
         <p class="separator">
           now in theaters from LOTTE CINEMA<br/>
           api-server에서 Scheduler 를 통해<br/> 
-          매일 아침 07시 30분에 기존 데이터를 삭제하고 크롤링을 통하여 새로운 LOTTE CINEMA DATA 를 받아와<br/>
+          매일 아침 07시 30분에 기존 데이터를 삭제하고 크롤링을 통하여 새로운 LOTTE CINEMA DATA 를 스크랩핑하여<br/>
           출력시킨 결과물 입니다.
         </p>
       </div>
@@ -789,7 +778,7 @@ function goBlog(){
       <div class="section-title text-center">
 
         <h2>Latest posts</h2>
-        <p class="separator"><a href="javascript:goBlog()">작성하러 가기!</a></p>
+        <p class="separator"><a href="javascript:goBlog()">커뮤니티 보러가기!</a></p>
       </div>
     </div>
     <div class="container">

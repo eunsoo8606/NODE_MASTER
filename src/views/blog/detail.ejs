@@ -13,21 +13,37 @@
 
     var blogSeq = '<%=blogSeq%>';
     $.ajax({
-      url:`/v1/blog/detail/${blogSeq}/selectOne`,
+      url:"/v1/user/me",
       type:"GET",
-      success:(data)=>{ 
-        var datas  = data[0];
-        console.log("data : ",datas);
-        $("#title-area").html(datas.TITLE);
-        $("#blog-area").html(datas.CONTENT);
-      },
+      dataType:'json',
+      success:(data)=>{
+        var user = data;
+        $.ajax({
+            url:`/v1/blog/detail/${blogSeq}/selectOne`,
+            type:"GET",
+            success:(data)=>{ 
+              var datas  = data[0];
+              if(user.MEMBER_SEQ != datas.MEMBER_SEQ){
+                $("#blog-update").css("display","none");
+                $("#blog-delete").css("display","none");
+              }
+
+              $("#title-area").html(datas.TITLE);
+              $("#blog-area").html(datas.CONTENT);
+            },
+            error:(err)=>{
+              console.log(err);
+            }
+        });
+     },
       error:(err)=>{
         console.log(err);
       }
     });
 
+
     $("#blog-list").on("click",function(){
-        location.href="/v1/blog";
+      history.back();
       });
     $("#blog-delete").on("click",function(){
         if(confirm("해당 게시물을 정말 삭제 하시겠습니까?")){
@@ -72,9 +88,13 @@
     <%- include('../layout/blog/header.ejs') %>
     <div class="write_menu" id="write_menu">
       <div class="quick_menuHeader" id="quick_menuHeader">
+        <% if(login == "Y"){%>
         <button class="btn btn-primary" id="blog-update">수정</button>
         <button class="btn btn-dark" id="blog-list">목록</button>
         <button class="btn btn-danger" id="blog-delete">삭제</button>
+        <%}else{%>
+          <button class="btn btn-dark" id="blog-list">목록</button>
+        <%}%>
       </div>
     </div>
   <section id="blogWrite" class="padd-section wow fadeInUp" style="background-color: #f9f9f9;">

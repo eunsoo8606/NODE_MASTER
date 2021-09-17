@@ -2,12 +2,12 @@ const port = process.env.PORT;
 
 module.exports = (app) =>{
   app.use(function(req, res, next) {
-    res.status(404).send('Sorry cant find that!');
+    res.render('common/error/error.ejs',{state:404,description:'Sorry cant find that!!'});
   });
   
   app.use(function(err, req, res, next) {
     console.error(err.stack);
-    res.status(500).send('Something broke!');
+    res.render('common/error/error.ejs',{state:500,description:'Something broke!'});
   });
   
   app.listen(port, () => {

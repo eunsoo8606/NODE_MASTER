@@ -1067,6 +1067,9 @@ body.mobile-nav-active #mobile-nav-toggle i {
 #blog .block-blog img {
   width: 100%;
   cursor: auto;
+  border-top: 1px solid rgb(0 0 0 / 20%);
+  border-left: 1px solid rgb(0 0 0 / 20%);
+  border-right: 1px solid rgb(0 0 0 / 20%);
 }
 
 #blog .block-blog .content-blog {

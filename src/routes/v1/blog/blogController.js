@@ -9,18 +9,23 @@ const request = require('request');
 
 
 router.get('/', (req, res) => {
-    res.render("blog/blog.ejs");
+    var scope         = req.query.scope;
+    req.session.scope = scope;
+    var cookies       = common.util.getCookie(req);
+    var value         = (cookies.acToken === undefined?{login:'N'}:{login:'Y'});
+    res.render("blog/blog.ejs",value);
 });
 
 router.get('/list', (req, res) => {
-    console.log("blog controller init...",`${process.env.apiServerUrl}/v1/blog/list`)
+    console.log("blog controller init...");
     var cookies     = common.util.getCookie(req);
     var cpage       = req.query.cpage;
     var selectSize  = req.query.selectSize;
     var title       = req.query.title;
     var content     = req.query.content;
     var limit       = req.query.limit;
-    var scope       = 'paging,member';
+    var scope       = req.session.scope;
+
     request({
         url:`${process.env.apiServerUrl}/v1/blog/list`,
         method:'GET',
@@ -52,16 +57,24 @@ router.get('/list', (req, res) => {
 
 router.get('/detail/:id',(req,res)=>{
     var blogSeq  = req.params.id;
-    
+    var cookies  = common.util.getCookie(req);
     var category = Buffer.from(req.query.category, "base64").toString('utf8');
+    var scope       = req.session.scope;
+    var value   = (cookies.acToken === undefined?{blogSeq:blogSeq,login:'N',scope:scope}:{blogSeq:blogSeq,login:'Y',scope:scope});
     switch(category){
-        case 'detail':res.render("blog/detail.ejs",{blogSeq:blogSeq}); break;
-        case 'update':res.render("blog/update.ejs",{blogSeq:blogSeq}); break;
+        case 'detail':res.render("blog/detail.ejs",value); break;
+        case 'update':res.render("blog/update.ejs",value); break;
     }
 });
 
 router.get("/write",(req,res)=>{
-    res.render("blog/write.ejs");
+    var cookies  = common.util.getCookie(req);
+    if(cookies.acToken === undefined){
+        res.render("common/error/error.ejs",{state:403,'description':'로그인 후 이용 가능한 서비스 입니다.'});
+        return false;
+    }
+    var value = (cookies.acToken === undefined?{login:'N'}:{login:'Y'});
+    res.render("blog/write.ejs",value);
 });
 
 router.post('/write',(req, res) => {
@@ -69,6 +82,7 @@ router.post('/write',(req, res) => {
     var title           = req.body.title;
     var content         = req.body.content;
     var mainImg         = req.body.mainImg;
+    var category        = req.body.category;
     request({
             url:`${process.env.apiServerUrl}/v1/blog/write`,
             method:'POST',
@@ -78,7 +92,8 @@ router.post('/write',(req, res) => {
             body:{
             title:title,
             content:content,
-            mainImg:mainImg
+            mainImg:mainImg,
+            category:category
             },json:true
         },
         function (error, response, body) {
@@ -119,10 +134,12 @@ router.get("/detail/:id/selectOne",(req,res)=>{
             res.send("401");
             return false;
         }
+        
         if(body === undefined){ 
             res.send("401");
             return false;
         }
+
         res.send(body.data);
       });
 });
@@ -185,13 +202,14 @@ router.put("/detail/:id",(req,res)=>{
 
     router.get("/top3",(req,res)=>{
     var cookies     = common.util.getCookie(req);
- 
+    
     request({
         url:`${process.env.apiServerUrl}/v1/blog/top3`,
         method:'GET',
         headers:{
                  'Cotent-Type':'application/json; charset=UTF-8',
                  'Authorization':'Bearer ' + cookies.acToken},
+        qs:{'scope':'list'},
         json:true
       },
       function (error, response, body) {

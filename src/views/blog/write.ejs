@@ -42,6 +42,12 @@
       });
 
       $("#blog-save").on("click",function(){
+        if(Util.get($("#category").val()) == ""){
+          alert("카테고리를 선택해 주세요.");
+          $("#category").selected();
+          return false;
+        }
+
         if(confirm("발행 하시겠습니까? ")){
           $("#mainImg").val($("#blog-form").find("img").eq(0).attr("src"));
           $.ajax({
@@ -126,6 +132,24 @@ function deleteFile(deleteUri){
             <input type="hidden" id="mainImg" name="mainImg"/>
             <div>
                 <input type="text" class="blog-text-title" name="title" placeholder="TITLE" />
+            </div>
+            <hr>
+            <div>
+              <select class="form-control" name="category" id="category">
+                <option disabled selected>게시글 카테고리 선택</option>
+                <option value="1">Server</option>
+                <option value="2">CI/CD</option>
+                <option value="3">Language</option>
+                <option value="4">Was</option>
+                <option value="5">Cloud</option>
+                <option value="6">Script</option>
+                <option value="7">OS</option>
+                <option value="8">CM(Configuration Management)</option>
+                <option value="9">Framework</option>
+                <option value="10">Develop-Tool</option>
+                <option value="10">Library</option>
+                <option value="11">Etc</option>
+              </select>
             </div>
             <hr>
             <div>
