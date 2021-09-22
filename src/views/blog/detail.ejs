@@ -19,12 +19,14 @@
       dataType:'json',
       success:(data)=>{
         var user = data.data;
-        if(user.MEMBER_SEQ === undefined){
-          $("#commentInsertBt").on("click",function(){
-            if(confirm("로그인 후 이용 후 이용가능한 서비스 입니다. \n 로그인 페이지로 이동 하시겠습니까?")){
-              login();
-            }else return false;
-          });
+        if(user !== undefined){
+          if(user.MEMBER_SEQ === undefined){
+            $("#commentInsertBt").on("click",function(){
+              if(confirm("로그인 후 이용 후 이용가능한 서비스 입니다. \n 로그인 페이지로 이동 하시겠습니까?")){
+                login();
+              }else return false;
+            });
+          }
         }
         $("#authSeq").val(user.MEMBER_SEQ); 
         $.ajax({
