@@ -20,9 +20,15 @@ router.get('/me',(req,res)=>{
      ,json:true
     },
     function (error, response, body) {
+     
       if(error !== undefined && error !== null){
+        console.log("error init..")
            res.status(401).send(error);
            return false;
+      }
+      if(body.error !== ""){
+        res.status(200).json(body);
+        return false;
       }
         res.status(200).json(body.data);
     });

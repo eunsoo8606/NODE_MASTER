@@ -1683,3 +1683,167 @@ a {
     width: 100%;
     font-family: "Roboto", sans-serif;
 }
+.comment_area {
+  padding-bottom: 40px;
+  background: #f6f6f6;
+  border-width: 1px 0;
+  border-style: solid;
+  border-color: #e5e5e5;
+  margin-top:60px;
+}
+.comment_area .comment_numb {
+  position: relative;
+  height: 60px;
+  line-height: 60px;
+  background: #fff;
+}
+
+.comment_area .more_view button {
+  padding: 0 30px;
+  margin-top: 12px;
+  width: 100%;
+  height: 40px;
+  background: #eee;
+  border: 1px solid #ddd;
+  font-size: 15px;
+  color: #666;
+}
+
+.comment_area .comment_numb .left em {
+  color: #1e88e5;
+}
+.comment_area .comment_numb .left {
+  padding-left: 32px;
+  background: url(/imges/icon_message.png) no-repeat left top 23px;
+  font-size: 16px;
+}
+.comment_area .more_view_write_area {
+  padding: 0 30px;
+  margin-top: 12px;
+}
+
+.comment_area .more_view_write_area .write {
+  position: relative;
+  height: 104px;
+  padding: 18px 18px 45px 18px;
+  margin-top: 20px;
+  background: #fff;
+  border: 1px solid #ddd;
+}
+
+.comment_area #updateCommentDiv {
+  display: none;
+}
+.comment_area .comment_numb .left span {
+  color: #666;
+}
+.comment_area .more_view_write_area .write textarea {
+  overflow-y: hidden;
+  resize: none;
+  outline: none;
+  border: none;
+  width: 100%;
+  height: 100%;
+  font-weight: 300;
+  font-size: 16px;
+  color: #333;
+  letter-spacing: -0.4px;
+}
+
+.comment_area .more_view_write_area .write .input {
+  position: absolute;
+  bottom: 14px;
+  right: 20px;
+  width: 100px;
+  height: 37px;
+  line-height: 32px;
+  background: #1e88e5;
+  font-size: 16px;
+  border: none;
+  color: #fff;
+}
+
+.comment_area .comment_numb .right {
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  background: white;
+  border: none;
+  height: 55px;
+  transform: translateY(-50%);
+}
+ol, ul {
+  list-style: none;
+}
+
+.comment_area ul > li:first-child {
+  border-top: 1px solid #e5e5e5;
+}
+/* .comment_area ul > li:nth-child(1), .content .info_wrap .comment_area ul > li:nth-child(2), .content .info_wrap .comment_area ul > li:nth-child(3) {
+  display: block;
+} */
+#comment-area > li{
+  display:none;
+}
+
+.comment_area ul > li .padding_application {
+  position: relative;
+  padding: 10px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.comment_area ul > li .padding_application > div .id {
+  display: inline-block;
+  font-size: 16px;
+  color: #111;
+  vertical-align: middle;
+}
+
+.comment_area ul > li .padding_application > div .date {
+  display: inline-block;
+  margin: 0px 0 0 7px;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 14px;
+  color: #666;
+  vertical-align: middle;
+}
+
+.comment_area ul > li .padding_application > p.txt {
+  line-height: 26px;
+  margin-top: 14px;
+  font-weight: 300;
+  font-size: 16px;
+  color: #666;
+}
+
+.comment_area ul > li .padding_application .button_area {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 0;
+  margin: 10px;
+}
+
+.comment_area ul > li .padding_application .button_area button {
+  width: 76px;
+  height: 32px;
+  padding-left: 33px;
+  margin-left: 5px;
+  border: 1px solid #ddd;
+  font-size: 15px;
+  color: #666;
+  text-align: left;
+}
+
+.comment_area ul > li .padding_application .button_area button.del {
+  background: #fff url(/imges/icon_trash.png) no-repeat left 11px center;
+}
+.comment_area ul > li .padding_application .button_area button.modify {
+  background: #fff url(/imges/icon_modify.png) no-repeat left 14px center;
+}
+.comment_area ul > li .padding_application .button_area button {
+  outline: 0;
+}
+
+
+

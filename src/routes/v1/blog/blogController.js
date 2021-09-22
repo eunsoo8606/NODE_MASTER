@@ -6,11 +6,15 @@ const util    = require('../../../utils/util');
 const fs      = require('fs');
 const appRoot = require('app-root-path');
 const request = require('request');
+const bCount  = require('../../../middlewares/blogCount');
 
 
 router.get('/', (req, res) => {
-    var scope         = req.query.scope;
+    var scope;
+    if(req.query.scope !== undefined){
+    scope         = req.query.scope;
     req.session.scope = scope;
+    }
     var cookies       = common.util.getCookie(req);
     var value         = (cookies.acToken === undefined?{login:'N'}:{login:'Y'});
     res.render("blog/blog.ejs",value);
@@ -62,7 +66,7 @@ router.get('/detail/:id',(req,res)=>{
     var scope       = req.session.scope;
     var value   = (cookies.acToken === undefined?{blogSeq:blogSeq,login:'N',scope:scope}:{blogSeq:blogSeq,login:'Y',scope:scope});
     switch(category){
-        case 'detail':res.render("blog/detail.ejs",value); break;
+        case 'detail': bCount.count(blogSeq); res.render("blog/detail.ejs",value); break;
         case 'update':res.render("blog/update.ejs",value); break;
     }
 });
@@ -118,7 +122,6 @@ router.post('/upload', common.multer.single('file'),(req, res) => {
 router.get("/detail/:id/selectOne",(req,res)=>{
     var blogSeq = req.params.id;
     var cookies = common.util.getCookie(req);
-    
     request({
         url:`${process.env.apiServerUrl}/v1/blog/detail`,
         method:'GET',
@@ -130,6 +133,7 @@ router.get("/detail/:id/selectOne",(req,res)=>{
         },json:true
       },
       function (error, response, body) {
+        console.log("data : ", body.data)
         if(error !== undefined && error !== null){ 
             res.send("401");
             return false;
@@ -139,7 +143,7 @@ router.get("/detail/:id/selectOne",(req,res)=>{
             res.send("401");
             return false;
         }
-
+        
         res.send(body.data);
       });
 });
@@ -245,4 +249,129 @@ router.delete('/upload',(req, res) => {
     });
 });
 
+
+router.get("/detail/:id/comments",(req,res)=>{
+    var blogSeq = req.params.id;
+    var cookies = common.util.getCookie(req);
+    console.log("comments init...................................")
+    request({
+        url:`${process.env.apiServerUrl}/v1/blog/detail/comments`,
+        method:'GET',
+        headers:{
+                 'Cotent-Type':'application/json; charset=UTF-8',
+                 'Authorization':'Bearer ' + cookies.acToken},
+        qs:{
+          'blogSeq':blogSeq
+        },json:true
+      },
+      function (error, response, body) {
+        console.log("comments : ", body)
+        if(error !== undefined && error !== null){ 
+            res.send("401");
+            return false;
+        }
+        
+        if(body === undefined){ 
+            res.send("401");
+            return false;
+        }
+        
+        res.send(body.data);
+      });
+});
+router.post("/detail/:id/comments",(req,res)=>{
+    var blogSeq = req.params.id;
+    var cookies = common.util.getCookie(req);
+    var text    = req.body.text;
+    var authSeq = req.body.authSeq;
+    var parentSeq = req.body.parentSeq;
+
+    request({
+        url:`${process.env.apiServerUrl}/v1/blog/detail/comments`,
+        method:'POST',
+        headers:{
+                 'Cotent-Type':'application/json; charset=UTF-8',
+                 'Authorization':'Bearer ' + cookies.acToken},
+        body:{
+          'blogSeq':blogSeq,
+          'text':text,
+          'authSeq':authSeq,
+          'parentSeq':parentSeq
+        },json:true
+      },
+      function (error, response, body) {
+        if(error !== undefined && error !== null){ 
+            res.send("401");
+            return false;
+        }
+        
+        if(body === undefined){ 
+            res.send("401");
+            return false;
+        }
+        res.send(body.data.toString());
+      });
+});
+
+
+router.delete("/detail/:id/comments",(req,res)=>{
+    var blogSeq     = req.params.id;
+    var cookies     = common.util.getCookie(req);
+    var commentSeq  = req.body.commentSeq; 
+    console.log("commentSeq ::: ", commentSeq)
+    request({
+        url:`${process.env.apiServerUrl}/v1/blog/detail/comments`,
+        method:'DELETE',
+        headers:{
+                 'Cotent-Type':'application/json; charset=UTF-8',
+                 'Authorization':'Bearer ' + cookies.acToken},
+        qs:{
+          'blogSeq':blogSeq,
+          'commentSeq':commentSeq
+        },json:true
+      },
+      function (error, response, body) {
+        if(error !== undefined && error !== null){ 
+            res.send("401");
+            return false;
+        }
+        if(body === undefined){ 
+            res.send("401");
+            return false;
+        }
+        res.status(201).send({data:body.data});
+      });
+});
+
+
+router.put("/detail/:id/comments",(req,res)=>{
+    var blogSeq     = req.params.id;
+    var cookies     = common.util.getCookie(req);
+    var commentSeq  = req.body.commentSeq;
+    var text        = req.body.conts;
+
+    request({
+        url:`${process.env.apiServerUrl}/v1/blog/detail/comments`,
+        method:'PUT',
+        headers:{
+                 'Cotent-Type':'application/json; charset=UTF-8',
+                 'Authorization':'Bearer ' + cookies.acToken},
+        body:{
+          'blogSeq':blogSeq,
+          'commentSeq':commentSeq,
+          'text':text
+        },json:true
+      },
+      function (error, response, body) {
+        if(error !== undefined && error !== null){ 
+            res.send("401");
+            return false;
+        }
+        if(body === undefined){ 
+            res.send("401");
+            return false;
+        }
+        res.status(201).send({data:body.data});
+      });
+});
 module.exports = router;

@@ -46,7 +46,7 @@ function blogList(cpage){
                           <a href="javascript:void(0)"><img src="${(mainImg === ""?"/imges/blog/blog-image-1.jpg":mainImg)}"width='360' height='220' onerror="this.src='${webDomain}/imges/blog/blog-image-1.jpg'"></a>
                           <div class="content-blog">
                             <h4><a href="#">${datas[i].TITLE}</a></h4>
-                            <span>${datas[i].REG_DTTM}</span>
+                            <span>작성일 : ${datas[i].REG_DTTM} | 조회수 : ${datas[i].COUNT}</span>
                             <a class="pull-right readmore" href="/v1/blog/detail/${datas[i].BLOG_SEQ}?category=${btoa('detail')}">View Details</a>
                           </div>
                         </div>

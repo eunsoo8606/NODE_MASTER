@@ -10,24 +10,36 @@
 
  <script>
   $(function(){
-
     var blogSeq = '<%=blogSeq%>';
+    $("#blogSeq1").val(blogSeq);
+    $("#blogSeq2").val(blogSeq); 
     $.ajax({
       url:"/v1/user/me",
       type:"GET",
       dataType:'json',
       success:(data)=>{
-        var user = data;
+        var user = data.data;
+        if(user.MEMBER_SEQ === undefined){
+          $("#commentInsertBt").on("click",function(){
+            if(confirm("로그인 후 이용 후 이용가능한 서비스 입니다. \n 로그인 페이지로 이동 하시겠습니까?")){
+              login();
+            }else return false;
+          });
+        }
+        $("#authSeq").val(user.MEMBER_SEQ); 
         $.ajax({
             url:`/v1/blog/detail/${blogSeq}/selectOne`,
             type:"GET",
             success:(data)=>{ 
               var datas  = data[0];
+              console.log(datas)
               if(user.MEMBER_SEQ != datas.MEMBER_SEQ){
                 $("#blog-update").css("display","none");
                 $("#blog-delete").css("display","none");
               }
-
+              $("#author").text(datas.NICK_NAME);
+              $("#regDt").text(datas.REG_DTTM);
+              $("#blog-count").text(datas.COUNT);
               $("#title-area").html(datas.TITLE);
               $("#blog-area").html(datas.CONTENT);
             },
@@ -37,14 +49,68 @@
         });
      },
       error:(err)=>{
-        console.log(err);
+        console.log("ERROR : ",err);
       }
     });
 
+    setTimeout(function() {
+      $.ajax({
+            url:`/v1/blog/detail/${blogSeq}/comments`,
+            type:"GET",
+            success:(data)=>{ 
+              var datas  = data; 
+              var values = '';
 
+             if(datas !== undefined){
+               for(var i = 0; i < datas.length; i++){
+                  values += `<li id="com${i}">
+                              <div class="padding_application">
+                                <div>
+                                    <span class="id">${datas[i].NICK_NAME}</span>
+                                    <span class="date">${datas[i].REG_DTTM}</span>
+                                    <input type="hidden" id="commentSeq" value="${datas[i].COMMENT_SEQ}">
+                                </div>
+                                <p class="txt">${datas[i].TEXT}</p>
+                                <div class="button_area">
+                                  ${($("#authSeq").val() == datas[i].AUTHOR_SEQ)?
+                                    `<button type="button" class="del" onclick="deleteComment(${datas[i].COMMENT_SEQ},${blogSeq});">삭제</button>`
+                                    +`<button type="button" class="modify" onclick="commentModify(${datas[i].COMMENT_SEQ},${blogSeq},'${datas[i].TEXT}',${i})">수정</button></div></div>
+                                    </li>`:`
+                                      </div>
+                                    </div>
+                                    </li>`}`;
+                }
+             }
+
+            $("#comCnt").text(datas.length);
+            $("#comment-area").html(values);
+
+              if(datas.length > 3){
+                $.each($("#comment-area > li"),function(index, item){
+                  if(index == 3) return;
+                  $(this).css("display","block");
+                });
+              }else{
+                $.each($("#comment-area > li"),function(index, item){
+                  $(this).css("display","block");
+                });
+              }
+            },
+            error:(err)=>{
+              console.log(err);
+            }
+        });
+
+    }, 500);
+    
     $("#blog-list").on("click",function(){
       history.back();
-      });
+    });
+
+    $(".modify").on('click',function(){
+      $("#updateCommentDiv").css("display","block");
+    });
+
     $("#blog-delete").on("click",function(){
         if(confirm("해당 게시물을 정말 삭제 하시겠습니까?")){
             $.ajax({
@@ -66,6 +132,28 @@
             });
         }
     });
+  
+    $("#commentInsertBt").on('click',function(){
+     
+          $.ajax({
+                url:`/v1/blog/detail/${blogSeq}/comments`,
+                type:"POST",
+                data:$("#commentForm").serialize(),
+                success:(data)=>{ 
+                    var datas  = data;
+                  if(parseInt(datas) > 0){
+                      location.reload();
+                  }else{
+                      alert("삭제 실패! 관리자에게 문의 하세요.");
+                      return false;
+                  }
+                },
+                error:(err)=>{
+                    console.log(err);
+                }
+            });
+    });
+
     $("#blog-update").on("click",function(){
       location.href=`/v1/blog/detail/${blogSeq}?category=${btoa('update')}`
      });
@@ -79,7 +167,83 @@
 				$('.write_menu').css('top', 0);
 			}
 		});
+
+    $(".more_view > button").on('click',function(){
+      $(".more_view").css("display",'none');
+      $("#comment-area > li").css("display",'block');
+    });
+
+    $(".comment_numb > button").on('click',function(){
+        $("#comment-area > li").css("display",'none');
+        $(".more_view").css("display",'block');
+        $.each($("#comment-area > li"),function(index, item){
+            if(index == 3) return;
+            $(this).css("display","block");
+        });
+    });
+
+
   });
+  function deleteComment(commentSeq,bSeq){
+    console.log("commentSeq : ", commentSeq);
+    if(confirm("해당 댓글을 삭제 하시겠습니까?")){
+        $.ajax({
+                url:`/v1/blog/detail/${bSeq}/comments`,
+                type:"DELETE",
+                data:{'commentSeq':commentSeq},
+                success:(data)=>{ 
+                    var datas  = data;
+                  if(data.data > 0){
+                      alert("정상적으로 삭제 되었습니다.");
+                      location.reload();
+                  }else{
+                      alert("삭제 실패! 관리자에게 문의 하세요.");
+                      return false;
+                  }
+                },
+                error:(err)=>{
+                    console.log(err);
+                }
+            });
+      }else return;
+  }
+function commentModify(commentSeq,bloSeq,text,index){
+  $(".more_view_write_area").remove();
+  var value = ` <div class="more_view_write_area" id="updateCommentDiv" style="display: block;">
+              <div class="write">
+                <form id="commentUpForm" name="commentUpForm">
+                  <input type="hidden" name="bloSeq"value="${bloSeq}">
+                  <input type="hidden" name="commentSeq"value="${commentSeq}">
+                  <textarea name="conts" id="conmmentUpArea" placeholder="코멘트 내용을 입력하세요">${text}</textarea>
+                  <button type="button" id="commentUpBt" onclick="updateComent(${bloSeq});" class="input">수정등록</button>
+                </form>
+              </div>
+            </div>`;
+  $("#com" + index).append(value);
+}
+
+function updateComent(blogSeq){
+  if(confirm("해당 댓글을 수정 하시겠습니까?")){
+            $.ajax({
+                url:`/v1/blog/detail/${blogSeq}/comments`,
+                type:"PUT",
+                data:$("#commentUpForm").serialize(),
+                success:(data)=>{ 
+                    var datas  = data;
+                  if(data.data > 0){
+                      alert("정상적으로 수정 되었습니다.");
+                      location.reload();
+                  }else{
+                      alert("수정 실패! 관리자에게 문의 하세요.");
+                      return false;
+                  }
+                },
+                error:(err)=>{
+                    console.log(err);
+                }
+            });
+        }
+}
   </script>
 
 </head>
@@ -102,18 +266,40 @@
       <div class="section-title text-center"></div>
         <div class="row" style="background-color: #fff; border-left: 1px solid #e8e8e8; border-right: 1px solid #e8e8e8; padding: 5%;">
           <form style="width:100%;" name="blog-form" id="blog-form" onsubmit="return false;">
-            <div id="title-area" style="font-size: 25px;">
+            <div id="title-area" style="font-size: 29px;">
                 
             </div>
+            작성자 : <span id="author"></span>&nbsp;|&nbsp;작성일 : <span id="regDt"></span>&nbsp;|&nbsp; 조회수 : <span id="blog-count"></span>
             <hr>
             <div id="blog-area"> 
                 
             </div>
           </form>
+          <div class="comment_area">
+            <div class="comment_numb">
+              <div class="left">
+                <em id="comCnt">0</em>
+                <span>건</span>
+              </div>
+              <button type="button" class="right"><img src="/imges/arrow_gray_up.png" alt="화살표 아이콘"></button>
+            </div>
+            <ul id="comment-area">
+            </ul>
+            <div class="more_view"><button type="button">더보기</button></div>
+            <div class="more_view_write_area">
+              <div class="write">
+                <form id="commentForm" name="commentForm">
+                  <input type="hidden" name="authSeq" id="authSeq" value="">
+                  <input type="hidden" name="blogSeq" id="blogSeq1" value="">
+                  <textarea name="text" id="conmmentArea" placeholder="코멘트 내용을 입력하세요"></textarea>
+                  <button type="button" id="commentInsertBt" class="input">등록</button>
+                </form>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-  </section>
-  
+    </section>
     <%- include('../layout/blog/footer.ejs') %>
 </body>
 </html>
