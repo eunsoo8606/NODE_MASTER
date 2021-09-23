@@ -1791,6 +1791,12 @@ ol, ul {
   padding: 10px;
   border-bottom: 1px solid #e5e5e5;
 }
+.comment_area ul > li .padding_application2 {
+  position: relative;
+  padding: 10px;
+  margin-left: 20px;
+  margin-top: 30px;
+}
 
 .comment_area ul > li .padding_application > div .id {
   display: inline-block;
@@ -1811,6 +1817,15 @@ ol, ul {
 .comment_area ul > li .padding_application > p.txt {
   line-height: 26px;
   margin-top: 14px;
+  font-weight: 300;
+  font-size: 16px;
+  color: #666;
+}
+
+.comment_area ul > li .padding_application2 > p.txt {
+  line-height: 26px;
+  margin-top: 14px;
+  margin-left: 25px;
   font-weight: 300;
   font-size: 16px;
   color: #666;
@@ -1843,6 +1858,15 @@ ol, ul {
 }
 .comment_area ul > li .padding_application .button_area button {
   outline: 0;
+}
+.rtnBtn{
+    position: absolute;
+    top: 60px;
+    right: 12px;
+    border-radius: 0px;
+    border: 1px solid #ddd;
+    background-color: white;
+    font-size: 15px;
 }
 
 

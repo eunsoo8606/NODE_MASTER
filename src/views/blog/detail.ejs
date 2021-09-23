@@ -74,10 +74,13 @@
               var datas  = data; 
               var values = '';
 
-             if(datas !== undefined){
+             if(datas === undefined){
+              return false;
+             }
                for(var i = 0; i < datas.length; i++){
+                 if(parseInt(datas[i].COMMENT_LEVEL) == 1){
                   values += `<li id="com${i}">
-                              <div class="padding_application">
+                              <div class="padding_application" id="comment${datas[i].COMMENT_SEQ}">
                                 <div>
                                     <span class="id">${datas[i].NICK_NAME}</span>
                                     <span class="date">${datas[i].REG_DTTM}</span>
@@ -87,16 +90,48 @@
                                 <div class="button_area">
                                   ${($("#authSeq").val() == datas[i].AUTHOR_SEQ)?
                                     `<button type="button" class="del" onclick="deleteComment(${datas[i].COMMENT_SEQ},${blogSeq});">삭제</button>`
-                                    +`<button type="button" class="modify" onclick="commentModify(${datas[i].COMMENT_SEQ},${blogSeq},'${datas[i].TEXT}',${i})">수정</button></div></div>
+                                    +`<button type="button" class="modify" onclick="commentModify(${datas[i].COMMENT_SEQ},${blogSeq},'${datas[i].TEXT}',${i})">수정</button>
+                                    </div>
+                                    <div class="return-comment-area"><button onclick="rtnComment(${datas[i].COMMENT_SEQ},${blogSeq},${i})" class="rtnBtn">답글달기</button></div>
+                                    <div id="comment-text-area"><div>
+                                    </div>
                                     </li>`:`
                                       </div>
+                                      <div class="return-comment-area"><button onclick="rtnComment(${datas[i].COMMENT_SEQ},${blogSeq},${i})" class="rtnBtn">답글달기</button></div>
+                                      <div id="comment-text-area"><div>
                                     </div>
                                     </li>`}`;
+                  }
                 }
-             }
 
             $("#comCnt").text(datas.length);
             $("#comment-area").html(values);
+
+            for(var i = 0; i < datas.length; i++){
+              if(parseInt(datas[i].COMMENT_LEVEL) == 2){
+                  values = `
+                          <div class="padding_application2" id="comment${datas[i].COMMENT_SEQ}">
+                                <div>
+                                    <img src="/imges/right-arrow_icon.png" height="20" width="20" alt=""/>
+                                    <span class="id">${datas[i].NICK_NAME}</span>
+                                    <span class="date">${datas[i].REG_DTTM}</span>
+                                    <input type="hidden" id="commentSeq" value="${datas[i].COMMENT_SEQ}">
+                                </div>
+                                <p class="txt">${datas[i].TEXT}</p>
+                                <div class="button_area">
+                                  ${($("#authSeq").val() == datas[i].AUTHOR_SEQ)?
+                                    `<button type="button" class="del" onclick="deleteComment(${datas[i].COMMENT_SEQ},${blogSeq});">삭제</button>`
+                                    +`<button type="button" class="modify" onclick="commentModify(${datas[i].COMMENT_SEQ},${blogSeq},'${datas[i].TEXT}',${i})">수정</button>
+                                    </div>
+                                    <div id="comment-text-area"><div>
+                                    </div>
+                                    `:`
+                                      </div>
+                                      <div id="comment-text-area"><div>
+                                      </div>`}`;
+                  $("#comment" + datas[i].PARENT_COMMENT_SEQ).append(values);
+              }
+            }
 
               if(datas.length > 3){
                 $.each($("#comment-area > li"),function(index, item){
@@ -224,7 +259,7 @@ function commentModify(commentSeq,bloSeq,text,index){
   $(".more_view_write_area").remove();
   var value = ` <div class="more_view_write_area" id="updateCommentDiv" style="display: block;">
               <div class="write">
-                <form id="commentUpForm" name="commentUpForm">
+                <form id="commentUpForm" name="commentUpForm" onsubmit="return false;">
                   <input type="hidden" name="bloSeq"value="${bloSeq}">
                   <input type="hidden" name="commentSeq"value="${commentSeq}">
                   <textarea name="conts" id="conmmentUpArea" placeholder="코멘트 내용을 입력하세요">${text}</textarea>
@@ -232,7 +267,7 @@ function commentModify(commentSeq,bloSeq,text,index){
                 </form>
               </div>
             </div>`;
-  $("#com" + index).append(value);
+  $("#comment" + commentSeq+" > #comment-text-area").append(value);
 }
 
 function updateComent(blogSeq){
@@ -256,6 +291,45 @@ function updateComent(blogSeq){
                 }
             });
         }
+}
+function rtnComment(commentSeq,bloSeq,index){
+  var memberSeq = $("#authSeq").val();
+  $(".more_view_write_area").remove();
+  var value = ` <div class="more_view_write_area" id="rtnCommentDiv" style="display: block;">
+              <div class="write">
+                <form id="commentRtnForm" name="commentRtnForm" onsubmit="return false;">
+                  <input type="hidden" name="bloSeq"value="${bloSeq}">
+                  <input type="hidden" name="parentSeq"value="${commentSeq}">
+                  <input type="hidden" name="authSeq" value="${memberSeq}">
+                  <input type="hidden" name="commentLevel" value="2">
+                  <textarea name="text" id="conmmentRtnArea" placeholder="코멘트 내용을 입력하세요"></textarea>
+                  <button type="button" id="commentUpBt" onclick="insertRtnComent(${bloSeq});" class="input">답글 등록</button>
+                </form>
+              </div>
+            </div>`;
+    $("#comment" + commentSeq+" > #comment-text-area").append(value);
+}
+function insertRtnComent(bloSeq){
+    
+      $.ajax({
+                url:`/v1/blog/detail/${bloSeq}/comments`,
+                type:"POST",
+                data:$("#commentRtnForm").serialize(),
+                success:(data)=>{ 
+                    var datas  = data;
+                    console.log("datas : ", datas);
+                  if(parseInt(datas) > 0){
+                      alert("정상적으로 등록 되었습니다.");
+                      location.reload();
+                  }else{
+                      alert("등록 실패! 관리자에게 문의 하세요.");
+                      return false;
+                  }
+                },
+                error:(err)=>{
+                    console.log(err);
+                }
+            });
 }
   </script>
 
@@ -301,7 +375,7 @@ function updateComent(blogSeq){
             <div class="more_view"><button type="button">더보기</button></div>
             <div class="more_view_write_area">
               <div class="write">
-                <form id="commentForm" name="commentForm">
+                <form id="commentForm" name="commentForm" onsubmit="return false;">
                   <input type="hidden" name="authSeq" id="authSeq" value="">
                   <input type="hidden" name="blogSeq" id="blogSeq1" value="">
                   <textarea name="text" id="conmmentArea" placeholder="코멘트 내용을 입력하세요"></textarea>

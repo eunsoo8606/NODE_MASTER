@@ -30,7 +30,7 @@
                   success:(data)=>{ 
                       if(data == "200"){
                         alert("성공적으로 수정 되었습니다.");
-                        location.href=`/v1/blog/${blogSeq}?category=${btoa('detail')}`;
+                        location.href=`/v1/blog/detail/${blogSeq}?category=${btoa('detail')}`;
                       }
                   },
                   error:(err)=>{

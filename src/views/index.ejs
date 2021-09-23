@@ -143,7 +143,7 @@ function getLoadName(id,date,x,y){
 
 function getWeather(date,address){
        //현재 일시분초 셋팅
-       var hours = (new Date().getHours()-1).toString();
+     var hours = (new Date().getHours()-1).toString();
      if(hours.length == 1) hours = "0" + hours;
      var date = parseInt(Util.sysDate());
   //database 에서 격자 좌표 변환처리 정보 조회

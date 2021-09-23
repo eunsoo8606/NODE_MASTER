@@ -217,6 +217,7 @@ router.put("/detail/:id",(req,res)=>{
         json:true
       },
       function (error, response, body) {
+          console.log("body : ", body)
         if(error !== undefined && error !== null){ 
             res.send("401");
             return false;
@@ -253,7 +254,7 @@ router.delete('/upload',(req, res) => {
 router.get("/detail/:id/comments",(req,res)=>{
     var blogSeq = req.params.id;
     var cookies = common.util.getCookie(req);
-    console.log("comments init...................................")
+
     request({
         url:`${process.env.apiServerUrl}/v1/blog/detail/comments`,
         method:'GET',
@@ -280,12 +281,12 @@ router.get("/detail/:id/comments",(req,res)=>{
       });
 });
 router.post("/detail/:id/comments",(req,res)=>{
-    var blogSeq = req.params.id;
-    var cookies = common.util.getCookie(req);
-    var text    = req.body.text;
-    var authSeq = req.body.authSeq;
-    var parentSeq = req.body.parentSeq;
-
+    var blogSeq      = req.params.id;
+    var cookies      = common.util.getCookie(req);
+    var text         = req.body.text;
+    var authSeq      = req.body.authSeq;
+    var parentSeq    = req.body.parentSeq;
+    var commentLevel = req.body.commentLevel;
     request({
         url:`${process.env.apiServerUrl}/v1/blog/detail/comments`,
         method:'POST',
@@ -296,8 +297,10 @@ router.post("/detail/:id/comments",(req,res)=>{
           'blogSeq':blogSeq,
           'text':text,
           'authSeq':authSeq,
-          'parentSeq':parentSeq
-        },json:true
+          'parentSeq':parentSeq,
+          'commentLevel':commentLevel
+        },
+        json:true
       },
       function (error, response, body) {
         if(error !== undefined && error !== null){ 
@@ -309,6 +312,12 @@ router.post("/detail/:id/comments",(req,res)=>{
             res.send("401");
             return false;
         }
+
+        if(body.error !== undefined){
+            res.send(body.error);
+            return false;
+        }
+        console.log("body data : ", body.data);
         res.send(body.data.toString());
       });
 });

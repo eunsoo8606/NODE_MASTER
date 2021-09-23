@@ -2,7 +2,7 @@ const common  = require('../../../utils/commonIMT');
 const request = require('request');
 const express = require("express");
 const router  = express.Router();
-
+const cookie            = require('cookie');
 
 
 require('dotenv').config();
@@ -53,6 +53,47 @@ router.get('/local/callback', (req, res) => {
           res.end();
       });
   });
+
+  router.get('/logout', (req, res) => {
+    console.log("login_init....", process.env.redirect_uri_out)
+    var cookies     = common.util.getCookie(req);
+      request({
+        url:`${process.env.apiServerUrl}/oauth/logout`,
+        method:'GET',
+        headers:{
+                 'Cotent-Type':'application/json; charset=UTF-8',
+                 'Authorization':'Bearer ' + cookies.acToken},
+        qs:{
+          client_id:process.env.localClientId,
+          redirect_uri:process.env.redirect_uri_out,
+          local:process.env.masterKey
+        },json:true,
+        timeout: 500,
+        followRedirect :true,
+        maxRedirects :10
+      },
+      function (error, response, body) {
+        res.clearCookie("reToken",{path:'/'});
+        res.clearCookie("acToken",{path:'/'});
+        res.clearCookie("expires_in",{path:'/'});
+        res.clearCookie("continue",{path:'/'});
+        res.clearCookie("re_lo",{path:'/'});
+        res.redirect("/")
+      }
+      );
+  
+    });
+
+    router.get('/logout/callback',(req,res)=>{
+      var resultCode = req.query.resultCode;
+      var error_msg  = req.query.error_msg;
+      console.log("callback init...", resultCode);
+      if(parseInt(resultCode) > 0){
+        res.end();
+      }else{
+        res.render('common/error/error.ejs',{state:statusCode,description:error_msg});
+      }
+    });
 
 
 
