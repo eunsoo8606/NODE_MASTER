@@ -9,40 +9,34 @@
  <%- include('../layout/blog/back.ejs') %>
 
  <script>
+  const blogSeq = '<%=blogSeq%>';
   $(function(){
-    var blogSeq = '<%=blogSeq%>';
     $("#blogSeq1").val(blogSeq);
-    $("#blogSeq2").val(blogSeq); 
+    $("#blogSeq2").val(blogSeq);
+
     $.ajax({
       url:"/v1/user/me",
       type:"GET",
       dataType:'json',
       success:(data)=>{
         var user = data.data;
-        if(user !== undefined){
+        var t    = document.getElementById("commentInsertBt");
+        if(user === undefined) addLoginEvent(t);
+        else{
           if(user.MEMBER_SEQ === undefined){
-            $("#commentInsertBt").on("click",function(){
-              if(confirm("로그인 후 이용 후 이용가능한 서비스 입니다. \n 로그인 페이지로 이동 하시겠습니까?")){
-                login();
-              }else return false;
-            });
+            addLoginEvent(t);
           }
           $("#authSeq").val(user.MEMBER_SEQ); 
-        }else{
-          $("#commentInsertBt").on("click",function(){
-              if(confirm("로그인 후 이용 후 이용가능한 서비스 입니다. \n 로그인 페이지로 이동 하시겠습니까?")){
-                login();
-              }else return false;
-            });
-        }    
+        }
+
         $.ajax({
             url:`/v1/blog/detail/${blogSeq}/selectOne`,
             type:"GET",
             success:(data)=>{ 
               var datas  = data[0];
               if(user === undefined){
-                $("#blog-update").css("display","none");
-                $("#blog-delete").css("display","none");
+                  $("#blog-update").css("display","none");
+                  $("#blog-delete").css("display","none");
               }else{
                 if(user.MEMBER_SEQ != datas.MEMBER_SEQ){
                   $("#blog-update").css("display","none");
@@ -72,84 +66,19 @@
             type:"GET",
             success:(data)=>{ 
               var datas  = data; 
-              var values = '';
-
              if(datas === undefined){
               return false;
              }
-               for(var i = 0; i < datas.length; i++){
-                 if(parseInt(datas[i].COMMENT_LEVEL) == 1){
-                  values += `<li id="com${i}">
-                              <div class="padding_application" id="comment${datas[i].COMMENT_SEQ}">
-                                <div>
-                                    <span class="id">${datas[i].NICK_NAME}</span>
-                                    <span class="date">${datas[i].REG_DTTM}</span>
-                                    <input type="hidden" id="commentSeq" value="${datas[i].COMMENT_SEQ}">
-                                </div>
-                                <p class="txt">${datas[i].TEXT}</p>
-                                <div class="button_area">
-                                  ${($("#authSeq").val() == datas[i].AUTHOR_SEQ)?
-                                    `<button type="button" class="del" onclick="deleteComment(${datas[i].COMMENT_SEQ},${blogSeq});">삭제</button>`
-                                    +`<button type="button" class="modify" onclick="commentModify(${datas[i].COMMENT_SEQ},${blogSeq},'${datas[i].TEXT}',${i})">수정</button>
-                                    </div>
-                                    <div class="return-comment-area"><button onclick="rtnComment(${datas[i].COMMENT_SEQ},${blogSeq},${i})" class="rtnBtn">답글달기</button></div>
-                                    <div id="comment-text-area"><div>
-                                    </div>
-                                    </li>`:`
-                                      </div>
-                                      <div class="return-comment-area"><button onclick="rtnComment(${datas[i].COMMENT_SEQ},${blogSeq},${i})" class="rtnBtn">답글달기</button></div>
-                                      <div id="comment-text-area"><div>
-                                    </div>
-                                    </li>`}`;
-                  }
-                }
-
-            $("#comCnt").text(datas.length);
-            $("#comment-area").html(values);
-
-            for(var i = 0; i < datas.length; i++){
-              if(parseInt(datas[i].COMMENT_LEVEL) == 2){
-                  values = `
-                          <div class="padding_application2" id="comment${datas[i].COMMENT_SEQ}">
-                                <div>
-                                    <img src="/imges/right-arrow_icon.png" height="20" width="20" alt=""/>
-                                    <span class="id">${datas[i].NICK_NAME}</span>
-                                    <span class="date">${datas[i].REG_DTTM}</span>
-                                    <input type="hidden" id="commentSeq" value="${datas[i].COMMENT_SEQ}">
-                                </div>
-                                <p class="txt">${datas[i].TEXT}</p>
-                                <div class="button_area">
-                                  ${($("#authSeq").val() == datas[i].AUTHOR_SEQ)?
-                                    `<button type="button" class="del" onclick="deleteComment(${datas[i].COMMENT_SEQ},${blogSeq});">삭제</button>`
-                                    +`<button type="button" class="modify" onclick="commentModify(${datas[i].COMMENT_SEQ},${blogSeq},'${datas[i].TEXT}',${i})">수정</button>
-                                    </div>
-                                    <div id="comment-text-area"><div>
-                                    </div>
-                                    `:`
-                                      </div>
-                                      <div id="comment-text-area"><div>
-                                      </div>`}`;
-                  $("#comment" + datas[i].PARENT_COMMENT_SEQ).append(values);
-              }
-            }
-
-              if(datas.length > 3){
-                $.each($("#comment-area > li"),function(index, item){
-                  if(index == 3) return;
-                  $(this).css("display","block");
-                });
-              }else{
-                $.each($("#comment-area > li"),function(index, item){
-                  $(this).css("display","block");
-                });
-              }
+             commentLevel1Html(datas);
+             commentLevel2Html(datas);
+             updateDisplay(datas);
             },
             error:(err)=>{
               console.log(err);
             }
         });
 
-    }, 500);
+    },500);
     
     $("#blog-list").on("click",function(){
       history.back();
@@ -170,7 +99,7 @@
                       alert("정상적으로 삭제 되었습니다.");
                       location.href="/v1/blog";
                   }else{
-                      alert("삭제 실패! 관리자에게 문의 하세요.");
+                      alert("삭제 실패! 관리자에게 문의 하세요.ss");
                       return false;
                   }
                 },
@@ -181,26 +110,6 @@
         }
     });
   
-    $("#commentInsertBt").on('click',function(){
-     
-          $.ajax({
-                url:`/v1/blog/detail/${blogSeq}/comments`,
-                type:"POST",
-                data:$("#commentForm").serialize(),
-                success:(data)=>{ 
-                    var datas  = data;
-                  if(parseInt(datas) > 0){
-                      location.reload();
-                  }else{
-                      alert("삭제 실패! 관리자에게 문의 하세요.");
-                      return false;
-                  }
-                },
-                error:(err)=>{
-                    console.log(err);
-                }
-            });
-    });
 
     $("#blog-update").on("click",function(){
       location.href=`/v1/blog/detail/${blogSeq}?category=${btoa('update')}`
@@ -229,11 +138,33 @@
             $(this).css("display","block");
         });
     });
-
-
+    $("#commentInsertBt").on('click',function(){
+      commentInsertBt();
+    });
   });
-  function deleteComment(commentSeq,bSeq){
-    console.log("commentSeq : ", commentSeq);
+
+  function updateDisplay(datas){
+    if(datas.length > 3){
+      $.each($("#comment-area > li"),function(index, item){
+        if(index == 3) return;
+        $(this).css("display","block");
+      });
+    }else{
+      $.each($("#comment-area > li"),function(index, item){
+        $(this).css("display","block");
+      });
+    }
+  }
+  function addLoginEvent(t){
+    t.addEventListener('click', function(event){
+       if(confirm("로그인 후 이용 후 이용가능한 서비스 입니다. \n 로그인 페이지로 이동 하시겠습니까?")){
+         login();
+         return false;
+       }else return false;
+    });
+  }
+function deleteComment(commentSeq,bSeq){
+  
     if(confirm("해당 댓글을 삭제 하시겠습니까?")){
         $.ajax({
                 url:`/v1/blog/detail/${bSeq}/comments`,
@@ -254,7 +185,7 @@
                 }
             });
       }else return;
-  }
+}
 function commentModify(commentSeq,bloSeq,text,index){
   $(".more_view_write_area").remove();
   var value = ` <div class="more_view_write_area" id="updateCommentDiv" style="display: block;">
@@ -268,6 +199,67 @@ function commentModify(commentSeq,bloSeq,text,index){
               </div>
             </div>`;
   $("#comment" + commentSeq+" > #comment-text-area").append(value);
+}
+
+function commentLevel1Html(datas){
+  var values = "";
+  for(var i = 0; i < datas.length; i++){
+      if(parseInt(datas[i].COMMENT_LEVEL) == 1){
+       values += `<li id="com${i}">
+                   <div class="padding_application" id="comment${datas[i].COMMENT_SEQ}">
+                     <div>
+                         <span class="id">${datas[i].NICK_NAME}</span>
+                         <span class="date">${datas[i].REG_DTTM}</span>
+                         <input type="hidden" id="commentSeq" value="${datas[i].COMMENT_SEQ}">
+                     </div>
+                     <p class="txt">${datas[i].TEXT}</p>
+                     <div class="button_area">
+                       ${($("#authSeq").val() == datas[i].AUTHOR_SEQ)?
+                         `<button type="button" class="del" onclick="deleteComment(${datas[i].COMMENT_SEQ},${blogSeq});">삭제</button>`
+                         +`<button type="button" class="modify" onclick="commentModify(${datas[i].COMMENT_SEQ},${blogSeq},'${datas[i].TEXT}',${i})">수정</button>
+                         </div>
+                         <div class="return-comment-area"><button onclick="rtnComment(${datas[i].COMMENT_SEQ},${blogSeq},${i})" class="rtnBtn">답글달기</button></div>
+                         <div id="comment-text-area"><div>
+                         </div>
+                         </li>`:`
+                           </div>
+                           <div class="return-comment-area"><button onclick="rtnComment(${datas[i].COMMENT_SEQ},${blogSeq},${i})" class="rtnBtn">답글달기</button></div>
+                           <div id="comment-text-area"><div>
+                         </div>
+                         </li>`}`;
+      }
+    }
+
+  $("#comCnt").text(datas.length);
+  $("#comment-area").html(values);
+}
+function commentLevel2Html(datas){
+  var values = "";
+  for(var i = 0; i < datas.length; i++){
+      if(parseInt(datas[i].COMMENT_LEVEL) == 2){
+          values = `
+                  <div class="padding_application2" id="comment${datas[i].COMMENT_SEQ}">
+                        <div>
+                            <img src="/imges/right-arrow_icon.png" height="20" width="20" alt=""/>
+                            <span class="id">${datas[i].NICK_NAME}</span>
+                            <span class="date">${datas[i].REG_DTTM}</span>
+                            <input type="hidden" id="commentSeq" value="${datas[i].COMMENT_SEQ}">
+                        </div>
+                        <p class="txt">${datas[i].TEXT}</p>
+                        <div class="button_area">
+                          ${($("#authSeq").val() == datas[i].AUTHOR_SEQ)?
+                            `<button type="button" class="del" onclick="deleteComment(${datas[i].COMMENT_SEQ},${blogSeq});">삭제</button>`
+                            +`<button type="button" class="modify" onclick="commentModify(${datas[i].COMMENT_SEQ},${blogSeq},'${datas[i].TEXT}',${i})">수정</button>
+                            </div>
+                            <div id="comment-text-area"><div>
+                            </div>
+                            `:`
+                              </div>
+                              <div id="comment-text-area"><div>
+                              </div>`}`;
+        $("#comment" + datas[i].PARENT_COMMENT_SEQ).append(values);
+      }
+    }
 }
 
 function updateComent(blogSeq){
@@ -331,10 +323,35 @@ function insertRtnComent(bloSeq){
                 }
             });
 }
-  </script>
+function commentInsertBt(){
 
+  var blogSeq = $("#blogSeq1").val();
+
+  if($("#conmmentArea").val() == ""){
+    alert("코멘트를 입력해 주세요.");
+    return false;
+  }
+  
+  $.ajax({
+          url:`/v1/blog/detail/${blogSeq}/comments`,
+          type:"POST",
+          data:$("#commentForm").serialize(),
+          success:(data)=>{ 
+              var datas  = data;
+            if(parseInt(datas) > 0){
+                location.reload();
+            }else{
+                alert("등록 실패! 관리자에게 문의 하세요.");
+                return false;
+            }
+          },
+          error:(err)=>{
+              console.log(err);
+          }
+        });
+}
+</script>
 </head>
-
 <body data-spy="scroll" >
     <%- include('../layout/blog/header.ejs') %>
     <div class="write_menu" id="write_menu">

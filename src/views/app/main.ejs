@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <%- include('../layout/back.ejs') %>
     <title>ES developers</title>
+    <link href="/css/apimenu.css" rel="stylesheet">
     <script>
 $(function(){
 
@@ -52,25 +53,25 @@ $(function(){
   $("#modal_save").on('click',function(){
 
     var data = new FormData($("#app_form")[0]);
-    $.ajax({
-      url:"/v1/console/app",
-      type:"POST",
-      enctype: 'multipart/form-data',
-      data:data,
-      processData: false,
-      contentType: false,
-      cache:false,
-      timeout:600000,
-      success:(data)=>{ 
-          if(data == "Created"){
-            location.reload();
-          }
-      },
-      error:(err)=>{
-        console.log(err);
-      }
+      $.ajax({
+        url:"/v1/console/app",
+        type:"POST",
+        enctype: 'multipart/form-data',
+        data:data,
+        processData: false,
+        contentType: false,
+        cache:false,
+        timeout:600000,
+        success:(data)=>{ 
+            if(data == "Created"){
+              location.reload();
+            }
+        },
+        error:(err)=>{
+          console.log(err);
+        }
+      });
     });
-   });
 });
 
 function selectMyAppList(){
@@ -142,7 +143,7 @@ function changeSaveBtn(result){
     </script>
 </head>
 <body>
-    <%- include('../layout/apis/header.ejs') %>
+    <%- include('../layout/blog/header.ejs') %>
 
     <!--==========================
     API Section
@@ -150,10 +151,10 @@ function changeSaveBtn(result){
   <section id="about-us" class="about-us padd-section wow fadeInUp">
     <div class="container">
         <div class="row mt-4">
-    <h4>내 애플리케이션</h4>
+    <h4>home</h4>
     </div>
   </section>  
-  <section id="apps" class="padd-section wow fadeInUp">
+  <section id="blog" class="padd-section wow fadeInUp">
     <div class="container">
       <div class="section-title text-center">
 

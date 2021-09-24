@@ -6,10 +6,80 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <%- include('../layout/back.ejs') %>
     <title>ES developers</title>
+    <link href="/css/apimenu.css" rel="stylesheet">
+    <script>
+        var app = '<%=app%>';
+        $(function(){
+            myApp();
+        });
+    function myApp(){
+        $.ajax({
+                url:`/v1/console/app/${app}/info`,
+                type:"GET",
+                success:(datas)=>{ 
+                    console.log("data : ", datas);
+                    if(datas === undefined)
+                    return false;
+                    var data = datas.data;
+
+                    $("#app-id").text(data.APP_SEQ);
+                    $("#app-name").text(data.APP_NAME);
+                    $("#bs-name").text(data.BUISNESS_NAME);  
+                    $("#cd-id").text(data.CLIENT_ID);
+                    $("#sk-id").text(data.SECRET_KEY);
+                },
+                error:(err)=>{
+                    console.log(err);
+                }
+            });
+    }
+    </script>
 </head>
 <body>
-    <!-- <%- include('../layout/apis/header.ejs') %> -->
-
+    <%- include('../layout/app/header.ejs') %>
+    <section id="about-us" class="about-us padd-section wow fadeInUp">
+        <div class="container">
+        <div class="row mt-4">
+        <h4>home > 내 애플리케이션 > 요약정보</h4>
+        </div>
+        <div class="container">
+          <div class="row justify-content-center"  style="margin-top: 60px;">
+    
+            <div class="col-md-5 col-lg-3">
+              <img src="/imges/api.png" alt="About" class="rounded">
+            </div>
+    
+            <div class="col-md-7 col-lg-5">
+              <div class="about-content">
+                <h2><span>APP KEY</span></h2>
+                <table class="table">
+                    <tr>
+                        <th>APP ID</th>
+                        <td id="app-id">dd</td>
+                    </tr>
+                    <tr>
+                        <th>APP NAME</th>
+                        <td id="app-name">dd</td>
+                    </tr>
+                    <tr>
+                        <th>BUISNESS NAME</th>
+                        <td id="bs-name">dd</td>
+                    </tr>
+                    <tr>
+                        <th>CLIENT ID</th>
+                        <td id="cd-id">dd</td>
+                    </tr>
+                    <tr>
+                        <th>SECRET KEY</th>
+                        <td id="sk-id">dd</td>
+                    </tr>
+                </table>
+              </div>
+            </div>
+    
+          </div>
+        </div>
+      </section>
     
     <%- include('../layout/footer.ejs') %>
 </body>

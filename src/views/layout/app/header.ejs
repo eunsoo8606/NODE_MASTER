@@ -1,0 +1,77 @@
+<header id="header" class="header header-hide">
+    <!-- 왼쪽 사이드 메뉴 스크립트 -->
+  <script>
+    var depth = "<%=depth%>";
+    var sub   = "<%=sub%>";
+    
+    $(function(){
+      $("#nav-menu-container").css("position","inherit");
+        // 왼쪽메뉴 드롭다운
+        $(".sub_menu ul.small_menu").hide();
+        $(".sub_menu ul.small_menu").eq(depth).show();
+        $(".sub_menu ul.small_menu").eq(depth).find("li").eq(sub).css({"background-color":"#e1e1e1"});
+        $(".sub_menu ul.small_menu").eq(depth).find("li").eq(sub).find("a").css({"color":"#ff5858"});
+        $(".sub_menu ul.big_menu").click(function () {
+            $("ul", this).slideToggle(300);
+        });
+    });
+  </script>
+<style>
+@media (max-width: 1550px) {
+  .footer{
+    background: #2a2c30;
+    padding: 30px;
+    margin-left: 300px !important;
+  }
+  .padd-section {
+    padding-bottom: 80px;
+    padding-top: 80px;
+    margin-left: 400px !important;
+  }
+}
+</style>
+    <div class="container">
+
+      <div id="logo" class="pull-left">
+        <h1><a href="/" class="scrollto"><img src="/imges/logos.png"/></a></h1>
+        <!-- Uncomment below if you prefer to use an image logo -->
+        <!-- <a href="#body"><img src="img/logo.png" alt="" title="" /></a>-->
+      </div>
+
+      <nav id="nav-menu-container">
+        <ul class="nav-menu">
+          <li class="menu-has-children"><a href="javascript:void(0)">마이페이지</a>
+            <ul>
+              <li><a href="#">내 정보수정</a></li>
+              <li><a href="/auth/logout_process">로그아웃</a></li>
+              <li><a href="/v1/console/app">내 애플리케이션</a></li>
+            </ul>
+          </li>
+        </ul>
+      </nav><!-- #nav-menu-container -->
+    </div>
+    <div id="wrapper">
+      <div class="topbar" style="position: absolute; top:0;">
+          <!-- 왼쪽 서브 메뉴 -->
+          <div class="left_sub_menu">
+              <div class="sub_menu">
+                  <h2>설정 정보</h2>
+                  <ul class="big_menu">
+                      <li>앱설정<i class="fas fa-cog" style="margin-right:12px; float:right; margin-top: 7px;"></i></li>
+                      <ul class="small_menu">
+                          <li  onclick="javascript:goPage('/v1/console/app/<%=app%>?depth=0&sub=0')"><a href="javascript:void(0);">요약정보</a></li>
+                          <li  onclick="javascript:goPage('/v1/console/app/<%=app%>/default?depth=0&sub=1')"><a href="javascript:void(0);">일반</a></li>
+                          <li  onclick="javascript:goPage('/v1/console/app/<%=app%>/appKey?depth=0&sub=2')"><a href="javascript:void(0);">앱 키</a></li>
+                      </ul>
+                  </ul>
+              </div>
+          </div>
+          <div class="overlay"></div>
+      </div>
+      </div>
+<script>
+    function goPage(url){
+        location.href=url;
+    }
+</script>
+  </header><!-- #header -->

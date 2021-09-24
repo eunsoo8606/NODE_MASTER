@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('../layout/back.ejs') %>
+    <title>ES developers</title>
+    <link href="/css/apimenu.css" rel="stylesheet">
+    <script>
+        var app = '<%=app%>';
+        $(function(){
+            myApp();
+
+
+        $("#app-update").click(function(){ 
+            $(".modal").fadeIn(); 
+        });
+
+        $("#modal_cencle").click(function(){ 
+            $(".modal").fadeOut();
+            $("#app_form")[0].reset();
+            $("#uploadImg").html(modalImg);
+            myApp();
+            changeSaveBtn(false);
+        });
+
+        $("#enterprise_name").on('focusout',function(){
+            if(Util.get($(this).val()) === ""){
+            changeSaveBtn(false);
+            }
+            if(Util.get($("#app_name").val()) === ""){
+            changeSaveBtn(false);
+            }
+            if(Util.get($('#app_img').val()) === ""){
+            changeSaveBtn(false);
+            }
+            changeSaveBtn(true);
+        });
+
+        $("#app_name").on('focusout',function(){
+            if(Util.get($(this).val()) === ""){
+            changeSaveBtn(false);
+            }
+            if(Util.get($("#enterprise_name").val()) === ""){
+            changeSaveBtn(false);
+            }
+            if(Util.get($('#app_img').val()) === ""){
+            changeSaveBtn(false);
+            }
+            changeSaveBtn(true);
+        });
+
+        $("#modal_save").on('click',function(){
+
+            var data = new FormData($("#app_form")[0]);
+            $.ajax({
+                url:"/v1/console/app",
+                type:"PUT",
+                enctype: 'multipart/form-data',
+                data:data,
+                processData: false,
+                contentType: false,
+                cache:false,
+                timeout:600000,
+                success:(data)=>{ 
+                    if(data == "Created"){
+                        alert("성공적으로 반영 되었습니다.")
+                        location.reload();
+                    }
+                },
+                error:(err)=>{
+                console.log(err);
+                }
+            });
+            });
+
+
+        });
+    function myApp(){
+        $.ajax({
+                url:`/v1/console/app/${app}/info`,
+                type:"GET",
+                success:(datas)=>{ 
+                    var data = datas.data;
+                    if(data === undefined)
+                    return false;
+                    console.log("Data : ", data);
+                    var src = `<img src="${data.FILE_PATH}"width='60' height='60' alt="/imges/blog/blog-image-1.jpg">`;
+                    var modalImg = `<img src="${data.FILE_PATH}"width='90' height='90' alt="/imges/blog/blog-image-1.jpg">`;
+                    $("#uploadImg").html(modalImg);
+                    $("#app-icon").html(src);
+                    $("#app-id").text(data.APP_SEQ);
+                    $("#app-name").text(data.APP_NAME);
+                    $("#app_name").val(data.APP_NAME);
+                    $("#cd-id").text(data.CLIENT_ID);
+                    $("#sk-id").text(data.SECRET_KEY);
+                    $("#enterprise_name").val(data.BUISNESS_NAME);
+                    $("#rename_file_name").val(data.APP_RENAME_FILE_NAME);
+                    $("#icon-img").prop("src",data.FILE_PATH);
+                    $("#origin_file_path").val(data.FILE_PATH);  
+                    $("#bs-name").text(data.BUISNESS_NAME);
+                },
+                error:(err)=>{
+                    console.log(err);
+                }
+            });
+    }
+    function file_open(){
+        $("input[name='app_img']").click();
+    }
+
+    function LoadImage(){
+        var file = $("input[name='app_img']")[0].files[0];
+        Util.resizeImg('uploadImg',file,90,90);
+        changeSaveBtn(true);
+    }
+
+    function changeSaveBtn(result){
+        var saveBtn = document.getElementById('modal_save');
+
+        if(result){
+            saveBtn.disabled = false;
+            saveBtn.className = 'btn btn-success' ;
+        }else{
+            saveBtn.disabled = true;
+            saveBtn.className = 'btn btn-secondary' ;
+        }
+
+    }
+    </script>
+</head>
+<body>
+    <%- include('../layout/app/header.ejs') %>
+    <section id="about-us" class="about-us padd-section wow fadeInUp">
+        <div class="container">
+        <div class="row mt-4">
+        <h4>home > 내 애플리케이션 > 일반</h4>
+        </div>
+        <div class="default-area">
+            <div class="default-header">
+              <span class="left title">기본 정보</span><span class="right"><button id="app-update">수정</button></span>
+            </div>
+              <div class="about-content">
+                <table class="app-table">
+                    <tr>
+                        <th scope="col">APP ICON</th>
+                        <td id="app-icon"></td>
+                    </tr>
+                    <tr>
+                        <th scope="col">APP NAME</th>
+                        <td id="app-name">dd</td>
+                    </tr>
+                    <tr>
+                        <th scope="col">BUISNESS NAME</th>
+                        <td id="bs-name">dd</td>
+                    </tr>
+                </table>
+              </div>
+        </div>
+      </section>
+      <section id="about-us" class="about-us padd-section wow fadeInUp">
+        <div class="container">
+        <div class="default-area">
+            <div class="default-header">
+              <span class="left title">앱 삭제</span>
+            </div><br/>
+            <hr/>
+            <p>이 앱을 영구적으로 삭제합니다. 삭제한 앱은 복구할 수 없습니다.</p>
+            <button class="app-delete" id="deleteApp">앱 영구 삭제</button>
+        </div>
+      </section>
+      <div class="modal">
+        <div class="modal_content"> 
+          <header>
+            <strong class="tit_layer">기본 정보</strong>
+          </header>
+          <hr/>
+         <form  name="app_form" onsubmit="return false;" id="app_form" enctype="multipart/form-data">
+            <input type="hidden" name="origin_file_path" id="origin_file_path"/>
+            <input type="hidden" name="rename_file_name" id="rename_file_name"/>
+            <table class="app_table">
+              <tbody>
+                <tr>
+                  <th>App Image</th>
+                  <td>
+                    <div class="APP_ImgArea">
+                      <div class="box_thumb" tabindex="0">
+                        <span class="txt_default">
+                          <span class="txt_g" id="uploadImg">
+                             이미지<br>업로드
+                          </span>
+                        </span>
+                      </div>
+                      <div class="box_file" id="modal-img">
+                        <input accept="image/jpeg,image/jpg,image/gif,image/png" multiple="" type="file" autocomplete="off" onchange='LoadImage();' tabindex="-1" name="app_img" id="app_img" style="display: none;">
+                        <button type="button" onclick="file_open();" class="lab_file show_pc" id="img_file_btn" tabindex="0">파일 선택</button>
+                        <div class="txt_file">
+                          JPG, GIF, PNG<br>권장 사이즈 360px, 최대 350KB
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th>App Name</th>
+                  <td>
+                   <div class="modal_input_area">
+                    <input name="app_name" type="text" id="app_name" class="modal_input" placeholder="내 애플리케이션 이름" value="">
+                   </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Enterprise Name</th>
+                  <td>
+                   <div class="modal_input_area">
+                    <input name="enterprise_name" type="text" id="enterprise_name" class="modal_input" placeholder="사업자 명" value="">
+                   </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <ul>
+              <li>정보가 정확하지 않은 경우 서비스 이용이 제한될 수 있습니다.</li>
+            </ul>
+            <div class="modal_footer">
+                <div class="modal_footer_left">
+                  <button id="modal_cencle" class="btn btn-danger">CANCEL</button>
+                </div>
+                <div class="modal_footer_right">
+                  <button id="modal_save" class="btn btn-secondary" disabled>SAVE</button>
+                </div>
+            </div>
+         </form>
+        </div> 
+      </div>
+    <%- include('../layout/footer.ejs') %>
+</body>
+</html>

@@ -255,13 +255,20 @@ function writeWeather(data){
 function goBlog(){
   location.href="/v1/blog?scope=paging";
 }
+function goDocument(){
+  if(isMobile()){
+    alert("모바일에선 접근이 불가능한 페이지 입니다.\n pc로 접속해 주세요.");
+    return;
+  }
+
+  location.href="/v1/documents";
+}
 </script>
 <script>
 	$(document).ready(function(){
 		$(window).on('load resize', function(){
 			if($(window).width() > 768){
-				$(window).on('scroll', function(){
-					
+				$(window).on('scroll', function(){	
 					$('.quick_menu').css('top', $(window).scrollTop() + $(window).height() / 2);
 				});
 			}else {
@@ -438,7 +445,7 @@ function goBlog(){
             </p>
 
             <ul class="list-unstyled">
-              <li><i class="fa fa-angle-right"></i><a href="/v1/documents">go documents</a></li>
+              <li><i class="fa fa-angle-right"></i><a href="javascript:goDocument()">go documents</a></li>
             </ul>
 
           </div>

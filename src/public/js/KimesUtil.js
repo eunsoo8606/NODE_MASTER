@@ -461,6 +461,17 @@ function Util() {
               img.height = h;
               $("#" + id).html(img);
             }
+        },
+        /**
+         * 모바일 pc 체크 function
+         */
+        this.isMobile = function(){
+            var user = navigator.userAgent; 
+            var is_mobile = false; 
+            if( user.indexOf("iPhone") > -1 || user.indexOf("Android") > -1 ) { 
+                is_mobile = true; 
+            } 
+            return is_mobile;
         }
 	
 }
