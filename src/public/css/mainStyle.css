@@ -203,6 +203,20 @@ span {
   }
 }
 
+@media (max-width: 1600px){
+  #hero .hero-container {
+    position: absolute;
+    bottom: 0;
+    top: 90;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+  }
+}
 #hero .hero-container {
   position: absolute;
   bottom: 0;
@@ -215,6 +229,8 @@ span {
   flex-direction: column;
   text-align: center;
 }
+
+
 
 #hero h1 {
   margin: 0 0 10px 0;
@@ -366,6 +382,7 @@ span {
   #nav-menu-container {
     display: none;
   }
+ 
 }
 
 /* Nav Meu Styling */

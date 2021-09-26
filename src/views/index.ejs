@@ -256,12 +256,23 @@ function goBlog(){
   location.href="/v1/blog?scope=paging";
 }
 function goDocument(){
+ 
   if(isMobile()){
     alert("모바일에선 접근이 불가능한 페이지 입니다.\n pc로 접속해 주세요.");
     return;
   }
 
   location.href="/v1/documents";
+}
+function isMobile(){
+    // 모바일 여부
+ var isMobile = false;
+ // PC 환경
+ var filter = "win16|win32|win64|mac";
+ if (navigator.platform) {
+     isMobile = filter.indexOf(navigator.platform.toLowerCase()) < 0;
+ }
+ return isMobile;
 }
 </script>
 <script>

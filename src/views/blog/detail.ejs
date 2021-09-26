@@ -10,6 +10,7 @@
 
  <script>
   const blogSeq = '<%=blogSeq%>';
+  var login;
   $(function(){
     $("#blogSeq1").val(blogSeq);
     $("#blogSeq2").val(blogSeq);
@@ -49,6 +50,23 @@
               $("#blog-count").text(datas.COUNT);
               $("#title-area").html(datas.TITLE);
               $("#blog-area").html(datas.CONTENT);
+
+              $.ajax({
+                    url:`/v1/blog/detail/${blogSeq}/comments`,
+                    type:"GET",
+                    success:(data)=>{ 
+                      var datas  = data; 
+                      if(datas === undefined)
+                      return false;
+                    
+                      commentLevel1Html(datas);
+                      commentLevel2Html(datas);
+                      updateDisplay(datas);
+                    },
+                    error:(err)=>{
+                      console.log(err);
+                    }
+                  });
             },
             error:(err)=>{
               console.log(err);
@@ -59,26 +77,7 @@
         console.log("ERROR : ",err);
       }
     });
-
-    setTimeout(function() {
-      $.ajax({
-            url:`/v1/blog/detail/${blogSeq}/comments`,
-            type:"GET",
-            success:(data)=>{ 
-              var datas  = data; 
-             if(datas === undefined){
-              return false;
-             }
-             commentLevel1Html(datas);
-             commentLevel2Html(datas);
-             updateDisplay(datas);
-            },
-            error:(err)=>{
-              console.log(err);
-            }
-        });
-
-    },500);
+   
     
     $("#blog-list").on("click",function(){
       history.back();
@@ -97,7 +96,7 @@
                     var datas  = data;
                   if(data.data > 0){
                       alert("정상적으로 삭제 되었습니다.");
-                      location.href="/v1/blog";
+                      location.href="/v1/blog?scope=paging,member";
                   }else{
                       alert("삭제 실패! 관리자에게 문의 하세요.ss");
                       return false;
@@ -156,6 +155,7 @@
     }
   }
   function addLoginEvent(t){
+    login = 'N';
     t.addEventListener('click', function(event){
        if(confirm("로그인 후 이용 후 이용가능한 서비스 입니다. \n 로그인 페이지로 이동 하시겠습니까?")){
          login();
@@ -193,12 +193,12 @@ function commentModify(commentSeq,bloSeq,text,index){
                 <form id="commentUpForm" name="commentUpForm" onsubmit="return false;">
                   <input type="hidden" name="bloSeq"value="${bloSeq}">
                   <input type="hidden" name="commentSeq"value="${commentSeq}">
-                  <textarea name="conts" id="conmmentUpArea" placeholder="코멘트 내용을 입력하세요">${text}</textarea>
+                  <textarea name="conts" id="conmmentUpArea" placeholder="코멘트 내용을 입력하세요.">${text}</textarea>
                   <button type="button" id="commentUpBt" onclick="updateComent(${bloSeq});" class="input">수정등록</button>
                 </form>
               </div>
             </div>`;
-  $("#comment" + commentSeq+" > #comment-text-area").append(value);
+  $("#comment" + commentSeq + " > #comment-text-area").append(value);
 }
 
 function commentLevel1Html(datas){
@@ -218,12 +218,13 @@ function commentLevel1Html(datas){
                          `<button type="button" class="del" onclick="deleteComment(${datas[i].COMMENT_SEQ},${blogSeq});">삭제</button>`
                          +`<button type="button" class="modify" onclick="commentModify(${datas[i].COMMENT_SEQ},${blogSeq},'${datas[i].TEXT}',${i})">수정</button>
                          </div>
-                         <div class="return-comment-area"><button onclick="rtnComment(${datas[i].COMMENT_SEQ},${blogSeq},${i})" class="rtnBtn">답글달기</button></div>
+                         <div class="return-comment-area"><button id="rtn-btn" onclick="rtnComment(${datas[i].COMMENT_SEQ},${blogSeq},${i})" class="rtnBtn">답글달기</button></div>
                          <div id="comment-text-area"><div>
                          </div>
                          </li>`:`
                            </div>
-                           <div class="return-comment-area"><button onclick="rtnComment(${datas[i].COMMENT_SEQ},${blogSeq},${i})" class="rtnBtn">답글달기</button></div>
+                           ${$("#authSeq").val() !== ''?`<div class="return-comment-area"><button id="rtn-btn" onclick="rtnComment(${datas[i].COMMENT_SEQ},${blogSeq},${i})" class="rtnBtn">답글달기</button>`:''}
+                           </div>
                            <div id="comment-text-area"><div>
                          </div>
                          </li>`}`;
@@ -302,7 +303,6 @@ function rtnComment(commentSeq,bloSeq,index){
     $("#comment" + commentSeq+" > #comment-text-area").append(value);
 }
 function insertRtnComent(bloSeq){
-    
       $.ajax({
                 url:`/v1/blog/detail/${bloSeq}/comments`,
                 type:"POST",
@@ -326,7 +326,7 @@ function insertRtnComent(bloSeq){
 function commentInsertBt(){
 
   var blogSeq = $("#blogSeq1").val();
-
+  if(login == "N"){return false;}
   if($("#conmmentArea").val() == ""){
     alert("코멘트를 입력해 주세요.");
     return false;

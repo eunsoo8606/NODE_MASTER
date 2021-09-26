@@ -268,16 +268,18 @@ router.get("/detail/:id/comments",(req,res)=>{
       function (error, response, body) {
         console.log("comments : ", body)
         if(error !== undefined && error !== null){ 
-            res.send("401");
+            res.status(401);
+            res.end();
             return false;
         }
         
         if(body === undefined){ 
-            res.send("401");
+            res.status(401);
+            res.end();
             return false;
         }
         
-        res.send(body.data);
+        res.status(200).send(body.data);
       });
 });
 router.post("/detail/:id/comments",(req,res)=>{
