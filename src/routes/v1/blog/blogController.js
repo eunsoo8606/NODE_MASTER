@@ -217,7 +217,6 @@ router.put("/detail/:id",(req,res)=>{
         json:true
       },
       function (error, response, body) {
-          console.log("body : ", body)
         if(error !== undefined && error !== null){ 
             res.send("401");
             return false;
@@ -266,7 +265,6 @@ router.get("/detail/:id/comments",(req,res)=>{
         },json:true
       },
       function (error, response, body) {
-        console.log("comments : ", body)
         if(error !== undefined && error !== null){ 
             res.status(401);
             res.end();
@@ -319,7 +317,6 @@ router.post("/detail/:id/comments",(req,res)=>{
             res.send(body.error);
             return false;
         }
-        console.log("body data : ", body.data);
         res.send(body.data.toString());
       });
 });

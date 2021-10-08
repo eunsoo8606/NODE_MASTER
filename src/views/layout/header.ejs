@@ -8,7 +8,7 @@
       </div>
 
       <nav id="nav-menu-container">
-        <ul class="nav-menu">
+        <ul class="nav-menu" id="nav-menu">
           <li class="menu-active"><a href="#hero">Home</a></li>
           <!-- <li><a href="#get-started" >development experience</a></li> -->
           <li><a href="#about-us">API Documents</a></li>
@@ -17,17 +17,6 @@
           <li><a href="#team">Instagram</a></li>
           <li><a href="#blog">Blog</a></li>
           <li><a href="#contact">Contact</a></li>
-          <% if(login == 'Y'){%>
-          <li class="menu-has-children"><a href="javascript:void(0)">마이페이지</a>
-            <ul>
-              <li><a href="#">내 정보수정</a></li>
-              <li><a href="/v1/login/logout">로그아웃</a></li>
-              <li><a href="/v1/console/app">내 애플리케이션</a></li>
-            </ul>
-          </li>
-          <% }else{%>
-          <li><a href="javascript:login();">Login</a></li>
-          <%}%>
         </ul>
       </nav><!-- #nav-menu-container -->
     </div>

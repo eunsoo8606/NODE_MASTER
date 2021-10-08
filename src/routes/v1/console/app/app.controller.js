@@ -9,7 +9,8 @@ const path       = require('path');
 require('dotenv').config();
 
 router.get('/', (req, res) => {
-      res.render("app/main.ejs",{login:'Y'});
+
+  res.render("app/main.ejs");
 });
 
 router.get('/:id', (req, res) => {

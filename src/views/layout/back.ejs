@@ -43,5 +43,34 @@
      function login(){
          location.href="/v1/login";
      }
+$(function(){
+    $.ajax({
+        url:"/v1/common/nav",
+        type:"GET",
+        dataType:"text",
+        success:(data)=>{ 
+            var nav = "";
+            if(data == "Y"){
+                nav = `
+                <li class="menu-has-children"><a href="javascript:void(0)">마이페이지</a>
+                    <ul>
+                    <li><a href="#">내 정보수정</a></li>
+                    <li><a href="/v1/login/logout">로그아웃</a></li>
+                    <li><a href="/v1/console/app">내 애플리케이션</a></li>
+                    </ul>
+                </li>
+                      `;
+            }else{
+                nav = `
+                <li><a href="javascript:login();">Login</a></li>
+                      `;
+            }
+            $("#nav-menu").append(nav);
+        },
+        error:(err)=>{
+          console.log(err);
+        }
+      });
+});
  </script>
 

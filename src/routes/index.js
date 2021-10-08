@@ -3,7 +3,6 @@ const router            = express.Router();
 const cookie            = require('cookie');
 const mainRouter        = require('./v1/main');
 
-
 router.get('/', (request, response) => {
       var cookies = {};
       if(!request.headers.cookie)
