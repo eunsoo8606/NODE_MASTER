@@ -10,7 +10,7 @@
 
  <script>
   const blogSeq = '<%=blogSeq%>';
-  var login;
+  var loginYn;
   $(function(){
     $("#blogSeq1").val(blogSeq);
     $("#blogSeq2").val(blogSeq);
@@ -326,7 +326,7 @@ function insertRtnComent(bloSeq){
 function commentInsertBt(){
 
   var blogSeq = $("#blogSeq1").val();
-  if(login == "N"){return false;}
+  if(loginYn == "N"){return false;}
   if($("#conmmentArea").val() == ""){
     alert("코멘트를 입력해 주세요.");
     return false;
