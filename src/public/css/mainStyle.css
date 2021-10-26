@@ -191,7 +191,6 @@ span {
 #hero {
   width: 100%;
   height: calc(100vh - 40px);
-  background: url(/imges/hero-bg.png) center bottom no-repeat;
   background-size: 100%;
   position: relative;
   margin-top: 40px;
@@ -739,7 +738,7 @@ body.mobile-nav-active #mobile-nav-toggle i {
 /* Video Section
 --------------------------------*/
 #video {
-  background: url(/imges/video-bg.jpg) center center;
+  background: url(../imges/video-bg.jpg) center center;
   background-repeat: no-repeat;
   background-size: cover;
   height: 400px;
@@ -1138,7 +1137,7 @@ body.mobile-nav-active #mobile-nav-toggle i {
 /* Newsletter Section
 --------------------------------*/
 #newsletter {
-  background: transparent url(/imges/newsletter-bg.jpg) no-repeat center top fixed;
+  background: transparent url(../imges/newsletter-bg.jpg) no-repeat center top fixed;
   background-size: cover;
 }
 
@@ -1397,7 +1396,7 @@ body.mobile-nav-active #mobile-nav-toggle i {
             box-shadow: 1px 0 0 1px skyblue; 
             border: 1px solid skyblue; 
             border-radius: 10px;
-            background-image:url(/imges/sky.jpg);
+            background-image:url(../imges/sky.jpg);
             
         }
 .quick_menuHeader{
@@ -1686,7 +1685,7 @@ a {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  background: url(/imges/ico_sel.png) no-repeat 95% 50%;
+  background: url(../imges/ico_sel.png) no-repeat 95% 50%;
   min-width: 120px;
   vertical-align: middle;
   font-size: 16px;
@@ -1731,7 +1730,7 @@ a {
 }
 .comment_area .comment_numb .left {
   padding-left: 32px;
-  background: url(/imges/icon_message.png) no-repeat left top 23px;
+  background: url(../imges/icon_message.png) no-repeat left top 23px;
   font-size: 16px;
 }
 .comment_area .more_view_write_area {
@@ -1868,10 +1867,10 @@ ol, ul {
 }
 
 .comment_area ul > li .padding_application .button_area button.del {
-  background: #fff url(/imges/icon_trash.png) no-repeat left 11px center;
+  background: #fff url(../imges/icon_trash.png) no-repeat left 11px center;
 }
 .comment_area ul > li .padding_application .button_area button.modify {
-  background: #fff url(/imges/icon_modify.png) no-repeat left 14px center;
+  background: #fff url(../imges/icon_modify.png) no-repeat left 14px center;
 }
 .comment_area ul > li .padding_application .button_area button {
   outline: 0;

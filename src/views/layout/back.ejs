@@ -1,15 +1,17 @@
-<!-- <link rel="stylesheet" href="/css/bootstrap.min.css"> -->
-<!-- <link rel="stylesheet" href="/css/owl.carousel.min.css">
-<link rel="stylesheet" href="/css/owl.theme.default.min.css"> -->
+<link rel="stylesheet" href="/css/bootstrap.min.css"> -->
+<link rel="stylesheet" href="/css/owl.carousel.min.css">
+<link rel="stylesheet" href="/css/owl.theme.default.min.css">
 
 <!-- Google Fonts -->
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i|Roboto:100,300,400,500,700|Philosopher:400,400i,700,700i" rel="stylesheet">
 <link rel="shortcut icon" href="#">
+
 <!-- Bootstrap css -->
-<!-- <link rel="stylesheet" href="css/bootstrap.css"> -->
+<link rel="stylesheet" href="css/bootstrap.css"> -->
 <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
 <!-- Libraries CSS Files -->
+
 <link href="/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
 <link href="/lib/owlcarousel/assets/owl.theme.default.min.css" rel="stylesheet">
 <link href="/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet">
@@ -18,11 +20,12 @@
 
 <!-- Main Stylesheet File -->
 <link href="/css/mainStyle.css" rel="stylesheet">
+<!-- <script src="/dist/bundle.js"></script> -->
 <!-- 슬릭 js -->
 <!-- 제이쿼리 불러오기 -->
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 <script type="text/javascript" src="/js/jquery-3.1.0.js" ></script>
-<!-- <script type="text/javascript" src="/lib/jquery/jquery-migrate.min.js"></script> -->
+<script type="text/javascript" src="/lib/jquery/jquery-migrate.min.js"></script>
 <!-- Slick 불러오기 -->
 <script src="//cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css">
@@ -36,7 +39,7 @@
  <script src="/js/KimesUtil.js"></script>
 
  <!-- ICON -->
- <!-- <script defer src="/js/all.js"></script>  -->
+ <script defer src="/js/all.js"></script> 
  
  <link href="/css/all.css" rel="stylesheet">
  <script>
@@ -48,6 +51,7 @@ $(function(){
         url:"/v1/common/nav",
         type:"GET",
         dataType:"text",
+        async:false,
         success:(data)=>{ 
             var nav = "";
             if(data == "Y"){

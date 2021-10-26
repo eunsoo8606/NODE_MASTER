@@ -7,114 +7,14 @@
   <meta content="" name="keywords">
   <meta content="" name="description">
  <%- include('layout/back.ejs') %>
- <!-- <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=7310d6d1ab2092c321eeac72042dfc50&libraries=services"></script> -->
-<script>
+ <script>
   const toDayApiCnt = 0;
-  $(()=>{
     //날씨 API 출력
     Util.getLocation("quick_menu_container",Util.sysDate());
 
     var login = '<%=login%>';
 
-    //롯데시네마 데이터 크롤링
-    $.ajax({
-      url:"/v1/apis/movie",
-      type:"GET",
-      dataType:"json",
-      success:(data)=>{
-        var html = "";
-          for(var i = 0; i < data.length;i++){
-            html += `<div><img class="movieImg" src="` + data[i].IMG_SRC + `" alt="img"><div class="movieTile">`
-                 + data[i].TITLE + `</div><div class="movieContent">`
-                 + data[i].RATE
-                 + `<span class="iconify" data-icon="ci:line-m" data-inline="false"></span>
-                 <span class="iconify" data-icon="bx:bxs-star" style="color:orange; border-color:gray; margin-bottom:4px;" data-inline="false"></span>
-                 ` + data[i].STAR + `</div></div>`;
-          }
-        $("#movieList").html(html);
-            // Init Owl Carousel
-        $('.owl-carousel').owlCarousel({
-              items: 4,
-              autoplay: true,
-              loop: true,
-              margin: 30,
-              dots: true,
-              responsiveClass: true,
-              responsive: {
-                320: { items: 1},
-                480: { items: 2},
-                600: { items: 2},
-                767: { items: 3},
-                768: { items: 3},
-                992: { items: 4}
-              }
-        });
-      },
-      error:(err)=>{
-        console.log(err);
-      }
-    });
-    $.ajax({
-      url:"/v1/blog/top3",
-      type:"GET",
-      success:(data)=>{ 
-        var datas  = data.data;
-        var values = '';
-        var webDomain = window.location.protocol+ "//" + window.location.host;
-        if(datas == null || datas.length == 0) {
-          values="<div class='blog-none'>작성된 블로그 내용이 없습니다.</div>";
-          $("#blog_area").html(values);
-          return false;
-        }
-
-        for(var i = 0; i < datas.length;i++){
-          var mainImg = datas[i].MAIN_IMG;
-          if(mainImg == null) mainImg = '/imges/blog/blog-image-1.jpg';
-
-          values += ` <div class="col-md-6 col-lg-4 mt-5">
-                        <div class="block-blog text-left">
-                          <a href="javascript:void(0)"><img src="${(mainImg === ""?"/imges/blog/blog-image-1.jpg":mainImg)}"width='360' height='220' onerror="this.src='${webDomain}/imges/blog/blog-image-1.jpg'"></a>
-                          <div class="content-blog">
-                            <h4><a href="#">${datas[i].TITLE}</a></h4>
-                            <span>${datas[i].REG_DTTM}</span>
-                            <a class="pull-right readmore" href="/v1/blog/detail/${datas[i].BLOG_SEQ}?category=${btoa('detail')}">View Details</a>
-                          </div>
-                        </div>
-                      </div>`;
-        }
-
-        $("#blog_area").html(values);
-      },
-      error:(err)=>{
-        console.log(err);
-      }
-    });
-
-  });
-function checkMail(){
-  if($("#company").val() == ""){
-    alert("회사명을 입력해 주세요!");
-    $("#company").focus();
-    return false;
-  }
-  if($("#mail").val() == ""){
-    alert("mail을 입력해 주세요!");
-    $("#mail").focus();
-    return false;
-  }
-  if(Util.isEmail($("#mail").val())){
-    alert("mail 형식을 확인해 주세요!");
-    $("#mail").focus();
-    return false;
-  }
-  if($("#subject").val() == ""){
-    alert("제목을 입력해 주세요!");
-    $("#subject").focus();
-    return false;
-  }
-
-
-}
+  
 function getLoadName(id,date,x,y){
   //날씨데이터 넣어주기.
   //좌표로 주소 가져오기.
@@ -122,6 +22,7 @@ function getLoadName(id,date,x,y){
       url : 'https://dapi.kakao.com/v2/local/geo/coord2address.json',
       data:{"x":y,"y":x},
       type : 'GET',
+      async:false,
       headers : {
         'Authorization':'KakaoAK 7d0360bb7fd3d1e0e6552378428bb8a4'
       },
@@ -152,6 +53,7 @@ function getWeather(date,address){
       data:{"address":address},
       type : 'GET',
       dataType:'json',
+      async:false,
       success :function(data) {
           if(Util.get(data) === ""){
             console.log("data.err")
@@ -252,9 +154,6 @@ function writeWeather(data){
           }
       }
 }
-function goBlog(){
-  location.href="/v1/blog?scope=paging";
-}
 function goDocument(){
  
   if(isMobile()){
@@ -276,17 +175,17 @@ function isMobile(){
 }
 </script>
 <script>
-	$(document).ready(function(){
-		$(window).on('load resize', function(){
-			if($(window).width() > 768){
-				$(window).on('scroll', function(){	
-					$('.quick_menu').css('top', $(window).scrollTop() + $(window).height() / 2);
-				});
-			}else {
-				$('.quick_menu').css('top', 0);
-			}
-		});
-	});
+  $(document).ready(function(){
+    $(window).on('load resize', function(){
+      if($(window).width() > 768){
+        $(window).on('scroll', function(){	
+          $('.quick_menu').css('top', $(window).scrollTop() + $(window).height() / 2);
+        });
+      }else {
+        $('.quick_menu').css('top', 0);
+      }
+    });
+  });
   function backgroundWeather(weather){
       if(weather === "rain"){
         $("#quick_menu_left_area_etc").html(`<img src="/imges/rain.png">`);
@@ -906,5 +805,111 @@ function isMobile(){
     </div>
   </section><!-- #contact -->  
     <%- include('layout/footer.ejs') %>
+  
+    <script>
+      $(()=>{
+        //롯데시네마 데이터 크롤링
+        $.ajax({
+          url:"/v1/apis/movie",
+          type:"GET",
+          dataType:"json",
+          success:(data)=>{
+            var html = "";
+              for(var i = 0; i < data.length;i++){
+                html += `<div><img class="movieImg" src="` + data[i].IMG_SRC + `" alt="img"><div class="movieTile">`
+                     + data[i].TITLE + `</div><div class="movieContent">`
+                     + data[i].RATE
+                     + `<span class="iconify" data-icon="ci:line-m" data-inline="false"></span>
+                     <span class="iconify" data-icon="bx:bxs-star" style="color:orange; border-color:gray; margin-bottom:4px;" data-inline="false"></span>
+                     ` + data[i].STAR + `</div></div>`;
+              }
+            $("#movieList").html(html);
+                // Init Owl Carousel
+            $('.owl-carousel').owlCarousel({
+                  items: 4,
+                  autoplay: true,
+                  loop: true,
+                  margin: 30,
+                  dots: true,
+                  responsiveClass: true,
+                  responsive: {
+                    320: { items: 1},
+                    480: { items: 2},
+                    600: { items: 2},
+                    767: { items: 3},
+                    768: { items: 3},
+                    992: { items: 4}
+                  }
+            });
+          },
+          error:(err)=>{
+            console.log(err);
+          }
+        });
+        $.ajax({
+          url:"/v1/blog/top3",
+          type:"GET",
+          success:(data)=>{ 
+            var datas  = data.data;
+            var values = '';
+            var webDomain = window.location.protocol+ "//" + window.location.host;
+            if(datas == null || datas.length == 0) {
+              values="<div class='blog-none'>작성된 블로그 내용이 없습니다.</div>";
+              $("#blog_area").html(values);
+              return false;
+            }
+    
+            for(var i = 0; i < datas.length;i++){
+              var mainImg = datas[i].MAIN_IMG;
+              if(mainImg == null) mainImg = '/imges/blog/blog-image-1.jpg';
+    
+              values += ` <div class="col-md-6 col-lg-4 mt-5">
+                            <div class="block-blog text-left">
+                              <a href="javascript:void(0)"><img src="${(mainImg === ""?"/imges/blog/blog-image-1.jpg":mainImg)}"width='360' height='220' onerror="this.src='${webDomain}/imges/blog/blog-image-1.jpg'"></a>
+                              <div class="content-blog">
+                                <h4><a href="#">${datas[i].TITLE}</a></h4>
+                                <span>${datas[i].REG_DTTM}</span>
+                                <a class="pull-right readmore" href="/v1/blog/detail/${datas[i].BLOG_SEQ}?category=${btoa('detail')}">View Details</a>
+                              </div>
+                            </div>
+                          </div>`;
+            }
+    
+            $("#blog_area").html(values);
+          },
+          error:(err)=>{
+            console.log(err);
+          }
+        });
+    
+      });
+    function checkMail(){
+      if($("#company").val() == ""){
+        alert("회사명을 입력해 주세요!");
+        $("#company").focus();
+        return false;
+      }
+      if($("#mail").val() == ""){
+        alert("mail을 입력해 주세요!");
+        $("#mail").focus();
+        return false;
+      }
+      if(Util.isEmail($("#mail").val())){
+        alert("mail 형식을 확인해 주세요!");
+        $("#mail").focus();
+        return false;
+      }
+      if($("#subject").val() == ""){
+        alert("제목을 입력해 주세요!");
+        $("#subject").focus();
+        return false;
+      }
+    
+    
+    }
+    function goBlog(){
+      location.href="/v1/blog?scope=paging";
+    }
+    </script>
 </body>
 </html>

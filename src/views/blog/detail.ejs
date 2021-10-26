@@ -10,7 +10,7 @@
 
  <script>
   const blogSeq = '<%=blogSeq%>';
-  var loginYn;
+  var loginYn = "<%=login%>";
   $(function(){
     $("#blogSeq1").val(blogSeq);
     $("#blogSeq2").val(blogSeq);
@@ -158,11 +158,12 @@
     login = 'N';
     t.addEventListener('click', function(event){
        if(confirm("로그인 후 이용 후 이용가능한 서비스 입니다. \n 로그인 페이지로 이동 하시겠습니까?")){
-         login();
+        location.href="/v1/login";
          return false;
        }else return false;
     });
   }
+
 function deleteComment(commentSeq,bSeq){
   
     if(confirm("해당 댓글을 삭제 하시겠습니까?")){
@@ -326,7 +327,11 @@ function insertRtnComent(bloSeq){
 function commentInsertBt(){
 
   var blogSeq = $("#blogSeq1").val();
-  if(loginYn == "N"){return false;}
+  console.log("loginYn : ",loginYn)
+  if(loginYn == "N"){
+    return false;
+  }
+
   if($("#conmmentArea").val() == ""){
     alert("코멘트를 입력해 주세요.");
     return false;
