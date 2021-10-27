@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="/css/bootstrap.min.css"> -->
+
 <link rel="stylesheet" href="/css/owl.carousel.min.css">
 <link rel="stylesheet" href="/css/owl.theme.default.min.css">
 
@@ -7,7 +7,7 @@
 <link rel="shortcut icon" href="#">
 
 <!-- Bootstrap css -->
-<link rel="stylesheet" href="css/bootstrap.css"> -->
+<link rel="stylesheet" href="css/bootstrap.css">
 <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
 <!-- Libraries CSS Files -->
@@ -20,7 +20,6 @@
 
 <!-- Main Stylesheet File -->
 <link href="/css/mainStyle.css" rel="stylesheet">
-<!-- <script src="/dist/bundle.js"></script> -->
 <!-- 슬릭 js -->
 <!-- 제이쿼리 불러오기 -->
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
@@ -43,9 +42,7 @@
  
  <link href="/css/all.css" rel="stylesheet">
  <script>
-     function login(){
-         location.href="/v1/login";
-     }
+
 $(function(){
     $.ajax({
         url:"/v1/common/nav",
@@ -66,7 +63,7 @@ $(function(){
                       `;
             }else{
                 nav = `
-                <li><a href="javascript:login();">Login</a></li>
+                <li><a href="/v1/login">Login</a></li>
                       `;
             }
             $("#nav-menu").append(nav);

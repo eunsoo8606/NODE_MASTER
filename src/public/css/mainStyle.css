@@ -1390,7 +1390,8 @@ body.mobile-nav-active #mobile-nav-toggle i {
 .quick_menu {transition: top 0.6s; 
             transform: translateY(-50%); 
             position: absolute; top: 50%; left: 2%; 
-            width: 160px; 
+            width: 160px;
+            height: 12%; 
             padding: 10px 4px 10px; 
             background: white; 
             box-shadow: 1px 0 0 1px skyblue; 
@@ -1883,6 +1884,11 @@ ol, ul {
     border: 1px solid #ddd;
     background-color: white;
     font-size: 15px;
+}
+#progress_loading{
+  position: absolute;
+  top: 45px;
+  left: 62px;
 }
 
 

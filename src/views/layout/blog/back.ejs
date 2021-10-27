@@ -1,5 +1,5 @@
     <!-- Main Stylesheet File -->
-    <!-- <link href="/css/mainStyle.css" rel="stylesheet"> -->
+    <link href="/css/mainStyle.css" rel="stylesheet">
     <!-- <script src="/dist/bundle.js"></script> -->
     <!-- Util -->
     <script src="/js/KimesUtil.js"></script>
@@ -15,9 +15,6 @@
 
     <link href="/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 <script>
-    function login(){
-        location.href="/v1/login";
-    }
     $(function(){
     $.ajax({
         url:"/v1/common/nav",
@@ -37,7 +34,7 @@
                       `;
             }else{
                 nav = `
-                <li><a href="javascript:login();">Login</a></li>
+                <li><a href="/v1/login">Login</a></li>
                       `;
             }
             $("#nav-menu").append(nav);

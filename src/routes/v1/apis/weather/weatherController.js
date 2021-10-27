@@ -22,7 +22,7 @@ router.get("/", function(req,res){
         method: 'GET'
     }, function (error, response, body) {
         if(error){
-            console.log("ERROR"+error);
+            console.log("ERROR :: "+error);
             res.send(error);
         }
         var value = JSON.parse(body).response.body;

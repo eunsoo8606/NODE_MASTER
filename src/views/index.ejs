@@ -13,8 +13,13 @@
     Util.getLocation("quick_menu_container",Util.sysDate());
 
     var login = '<%=login%>';
-
-  
+  $(function(){
+    $('#progress_loading').show();
+  }).ajaxStart(function(){
+	$('#progress_loading').show(); //ajax실행시 로딩바를 보여준다.
+}).ajaxStop(function(){
+	$('#progress_loading').hide(); //ajax종료시 로딩바를 숨겨준다.
+});
 function getLoadName(id,date,x,y){
   //날씨데이터 넣어주기.
   //좌표로 주소 가져오기.
@@ -223,6 +228,9 @@ function isMobile(){
 
     <%- include('layout/header.ejs') %>
     <div class="quick_menu" id="quick_menu" style="top: 1171.27px;">
+      <div id="progress_loading">
+        <img src="/imges/loading.gif"/>
+      </div>
         <div class="quick_menuHeader" id="quick_menuHeader">
           </div>
             <div class="quick_menu_container" id="quick_menu_container">
