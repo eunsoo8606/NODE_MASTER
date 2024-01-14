@@ -16,10 +16,10 @@
   $(function(){
     $('#progress_loading').show();
   }).ajaxStart(function(){
-	$('#progress_loading').show(); //ajax실행시 로딩바를 보여준다.
-}).ajaxStop(function(){
-	$('#progress_loading').hide(); //ajax종료시 로딩바를 숨겨준다.
-});
+	    $('#progress_loading').show(); //ajax실행시 로딩바를 보여준다.
+  }).ajaxStop(function(){
+	    $('#progress_loading').hide(); //ajax종료시 로딩바를 숨겨준다.
+  });
 function getLoadName(id,date,x,y){
   //날씨데이터 넣어주기.
   //좌표로 주소 가져오기.
@@ -48,42 +48,43 @@ function getLoadName(id,date,x,y){
 }
 
 function getWeather(date,address){
-       //현재 일시분초 셋팅
-     var hours = (new Date().getHours()-1).toString();
-     if(hours.length == 1) hours = "0" + hours;
-     var date = parseInt(Util.sysDate());
-  //database 에서 격자 좌표 변환처리 정보 조회
-  $.ajax({
-      url : '/v1/apis/weather/locationGridXY',
-      data:{"address":address},
-      type : 'GET',
-      dataType:'json',
-      async:false,
-      success :function(data) {
-          if(Util.get(data) === ""){
-            console.log("data.err")
-          }
-          var x = data.lat;
-          var y = data.lng;
-          //변환된 좌표로 날씨정보 조회
-          $.ajax({
-                url:"/v1/apis/weather",
-                data:{"date":date,"hour":hours,"x":x,"y":y},
-                type:"GET",
-                dataType:"json",
-                success:(data)=>{
-                  //가져온데이터 가공 위해서 function 분리.
-                  writeWeather(data);
-                },
-              error:(err)=>{
-                console.log(err);
+      //현재 일시분초 셋팅
+      var hours = (new Date().getHours()-1).toString();
+      if(hours.length == 1) hours = "0" + hours;
+      var date = parseInt(Util.sysDate());
+      //database 에서 격자 좌표 변환처리 정보 조회
+
+      $.ajax({
+          url : '/v1/apis/weather/locationGridXY',
+          data:{"address":address},
+          type : 'GET',
+          dataType:'json',
+          async:false,
+          success :function(data) {
+              if(Util.get(data) === ""){
+                console.log("data.err")
               }
-          });
-      },
-      error:function(e) {
-        console.log(e);
-      }
-    });
+              var x = data.lat;
+              var y = data.lng;
+              //변환된 좌표로 날씨정보 조회
+              $.ajax({
+                    url:"/v1/apis/weather",
+                    data:{"date":date,"hour":hours,"x":x,"y":y},
+                    type:"GET",
+                    dataType:"json",
+                    success:(data)=>{
+                      //가져온데이터 가공 위해서 function 분리.
+                      writeWeather(data);
+                    },
+                  error:(err)=>{
+                    console.log(err);
+                  }
+              });
+          },
+          error:function(e) {
+            console.log(e);
+          }
+        });
 }
 //날씨 setting function
 function writeWeather(data){
