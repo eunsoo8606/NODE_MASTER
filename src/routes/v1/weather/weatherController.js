@@ -1,15 +1,29 @@
 const express = require('express');
 const request =require('request');
 const router  = express.Router();
-const common  = require('../../../../utils/commonIMT');
+const common  = require('../../../utils/commonIMT');
+
+
+
+router.get('/libs/home', (req, res) => {
+    let scope;
+    console.log("init");
+    if(req.query.scope !== undefined){
+        scope         = req.query.scope;
+        req.session.scope = scope;
+    }
+    let cookies       = common.util.getCookie(req);
+    let value         = (cookies.acToken === undefined?{login:'N'}:{login:'Y'});
+    res.render("weather/weather.ejs",value);
+});
 
 router.get("/", function(req,res){
-    var curDate = req.query.date;
-    var hour = req.query.hour;
-    var x = Math.round(req.query.x);
-    var y = Math.round(req.query.y);
-    var url = 'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst';
-    var queryParams = '?' +'ServiceKey' + '='+'kmW4K3Z%2BWA5icVGEC8I9Ee%2FYCmGfiwEEp86YikuBidzVIOKDk82dztG1t%2FrIwm8OA7mfEYKFt%2Fn%2BKyGRbOrnfQ%3D%3D'; 
+    let curDate   = req.query.date;
+    let hour      = req.query.hour;
+    let x = Math.round(req.query.x);
+    let y = Math.round(req.query.y);
+    let url = 'https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst';
+    let queryParams = '?' +'ServiceKey' + '='+'kmW4K3Z%2BWA5icVGEC8I9Ee%2FYCmGfiwEEp86YikuBidzVIOKDk82dztG1t%2FrIwm8OA7mfEYKFt%2Fn%2BKyGRbOrnfQ%3D%3D';
     queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1');
     queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent('100');
     queryParams += '&' + encodeURIComponent('dataType') + '=' + encodeURIComponent('JSON');
@@ -17,6 +31,8 @@ router.get("/", function(req,res){
     queryParams += '&' + encodeURIComponent('base_time') + '=' + encodeURIComponent(hour+'30'); 
     queryParams += '&' + encodeURIComponent('nx') + '=' + encodeURIComponent(x); 
     queryParams += '&' + encodeURIComponent('ny') + '=' + encodeURIComponent(y);
+
+
     request({
         url: url + queryParams,
         method: 'GET'
@@ -25,7 +41,8 @@ router.get("/", function(req,res){
             console.log("ERROR :: "+error);
             res.send(error);
         }
-        var value = JSON.parse(body).response.body;
+        let value = JSON.parse(body).response.body;
+
         hour  = (parseInt(hour)+1).toString();
         if(hour.length == 1) hour  = "0"+hour;
         var arr = new Array();

@@ -1,4 +1,4 @@
-const connection = require('../../../../../lib/connection');
+const connection = require('../../../../lib/connection');
 
 
 module.exports = {

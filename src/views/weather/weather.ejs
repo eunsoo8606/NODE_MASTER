@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <title>myHistory</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+<%- include('../layout/back.ejs') %>
+    <style>
+        body {
+            height: 100vh; /* 100% viewport 높이 설정 */
+            margin: 0; /* Body의 기본 마진 제거 */
+        }
+
+        .weather-container {
+            padding: 20px;
+            background-color: #FFFFFF;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .weather-icon {
+            font-size: 48px;
+            color: #337ab7;
+            margin-right: 20px; /* 아이콘 영역 오른쪽 여백 추가 */
+        }
+
+        .weather-description {
+            text-align: center; /* 설명 영역 텍스트를 왼쪽 정렬 */
+        }
+
+        .temperature {
+            font-size: 24px;
+            color: #333;
+        }
+
+        .weather-status {
+            font-size: 18px;
+            color: #666;
+        }
+
+        .humidity {
+            font-size: 16px;
+            color: #888;
+        }
+
+    </style>
+</head>
+<body data-spy="scroll" data-target="#navbarNav" data-offset="50">
+<%- include('../layout/header.ejs') %>
+<section id="get-started" class="padd-section text-center wow fadeInUp">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8"> <!-- col-md-8로 변경 -->
+                <div class="weather-container">
+                    <div class="row">
+                        <div class="col-md-4"> <!-- 날씨 아이콘을 왼쪽 4개의 column으로 설정 -->
+                            <img src="/imges/sun.png" alt="" width="200" height="200">
+                        </div>
+                        <div class="col-md-8"> <!-- col-md-8로 변경 -->
+                            <div class="weather-description">
+                                <h2>현재 날씨</h2>
+                                <p>오늘의 날씨 정보입니다.</p>
+                            </div>
+                            <div class="row"> <!-- 새로운 row 추가 -->
+                                <div class="col-md-6"> <!-- col-md-6로 변경 -->
+                                    <div class="temperature">25°C</div>
+                                </div>
+                                <div class="col-md-6"> <!-- col-md-6로 변경 -->
+                                    <div class="weather-status">맑음</div>
+                                    <div class="humidity">습도: 50%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Bootstrap JS and Popper.js scripts (for Bootstrap components) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<%- include('../layout/footer.ejs') %>
+</body>
+</html>

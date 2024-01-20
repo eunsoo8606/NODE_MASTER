@@ -64,8 +64,9 @@ function getWeather(date,address){
               if(Util.get(data) === ""){
                 console.log("data.err")
               }
-              var x = data.lat;
-              var y = data.lng;
+              console.log("data : ", data)
+              var x = data.lng;
+              var y = data.lat;
               //변환된 좌표로 날씨정보 조회
               $.ajax({
                     url:"/v1/apis/weather",
@@ -103,6 +104,7 @@ function writeWeather(data){
       * WSD 풍속 1
       */
     var whList = data;
+    console.log("whList : ", whList)
     var precipitation;
     for(var i = 0; i < whList.length;i++){
           if(whList[i].category === "SKY"){
@@ -211,7 +213,7 @@ function isMobile(){
     if(weather === "rain"){
       $("#quick_menu_right_sec").css('display','none');
       $("#quick_menu_right_sec_etc").css('display','inline-block');
-      $("#quick_menu_left_area").css('display','none');
+      $("#quick_menu_left_area").css('display','show');
       $("#quick_menu_left_area_etc").css('display','block');
     }
     if(weather === "sun"){
