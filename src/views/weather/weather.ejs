@@ -19,6 +19,7 @@
             border: 1px solid #ccc;
             border-radius: 10px;
             text-align: center;
+            box-shadow: 5px 5px 5px 5px gray;
         }
 
         .weather-icon {
@@ -31,20 +32,28 @@
             text-align: center; /* 설명 영역 텍스트를 왼쪽 정렬 */
         }
 
-        .temperature {
-            font-size: 24px;
+        .address {
+            font-size: 15px;
             color: #333;
         }
 
-        .weather-status {
-            font-size: 18px;
-            color: #666;
+        .temperature {
+            font-size: 50px;
+            color: #333;
+        }
+        table {width: 100%;}
+        table > tbody > tr {
+            width: 100%;
+            font-size: 15px;
+            color: #333;
+        }
+        table > tbody > tr > th{
+            text-align: left;
+        }
+        table > tbody > tr > td{
+            text-align: center;
         }
 
-        .humidity {
-            font-size: 16px;
-            color: #888;
-        }
 
     </style>
 </head>
@@ -57,20 +66,35 @@
                 <div class="weather-container">
                     <div class="row">
                         <div class="col-md-4"> <!-- 날씨 아이콘을 왼쪽 4개의 column으로 설정 -->
-                            <img src="/imges/sun.png" alt="" width="200" height="200">
+                            <img id="_weather" src="/imges/eunsoo_loadingbar.gif" alt="" width="200" height="200">
                         </div>
                         <div class="col-md-8"> <!-- col-md-8로 변경 -->
                             <div class="weather-description">
                                 <h2>현재 날씨</h2>
-                                <p>오늘의 날씨 정보입니다.</p>
+                                <p>현재 날씨 정보입니다.</p>
                             </div>
                             <div class="row"> <!-- 새로운 row 추가 -->
                                 <div class="col-md-6"> <!-- col-md-6로 변경 -->
+                                    <div class="address">서울시 송파구 문정동</div>
                                     <div class="temperature">25°C</div>
                                 </div>
-                                <div class="col-md-6"> <!-- col-md-6로 변경 -->
-                                    <div class="weather-status">맑음</div>
-                                    <div class="humidity">습도: 50%</div>
+                                <div class="col-md-6">
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <th>날씨</th>
+                                                <td id="_sky"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>강수형태</th>
+                                                <td id="_pty"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>강수량</th>
+                                                <td id="_rn1"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -84,6 +108,144 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    $(function(){
+        //날씨 API 출력
+        Util.getLocation(Util.sysDate());
+    });
+    function getLoadName(date,x,y){
+        //날씨데이터 넣어주기.
+        //좌표로 주소 가져오기.
+        $.ajax({
+            url : 'https://dapi.kakao.com/v2/local/geo/coord2address.json',
+            data:{"x":y,"y":x},
+            type : 'GET',
+            async:false,
+            headers : {
+                'Authorization':'KakaoAK 7d0360bb7fd3d1e0e6552378428bb8a4'
+            },
+            success :function(data) {
+                //필요한 값만 추출
+                let juso1 = data.documents[0].address.region_1depth_name;
+                let juso2 = data.documents[0].address.region_2depth_name;
+                let juso3 = data.documents[0].address.region_3depth_name;
+                getWeather(date,juso2+juso3.substr(0, juso3.lletth -1));
+                //현재 내 위치 기반 주소 해당 영역에 추가 해주기.
+                $(".address").text(juso1 + " " +  juso2 + " " + juso3);
+            },
+            error:function(e) {
+                console.log(e);
+            }
+        });
+
+    }
+
+    function getWeather(date,address){
+        //현재 일시분초 셋팅
+        var hours = (new Date().getHours()-1).toString();
+        if(hours.length == 1) hours = "0" + hours;
+        var date = parseInt(Util.sysDate());
+        //database 에서 격자 좌표 변환처리 정보 조회
+
+        $.ajax({
+            url : '/v1/apis/weather/locationGridXY',
+            data:{"address":address},
+            type : 'GET',
+            dataType:'json',
+            async:false,
+            success :function(data) {
+                if(Util.get(data) === ""){
+                    console.log("data.err")
+                }
+                console.log("data : ", data)
+                let x = data.lng;
+                let y = data.lat;
+                //변환된 좌표로 날씨정보 조회
+                $.ajax({
+                    url:"/v1/apis/weather",
+                    data:{"date":date,"hour":hours,"x":x,"y":y},
+                    type:"GET",
+                    dataType:"json",
+                    success:(data)=>{
+                        //가져온데이터 가공 위해서 function 분리.
+                        writeWeather(data);
+                    },
+                    error:(err)=>{
+                        console.log(err);
+                    }
+                });
+            },
+            error:function(e) {
+                console.log(e);
+            }
+        });
+    }
+    //날씨 setting function
+    function writeWeather(data){
+        /*
+        * PTY	강수형태	: 없음(0), 비(1), 비/눈(2), 눈(3), 소나기(4), 빗방울(5), 빗방울/눈날림(6), 눈날림(7)
+        * RN1 1시간 강수량 : mm
+        * REH	습도	 %
+        * S06	6시간 신적설	범주(1 cm)
+        * SKY	하늘상태	코드값 : 맑음(1), 구름많음(3), 흐림(4)
+        * T1H	기온 ℃
+        * UUU	풍속(동서성분)	 m/s
+        * VVV	풍속(남북성분)	 m/s
+        * LGT 낙뢰 코드값
+        * VEC 풍향 0
+        * WSD 풍속 1
+        */
+        let whList = data;
+
+        for(let i = 0; i < whList.length;i++){
+            if(whList[i].category === "SKY"){
+                const sky = whList[i].fcstValue;
+                console.log("sky : ", sky)
+                switch (sky){
+                    case "1" : $("#_weather").attr('src',`/imges/sun.png`); $("#_sky").text(`맑음`); $('body').css('background-image', 'url("/imges/bg_sun.jpg")');break;
+                    case "3" : $("#_weather").attr('src',`/imges/many-cloud.png`); $("#_sky").text(`구름많음`); $('body').css('background-image', 'url("/imges/bg_cluod.jpg")');break;
+                    case "4" : $("#_weather").attr('src',`/imges/many_cloud.png`); $("#_sky").text(`흐림`); $('body').css('background-image', 'url("/imges/bg_cluod.jpg")');break;
+                }
+            }
+            if(whList[i].category === "T1H") {
+                $(".temperature").text(whList[i].fcstValue + `°C`);
+            }
+
+            if(whList[i].category === "RN1"){
+                let precipitation;
+                const result = parseInt(whList[i].fcstValue.substr(0, whList[i].fcstValue.length -2));
+                if(result >= 1 && result <= 3){
+                    precipitation = "(약함)"
+                }
+                if(result > 3 && result <= 15){
+                    precipitation = "(보통)"
+                }
+                if(result > 15 && result <= 30){
+                    precipitation = "(강함)"
+                }
+                if(result > 30){
+                    precipitation = "(매우 강함)"
+                }
+                $("#_rn1").text(precipitation);
+            }
+            if(whList[i].category === "PTY"){
+                // PTY	강수형태	: 없음(0), 비(1), 비/눈(2), 눈(3), 소나기(4), 빗방울(5), 빗방울/눈날림(6), 눈날림(7)
+                const pty = whList[i].fcstValue;
+                switch (pty){
+                    case  "0" : $("#_pty").text(``);          $("#_weather").attr('src',`/imges/sun.png`);break; //맑음
+                    case  "1" : $("#_pty").text(`비`);         $("#_weather").attr('src',`/imges/rain.png`); $('body').css('background-image', 'url("/imges/bg_rain.jpg")');break; //비
+                    case  "2" : $("#_pty").text(`비/눈`);      $("#_weather").attr('src',`/imges/snow_rain.png`); $('body').css('background-image', 'url("/imges/bg_snow.jpg")'); break; //비
+                    case  "3" : $("#_pty").text(`눈`);         $("#_weather").attr('src',`/imges/snow.png`); $('body').css('background-image', 'url("/imges/bg_snow.jpg")'); break; //비
+                    case  "4" : $("#_pty").text(`소나기`);      $("#_weather").attr('src',`/imges/rain_sun.png`); $('body').css('background-image', 'url("/imges/bg_rain.jpg")');break; //비
+                    case  "5" : $("#_pty").text(`빗방울`);      $("#_weather").attr('src',`/imges/rain.png`); $('body').css('background-image', 'url("/imges/bg_rain.jpg")');break; //비
+                    case  "6" : $("#_pty").text(`빗방울/눈날림`); $("#_weather").attr('src',`/imges/snow_rain.png`); $('body').css('background-image', 'url("/imges/bg_snow.jpg")');break; //비
+                    case  "7" : $("#_pty").text(`눈날림`);      $("#_weather").attr('src',`/imges/snow.png`); $('body').css('background-image', 'url("/imges/bg_snow.jpg")');break; //비
+                }
+
+            }
+        }
+    }
+</script>
 <%- include('../layout/footer.ejs') %>
 </body>
 </html>
