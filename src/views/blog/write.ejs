@@ -55,7 +55,8 @@
                   url:"/v1/blog/write",
                   type:"POST",
                   data:$("#blog-form").serialize(),
-                  success:(data)=>{ 
+                  success:(data)=>{
+                    console.log("data : ", data)
                       if(data == "200"){
                         alert("성공적으로 발행 되었습니다.");
                         location.href="/v1/blog";
@@ -148,8 +149,9 @@ function deleteFile(deleteUri){
                 <option value="8">CM(Configuration Management)</option>
                 <option value="9">Framework</option>
                 <option value="10">Develop-Tool</option>
-                <option value="10">Library</option>
-                <option value="11">Etc</option>
+                <option value="11">Library</option>
+                <option value="12">자격증</option>
+                <option value="13">Etc</option>
               </select>
             </div>
             <hr>

@@ -11,25 +11,26 @@ const bCount  = require('../../../middlewares/blogCount');
 
 router.get('/', (req, res) => {
     var scope;
+    console.log("req.query.scope : ", req.query.scope)
     if(req.query.scope !== undefined){
-    scope         = req.query.scope;
-    req.session.scope = scope;
+        scope         = req.query.scope;
+        req.session.scope = scope;
     }
     var cookies       = common.util.getCookie(req);
-    var value         = (cookies.acToken === undefined?{login:'N'}:{login:'Y'});
+    var value = (cookies.acToken === undefined?{login:'N'}:{login:'Y'});
     res.render("blog/blog.ejs",value);
 });
 
 router.get('/list', (req, res) => {
     console.log("blog controller init...");
-    var cookies     = common.util.getCookie(req);
-    var cpage       = req.query.cpage;
-    var selectSize  = req.query.selectSize;
-    var title       = req.query.title;
-    var content     = req.query.content;
-    var limit       = req.query.limit;
-    var scope       = req.session.scope;
-
+    let cookies     = common.util.getCookie(req);
+    let cpage       = req.query.cpage;
+    let selectSize  = req.query.selectSize;
+    let title       = req.query.title;
+    let content     = req.query.content;
+    let limit       = req.query.limit;
+    let scope       = (req.session.scope ?? "paging");
+    console.log("scope : ", scope)
     request({
         url:`${process.env.apiServerUrl}/v1/blog/list`,
         method:'GET',
@@ -87,6 +88,9 @@ router.post('/write',(req, res) => {
     var content         = req.body.content;
     var mainImg         = req.body.mainImg;
     var category        = req.body.category;
+    console.log("write init.....", cookies)
+
+
     request({
             url:`${process.env.apiServerUrl}/v1/blog/write`,
             method:'POST',
@@ -103,9 +107,12 @@ router.post('/write',(req, res) => {
         function (error, response, body) {
             if(error !== undefined && error !== null){ 
                 console.log("error : ", error);
-            res.status(401).send(error);
-            res.end();
-            return false;
+                res.status(401).send(error);
+                res.end();
+                return false;
+            }else if(body.error !== null && body.error !== undefined){
+                res.status(401).send(body.error);
+                res.end();
             }
             res.send("200");
         });
