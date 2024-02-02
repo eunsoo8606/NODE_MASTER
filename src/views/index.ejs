@@ -645,10 +645,10 @@ function isMobile(){
               for(var i = 0; i < data.length;i++){
                 html += `<div><img class="movieImg" src="` + data[i].IMG_SRC + `" alt="img"><div class="movieTile">`
                      + data[i].TITLE + `</div><div class="movieContent">`
-                     + data[i].RATE
+                     + data[i].MOVIE_RANK + '위'
                      + `<span class="iconify" data-icon="ci:line-m" data-inline="false"></span>
                      <span class="iconify" data-icon="bx:bxs-star" style="color:orange; border-color:gray; margin-bottom:4px;" data-inline="false"></span>
-                     ` + data[i].STAR + `</div></div>`;
+                     ` + data[i].TIME + `</div></div>`;
               }
             $("#movieList").html(html);
                 // Init Owl Carousel
