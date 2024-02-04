@@ -14,7 +14,7 @@ router.get('/libs/home', (req, res) => {
     }
     let cookies       = common.util.getCookie(req);
     let value         = (cookies.acToken === undefined?{login:'N'}:{login:'Y'});
-    res.render("weather/weather.ejs",value);
+    res.render("librarys/weather/weather.ejs",value);
 });
 
 router.get("/", function(req,res){
@@ -24,6 +24,7 @@ router.get("/", function(req,res){
     let y = Math.round(req.query.y);
     let url = 'https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst';
     let queryParams = '?' +'ServiceKey' + '='+'kmW4K3Z%2BWA5icVGEC8I9Ee%2FYCmGfiwEEp86YikuBidzVIOKDk82dztG1t%2FrIwm8OA7mfEYKFt%2Fn%2BKyGRbOrnfQ%3D%3D';
+    console.log("init........")
     queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1');
     queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent('100');
     queryParams += '&' + encodeURIComponent('dataType') + '=' + encodeURIComponent('JSON');

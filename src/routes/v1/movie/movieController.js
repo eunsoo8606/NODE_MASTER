@@ -1,9 +1,9 @@
 const express = require('express');
 const router  = express.Router();
 const request = require('request');
-const common  = require('../../../../utils/commonIMT');
+const common  = require('../../../utils/commonIMT');
 router.get('/',(req,res)=>{
-    var cookies         = common.util.getCookie(req);
+    let cookies         = common.util.getCookie(req);
     request({
         url:`${process.env.apiServerUrl}/v1/apis/movie`,
         method:'GET',
@@ -26,5 +26,18 @@ router.get('/',(req,res)=>{
         res.send(body);
     });
 });
+
+router.get('/libs/home', (req, res) => {
+    let scope;
+    console.log("init");
+    if(req.query.scope !== undefined){
+        scope         = req.query.scope;
+        req.session.scope = scope;
+    }
+    let cookies       = common.util.getCookie(req);
+    let value         = (cookies.acToken === undefined?{login:'N'}:{login:'Y'});
+    res.render("librarys/movie/movie.ejs",value);
+});
+
 
 module.exports = router;

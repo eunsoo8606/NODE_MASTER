@@ -1,4 +1,4 @@
-const conn = require('../../../../../lib/connection');
+const conn = require('../../../../lib/connection');
 
 module.exports={
     deleteMovie : (movieList)=>{

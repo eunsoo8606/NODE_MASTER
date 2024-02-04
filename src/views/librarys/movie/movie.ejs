@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <title>myHistory</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+<%- include('../../layout/back.ejs') %>
+    <style>
+        body {background-color: #1d2124;padding-top: 5%;}
+        p{color:white}
+        h2{color:white}
+        div{color:white}
+    </style>
+</head>
+<body data-spy="scroll" data-target="#navbarNav" data-offset="50">
+<%- include('../../layout/header.ejs') %>
+<section id="screenshots" class="padd-section text-center wow fadeInUp">
+
+    <div class="container">
+        <div class="section-title text-center">
+            <h2>Movie Crawling</h2>
+            <p class="separator">
+                now in theaters from LOTTE CINEMA<br/>
+            </p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="owl-carousel" id="movieList">
+
+        </div>
+    </div>
+</section>
+<!-- Bootstrap JS and Popper.js scripts (for Bootstrap components) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    $(function(){
+        //롯데시네마 데이터 크롤링
+        $.ajax({
+            url:"/v1/movie",
+            type:"GET",
+            dataType:"json",
+            success:(data)=>{
+                let html = "";
+                for(var i = 0; i < data.length;i++){
+                    html += `<div><img class="movieImg" src="` + data[i].IMG_SRC + `" alt="img"><div class="movieTile">`
+                        + data[i].TITLE + `</div><div class="movieContent">`
+                        + data[i].MOVIE_RANK + '위'
+                        + `<span class="iconify" data-icon="ci:line-m" data-inline="false"></span>
+                     <span class="iconify" data-icon="bx:bxs-star" style="color:orange; border-color:white; margin-bottom:4px;" data-inline="false"></span>
+                     ` + data[i].TIME + `</div></div>`;
+                }
+                $("#movieList").html(html);
+                // Init Owl Carousel
+                $('.owl-carousel').owlCarousel({
+                    items: 4,
+                    autoplay: true,
+                    loop: true,
+                    margin: 30,
+                    dots: true,
+                    responsiveClass: true,
+                    responsive: {
+                        320: { items: 1},
+                        480: { items: 2},
+                        600: { items: 2},
+                        767: { items: 3},
+                        768: { items: 3},
+                        992: { items: 4}
+                    }
+                });
+            },
+            error:(err)=>{
+                console.log(err);
+            }
+        });
+    });
+</script>
+<%- include('../../layout/footer.ejs') %>
+</body>
+</html>

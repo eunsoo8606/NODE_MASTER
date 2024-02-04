@@ -43,11 +43,6 @@ function isMobile(){
       <h2>If It's Not Fun, Why Do It?</h2>
       <img src="/imges/hero-img.png" alt="Hero Imgs">
       <a href="#get-started" class="btn-get-started scrollto">Get Started</a>
-      <!-- <div class="btns">
-        <a href="#"><i class="fa fa-apple fa-3x"></i> App Store</a>
-        <a href="#"><i class="fa fa-play fa-3x"></i> Google Play</a>
-        <a href="#"><i class="fa fa-windows fa-3x"></i> windows</a>
-      </div> -->
     </div>
   </section><!-- #hero -->
   <!--==========================
@@ -177,7 +172,6 @@ function isMobile(){
     <div class="container">
       <div class="section-title text-center">
         <h2>My Stack</h2>
-        <p class="separator">현재 공부하고 있는 것과 하고 있는것.</p>
       </div>
     </div>
 
@@ -283,32 +277,6 @@ function isMobile(){
       </div>
     </div>
   </section>
-
-  <!--==========================
-    Screenshots Section
-  ============================-->
-  <section id="screenshots" class="padd-section text-center wow fadeInUp">
-
-    <div class="container">
-      <div class="section-title text-center">
-        <h2>Movie Crawling</h2>
-        <p class="separator">
-          now in theaters from LOTTE CINEMA<br/>
-          api-server에서 Scheduler 를 통해<br/> 
-          매일 아침 07시 30분에 기존 데이터를 삭제하고 크롤링을 통하여 새로운 LOTTE CINEMA DATA 를 스크랩핑하여<br/>
-          출력시킨 결과물 입니다.
-        </p>
-      </div>
-    </div>
-
-    <div class="container">
-      <div class="owl-carousel" id="movieList">
-
-      </div>
-    </div>
-
-  </section>
-
   <!--==========================
     Video Section
   ============================-->
@@ -635,44 +603,7 @@ function isMobile(){
   
     <script>
       $(()=>{
-        //롯데시네마 데이터 크롤링
-        $.ajax({
-          url:"/v1/apis/movie",
-          type:"GET",
-          dataType:"json",
-          success:(data)=>{
-            var html = "";
-              for(var i = 0; i < data.length;i++){
-                html += `<div><img class="movieImg" src="` + data[i].IMG_SRC + `" alt="img"><div class="movieTile">`
-                     + data[i].TITLE + `</div><div class="movieContent">`
-                     + data[i].MOVIE_RANK + '위'
-                     + `<span class="iconify" data-icon="ci:line-m" data-inline="false"></span>
-                     <span class="iconify" data-icon="bx:bxs-star" style="color:orange; border-color:gray; margin-bottom:4px;" data-inline="false"></span>
-                     ` + data[i].TIME + `</div></div>`;
-              }
-            $("#movieList").html(html);
-                // Init Owl Carousel
-            $('.owl-carousel').owlCarousel({
-                  items: 4,
-                  autoplay: true,
-                  loop: true,
-                  margin: 30,
-                  dots: true,
-                  responsiveClass: true,
-                  responsive: {
-                    320: { items: 1},
-                    480: { items: 2},
-                    600: { items: 2},
-                    767: { items: 3},
-                    768: { items: 3},
-                    992: { items: 4}
-                  }
-            });
-          },
-          error:(err)=>{
-            console.log(err);
-          }
-        });
+
         $.ajax({
           url:"/v1/blog/top3",
           type:"GET",

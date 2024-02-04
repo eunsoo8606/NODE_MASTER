@@ -6,11 +6,12 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
-<%- include('../layout/back.ejs') %>
+<%- include('../../layout/back.ejs') %>
     <style>
         body {
             height: 100vh; /* 100% viewport 높이 설정 */
             margin: 0; /* Body의 기본 마진 제거 */
+            padding-top: 5%;
         }
 
         .weather-container {
@@ -53,12 +54,12 @@
         table > tbody > tr > td{
             text-align: center;
         }
-
+        .hide{display: none;}
 
     </style>
 </head>
 <body data-spy="scroll" data-target="#navbarNav" data-offset="50">
-<%- include('../layout/header.ejs') %>
+<%- include('../../layout/header.ejs') %>
 <section id="get-started" class="padd-section text-center wow fadeInUp">
     <div class="container mt-5">
         <div class="row justify-content-center">
@@ -85,11 +86,11 @@
                                                 <th>날씨</th>
                                                 <td id="_sky"></td>
                                             </tr>
-                                            <tr>
+                                            <tr class="hide">
                                                 <th>강수형태</th>
                                                 <td id="_pty"></td>
                                             </tr>
-                                            <tr>
+                                            <tr class="hide">
                                                 <th>강수량</th>
                                                 <td id="_rn1"></td>
                                             </tr>
@@ -142,13 +143,13 @@
 
     function getWeather(date,address){
         //현재 일시분초 셋팅
-        var hours = (new Date().getHours()-1).toString();
+        let hours = (new Date().getHours()-1).toString();
         if(hours.length == 1) hours = "0" + hours;
         var date = parseInt(Util.sysDate());
         //database 에서 격자 좌표 변환처리 정보 조회
 
         $.ajax({
-            url : '/v1/apis/weather/locationGridXY',
+            url : '/v1/weather/locationGridXY',
             data:{"address":address},
             type : 'GET',
             dataType:'json',
@@ -157,12 +158,12 @@
                 if(Util.get(data) === ""){
                     console.log("data.err")
                 }
-                console.log("data : ", data)
+
                 let x = data.lng;
                 let y = data.lat;
                 //변환된 좌표로 날씨정보 조회
                 $.ajax({
-                    url:"/v1/apis/weather",
+                    url:"/v1/weather",
                     data:{"date":date,"hour":hours,"x":x,"y":y},
                     type:"GET",
                     dataType:"json",
@@ -200,12 +201,13 @@
         for(let i = 0; i < whList.length;i++){
             if(whList[i].category === "SKY"){
                 const sky = whList[i].fcstValue;
-                console.log("sky : ", sky)
+
                 switch (sky){
-                    case "1" : $("#_weather").attr('src',`/imges/sun.png`); $("#_sky").text(`맑음`); $('body').css('background-image', 'url("/imges/bg_sun.jpg")');break;
+                    case "1" : $("#_weather").attr('src',`/imges/sun.png`); $("#_sky").text(`맑음`); $('body').css('background-image', 'url("/imges/bg_sun.jpg")'); break;
                     case "3" : $("#_weather").attr('src',`/imges/many_cloud.png`); $("#_sky").text(`구름많음`); $('body').css('background-image', 'url("/imges/bg_cluod.jpg")');break;
                     case "4" : $("#_weather").attr('src',`/imges/many_cloud.png`); $("#_sky").text(`흐림`); $('body').css('background-image', 'url("/imges/bg_cluod.jpg")');break;
                 }
+
             }
             if(whList[i].category === "T1H") {
                 $(".temperature").text(whList[i].fcstValue + `°C`);
@@ -229,23 +231,27 @@
                 $("#_rn1").text(precipitation);
             }
             if(whList[i].category === "PTY"){
+                console.log(whList[i])
                 // PTY	강수형태	: 없음(0), 비(1), 비/눈(2), 눈(3), 소나기(4), 빗방울(5), 빗방울/눈날림(6), 눈날림(7)
                 const pty = whList[i].fcstValue;
                 switch (pty){
                     case  "0" : $("#_pty").text(``);          $("#_weather").attr('src',`/imges/sun.png`);break; //맑음
                     case  "1" : $("#_pty").text(`비`);         $("#_weather").attr('src',`/imges/rain.png`); $('body').css('background-image', 'url("/imges/bg_rain.jpg")');break; //비
-                    case  "2" : $("#_pty").text(`비/눈`);      $("#_weather").attr('src',`/imges/snow_rain.png`); $('body').css('background-image', 'url("/imges/bg_snow.jpg")'); break; //비
+                    case  "2" : $("#_pty").text(`비/눈`);      $("#_weather").attr('src',`/imges/snow_rain.png`); $('body').css('background-image', 'url("/imges/bg_snow.jpg")');  break; //비
                     case  "3" : $("#_pty").text(`눈`);         $("#_weather").attr('src',`/imges/snow.png`); $('body').css('background-image', 'url("/imges/bg_snow.jpg")'); break; //비
                     case  "4" : $("#_pty").text(`소나기`);      $("#_weather").attr('src',`/imges/rain_sun.png`); $('body').css('background-image', 'url("/imges/bg_rain.jpg")');break; //비
                     case  "5" : $("#_pty").text(`빗방울`);      $("#_weather").attr('src',`/imges/rain.png`); $('body').css('background-image', 'url("/imges/bg_rain.jpg")');break; //비
                     case  "6" : $("#_pty").text(`빗방울/눈날림`); $("#_weather").attr('src',`/imges/snow_rain.png`); $('body').css('background-image', 'url("/imges/bg_snow.jpg")');break; //비
                     case  "7" : $("#_pty").text(`눈날림`);      $("#_weather").attr('src',`/imges/snow.png`); $('body').css('background-image', 'url("/imges/bg_snow.jpg")');break; //비
                 }
+                if(pty == "1" || pty == "2"|| pty == "4" || pty == "5" || pty == "6"){
+                    $("#_pty").show(); $("#_rn1").show();
+                }
 
             }
         }
     }
 </script>
-<%- include('../layout/footer.ejs') %>
+<%- include('../../layout/footer.ejs') %>
 </body>
 </html>
